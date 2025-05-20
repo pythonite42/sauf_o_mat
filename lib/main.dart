@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:shotcounter_zieefaegge/colors.dart';
 import 'package:window_manager/window_manager.dart';
@@ -43,6 +46,26 @@ class MyScaffold extends StatefulWidget {
 
 class _MyScaffoldState extends State<MyScaffold> {
   bool titleBarVisible = true;
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _timer = Timer.periodic(const Duration(seconds: 3), (_) {
+      if (_navigatorKey.currentContext != null) {
+        int index = Random().nextInt(2);
+        _navigatorKey.currentState!.pushReplacementNamed('/page$index');
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,13 +100,15 @@ class _MyScaffoldState extends State<MyScaffold> {
           ),
           Expanded(
             child: Navigator(
-              initialRoute: '/page1',
+              key: _navigatorKey,
+              initialRoute: '/page0',
               onGenerateRoute: (settings) {
                 switch (settings.name) {
+                  case '/page0':
+                    return _createRoute(const Page0());
                   case '/page1':
                     return _createRoute(const Page1());
-                  case '/page2':
-                    return _createRoute(const Page2());
+
                   default:
                     return MaterialPageRoute(builder: (_) => const Center(child: Text('Unknown')));
                 }
@@ -110,34 +135,20 @@ class _MyScaffoldState extends State<MyScaffold> {
   }
 }
 
+class Page0 extends StatelessWidget {
+  const Page0({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(child: Text("Page 0"));
+  }
+}
+
 class Page1 extends StatelessWidget {
   const Page1({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: ElevatedButton(
-        onPressed: () {
-          Navigator.of(context).pushNamed('/page2');
-        },
-        child: const Text('Page 1, go to page 2'),
-      ),
-    );
-  }
-}
-
-class Page2 extends StatelessWidget {
-  const Page2({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: ElevatedButton(
-        onPressed: () {
-          Navigator.of(context).pushNamed('/page1');
-        },
-        child: Text('Page 2, go back to page 1'),
-      ),
-    );
+    return Center(child: Text("Page 1"));
   }
 }

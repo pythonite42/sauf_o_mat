@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 
+final defaultOnPrimary = Color(0xFFC7C5D0);
+final cyanAccent = Color(0xFF18d9ff);
+final redAccent = Color(0xFFFF5252);
+
 final ThemeData appTheme = ThemeData(
   colorScheme: ColorScheme.fromSeed(
-    seedColor: const Color(0xFF0F22AF), // Main seed color
-    primary: const Color(0xFF0F22AF), // Custom primary override
-    secondary: const Color(0xFF95698A), // Secondary (used for accents)
-    tertiary: const Color(0xFFF5BF17), // Tertiary color (used as needed)
-    brightness: Brightness.light,
+    seedColor: const Color(0xFF0F22AF),
+    primary: const Color(0xFF0F22AF),
+    secondary: const Color(0xFFDE28d8),
+    tertiary: const Color(0xFFF5BF17),
+    brightness: Brightness.dark,
   ),
   useMaterial3: true,
-  scaffoldBackgroundColor: Colors.white,
+  scaffoldBackgroundColor: const Color(0xFF0F22AF),
   appBarTheme: const AppBarTheme(
     backgroundColor: Color(0xFF0F22AF),
     foregroundColor: Colors.white,
@@ -17,16 +21,29 @@ final ThemeData appTheme = ThemeData(
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
-      backgroundColor: const Color(0xFF0F22AF),
-      foregroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF5BF17),
+      foregroundColor: Colors.black,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
     ),
   ),
+  /* iconTheme: const IconThemeData(
+    color: Colors.white, 
+  ), */
   textTheme: const TextTheme(
-    headlineSmall: TextStyle(fontWeight: FontWeight.bold),
-    titleMedium: TextStyle(color: Colors.black87),
-    bodyMedium: TextStyle(color: Colors.black87),
+    headlineSmall: TextStyle(
+      color: Colors.white,
+      fontWeight: FontWeight.bold,
+    ),
+    titleMedium: TextStyle(
+      color: Colors.white,
+    ),
+    bodyMedium: TextStyle(
+      color: Colors.white,
+    ),
+    bodyLarge: TextStyle(
+      color: Colors.white,
+    ),
   ),
 );

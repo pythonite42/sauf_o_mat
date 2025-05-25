@@ -1,80 +1,93 @@
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
-class PageDiagram extends StatelessWidget {
-  PageDiagram({super.key});
+class ChartData {
+  ChartData({
+    this.group,
+    this.longdrink,
+    this.shot,
+    this.beer,
+    this.lutz,
+  });
 
-  final List<String> groups = ['Team A', 'Team B', 'Team C', 'Team D'];
-  final List<int> drinks = [12, 18, 7, 22];
+  final dynamic group;
+  final num? longdrink;
+  final num? shot;
+  final num? beer;
+  final num? lutz;
+}
+
+class PageDiagram extends StatefulWidget {
+  const PageDiagram({super.key});
+
+  @override
+  State<PageDiagram> createState() => _PageDiagramState();
+}
+
+class _PageDiagramState extends State<PageDiagram> {
+  _PageDiagramState();
+
+  List<ChartData>? _chartData;
+
+  @override
+  void initState() {
+    _chartData = <ChartData>[
+      ChartData(group: 'Gruppe1', longdrink: 6, shot: 6, beer: 18, lutz: 12),
+      ChartData(group: 'Gruppe2', longdrink: 8, shot: 8, beer: 19, lutz: 15),
+      ChartData(group: 'Gruppe3', longdrink: 12, shot: 11, beer: 22, lutz: 20),
+      ChartData(group: 'Gruppe4', longdrink: 15, shot: 16, beer: 25, lutz: 40),
+      ChartData(group: 'Gruppe5', longdrink: 20, shot: 21, beer: 30, lutz: 13),
+      ChartData(group: 'Gruppe6', longdrink: 24, shot: 25, beer: 35, lutz: 11),
+    ];
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final maxY = (drinks.reduce((a, b) => a > b ? a : b) * 1.2).ceilToDouble();
-
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Card(
-        elevation: 6,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Getränke pro Gruppe',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 20),
-              Expanded(
-                child: BarChart(
-                  BarChartData(
-                    maxY: maxY,
-                    barTouchData: BarTouchData(enabled: true),
-                    titlesData: FlTitlesData(
-                      leftTitles: AxisTitles(
-                        sideTitles: SideTitles(showTitles: true),
-                      ),
-                      bottomTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: true,
-                          getTitlesWidget: (value, meta) {
-                            final index = value.toInt();
-                            if (index >= 0 && index < groups.length) {
-                              return Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
-                                child: Text(groups[index]),
-                              );
-                            }
-                            return Text('');
-                          },
-                        ),
-                      ),
-                    ),
-                    borderData: FlBorderData(show: false),
-                    gridData: FlGridData(show: true),
-                    barGroups: List.generate(groups.length, (i) {
-                      return BarChartGroupData(
-                        x: i,
-                        barRods: [
-                          BarChartRodData(
-                            toY: drinks[i].toDouble(),
-                            gradient: LinearGradient(
-                              colors: [Colors.purple, Colors.deepPurpleAccent],
-                            ),
-                            borderRadius: BorderRadius.circular(8),
-                            width: 22,
-                          ),
-                        ],
-                      );
-                    }),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+    return SfCartesianChart(
+      plotAreaBorderWidth: 1,
+      //title: ChartTitle(text: 'Saufometer'),
+      legend: Legend(isVisible: true, position: LegendPosition.top),
+      primaryXAxis: const CategoryAxis(
+        majorGridLines: MajorGridLines(width: 0),
       ),
+      primaryYAxis: const NumericAxis(
+        axisLine: AxisLine(width: 0),
+        labelFormat: '{value}',
+        majorTickLines: MajorTickLines(size: 0),
+      ),
+      series: <StackedBarSeries<ChartData, String>>[
+        StackedBarSeries<ChartData, String>(
+          dataSource: _chartData,
+          xValueMapper: (ChartData data, int index) => data.group,
+          yValueMapper: (ChartData data, int index) => data.longdrink == null ? null : data.longdrink! * 2,
+          name: 'Bargetränk',
+        ),
+        StackedBarSeries<ChartData, String>(
+          dataSource: _chartData,
+          xValueMapper: (ChartData data, int index) => data.group,
+          yValueMapper: (ChartData data, int index) => data.shot,
+          name: 'Shot',
+        ),
+        StackedBarSeries<ChartData, String>(
+          dataSource: _chartData,
+          xValueMapper: (ChartData data, int index) => data.group,
+          yValueMapper: (ChartData data, int index) => data.beer,
+          name: 'Bier',
+        ),
+        StackedBarSeries<ChartData, String>(
+          dataSource: _chartData,
+          xValueMapper: (ChartData data, int index) => data.group,
+          yValueMapper: (ChartData data, int index) => data.lutz,
+          name: 'Lutz',
+        ),
+      ],
     );
+  }
+
+  @override
+  void dispose() {
+    _chartData!.clear();
+    super.dispose();
   }
 }

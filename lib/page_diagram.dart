@@ -35,7 +35,7 @@ class _PageDiagramState extends State<PageDiagram> {
     _chartData = <ChartData>[
       ChartData(group: 'Gruppe1', longdrink: 6, shot: 6, beer: 18, lutz: 12),
       ChartData(group: 'Gruppe2', longdrink: 8, shot: 8, beer: 19, lutz: 15),
-      ChartData(group: 'Gruppe3', longdrink: 30, shot: 11, beer: 22, lutz: 20),
+      ChartData(group: 'Gruppe3', longdrink: 3, shot: 11, beer: 22, lutz: 20),
       ChartData(group: 'Gruppe4', longdrink: 15, shot: 16, beer: 25, lutz: 40),
       ChartData(group: 'Gruppe5', longdrink: 20, shot: 21, beer: 30, lutz: 13),
       ChartData(group: 'Gruppe6', longdrink: 24, shot: 25, beer: 35, lutz: 11),
@@ -98,32 +98,36 @@ class _PageDiagramState extends State<PageDiagram> {
           StackedBarSeries<ChartData, String>(
             dataSource: _chartData,
             xValueMapper: (ChartData data, int index) => data.group,
-            yValueMapper: (ChartData data, int index) => data.lutz,
-            name: 'Lutz',
-            pointColorMapper: (data, index) => index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : redAccent,
-          ),
-          StackedBarSeries<ChartData, String>(
-            dataSource: _chartData,
-            xValueMapper: (ChartData data, int index) => data.group,
             yValueMapper: (ChartData data, int index) => data.longdrink == null ? null : data.longdrink! * 2,
             name: 'Bargetränk',
+            color: Theme.of(context).colorScheme.secondary,
             pointColorMapper: (data, index) =>
-                index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : Theme.of(context).colorScheme.tertiary,
+                index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : Theme.of(context).colorScheme.secondary,
           ),
           StackedBarSeries<ChartData, String>(
             dataSource: _chartData,
             xValueMapper: (ChartData data, int index) => data.group,
             yValueMapper: (ChartData data, int index) => data.beer,
             name: 'Bier',
-            pointColorMapper: (data, index) => index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : cyanAccent,
+            color: Theme.of(context).colorScheme.tertiary,
+            pointColorMapper: (data, index) =>
+                index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : Theme.of(context).colorScheme.tertiary,
           ),
           StackedBarSeries<ChartData, String>(
             dataSource: _chartData,
             xValueMapper: (ChartData data, int index) => data.group,
             yValueMapper: (ChartData data, int index) => data.shot,
             name: 'Shot',
-            pointColorMapper: (data, index) =>
-                index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : Theme.of(context).colorScheme.secondary,
+            color: cyanAccent,
+            pointColorMapper: (data, index) => index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : cyanAccent,
+          ),
+          StackedBarSeries<ChartData, String>(
+            dataSource: _chartData,
+            xValueMapper: (ChartData data, int index) => data.group,
+            yValueMapper: (ChartData data, int index) => data.lutz,
+            name: 'Lutz',
+            color: redAccent,
+            pointColorMapper: (data, index) => index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : redAccent,
           ),
         ],
       ),

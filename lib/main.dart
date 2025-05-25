@@ -94,7 +94,10 @@ class _MyScaffoldState extends State<MyScaffold> {
                         });
                         await windowManager.setFullScreen(false);
                       },
-                      icon: const Icon(Icons.close_fullscreen),
+                      icon: const Icon(
+                        Icons.close_fullscreen,
+                        color: Color(0xFF1b31d1),
+                      ),
                     ),
             ],
           ),

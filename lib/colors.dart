@@ -28,9 +28,6 @@ final ThemeData appTheme = ThemeData(
       ),
     ),
   ),
-  /* iconTheme: const IconThemeData(
-    color: Colors.white, 
-  ), */
   textTheme: const TextTheme(
     headlineSmall: TextStyle(
       color: Colors.white,

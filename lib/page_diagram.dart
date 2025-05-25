@@ -39,6 +39,8 @@ class _PageDiagramState extends State<PageDiagram> {
       ChartData(group: 'Gruppe4', longdrink: 15, shot: 16, beer: 25, lutz: 40),
       ChartData(group: 'Gruppe5', longdrink: 20, shot: 21, beer: 30, lutz: 13),
       ChartData(group: 'Gruppe6', longdrink: 24, shot: 25, beer: 35, lutz: 11),
+      ChartData(group: 'Gruppe7', longdrink: 22, shot: 25, beer: 35, lutz: 11),
+      ChartData(group: 'Gruppe8', longdrink: 12, shot: 15, beer: 25, lutz: 16),
     ];
     _chartData?.sort((a, b) {
       final aSum = (a.longdrink ?? 0) * 2 + (a.shot ?? 0) + (a.beer ?? 0) + (a.lutz ?? 0);
@@ -46,66 +48,85 @@ class _PageDiagramState extends State<PageDiagram> {
       return aSum.compareTo(bSum);
     });
 
+    final medals = ['🥇 ', '🥈 ', '🥉 '];
+    for (int i = 0; i < _chartData!.length; i++) {
+      final originalName = _chartData![i].group.toString().replaceAll(RegExp(r'[🥇🥈🥉]'), '');
+      if (i > _chartData!.length - 4) {
+        _chartData![i] = ChartData(
+          group: '${medals[_chartData!.length - 1 - i]}$originalName',
+          longdrink: _chartData![i].longdrink,
+          shot: _chartData![i].shot,
+          beer: _chartData![i].beer,
+          lutz: _chartData![i].lutz,
+        );
+      }
+    }
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SfCartesianChart(
-      plotAreaBorderWidth: 1,
-      //title: ChartTitle(text: 'Saufometer'),
-      legend: Legend(
-          isVisible: true,
-          position: LegendPosition.top,
-          textStyle: TextStyle(fontSize: 30),
-          padding: 20,
-          itemPadding: 50),
-      plotAreaBorderColor: defaultOnPrimary,
-      primaryXAxis: CategoryAxis(
-        axisLine: AxisLine(width: 0),
-        majorGridLines: MajorGridLines(width: 0, color: defaultOnPrimary),
-        labelStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+    return Padding(
+      padding: EdgeInsetsGeometry.fromLTRB(30, 0, 30, 30),
+      child: SfCartesianChart(
+        plotAreaBorderWidth: 1,
+        //title: ChartTitle(text: 'Saufometer'),
+        legend: Legend(
+            isVisible: true,
+            position: LegendPosition.top,
+            textStyle: TextStyle(fontSize: 30),
+            padding: 20,
+            itemPadding: 50),
+        plotAreaBorderColor: defaultOnPrimary,
+        primaryXAxis: CategoryAxis(
+          axisLine: AxisLine(width: 0),
+          majorGridLines: MajorGridLines(width: 0, color: defaultOnPrimary),
+          labelStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        primaryYAxis: NumericAxis(
+          axisLine: AxisLine(width: 0),
+          labelFormat: '{value}',
+          majorTickLines: MajorTickLines(size: 0),
+          majorGridLines: MajorGridLines(
+            width: 1,
+            color: defaultOnPrimary,
+          ),
+          labelStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        series: <StackedBarSeries<ChartData, String>>[
+          StackedBarSeries<ChartData, String>(
+            dataSource: _chartData,
+            xValueMapper: (ChartData data, int index) => data.group,
+            yValueMapper: (ChartData data, int index) => data.lutz,
+            name: 'Lutz',
+            pointColorMapper: (data, index) => index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : redAccent,
+          ),
+          StackedBarSeries<ChartData, String>(
+            dataSource: _chartData,
+            xValueMapper: (ChartData data, int index) => data.group,
+            yValueMapper: (ChartData data, int index) => data.longdrink == null ? null : data.longdrink! * 2,
+            name: 'Bargetränk',
+            pointColorMapper: (data, index) =>
+                index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : Theme.of(context).colorScheme.tertiary,
+          ),
+          StackedBarSeries<ChartData, String>(
+            dataSource: _chartData,
+            xValueMapper: (ChartData data, int index) => data.group,
+            yValueMapper: (ChartData data, int index) => data.beer,
+            name: 'Bier',
+            pointColorMapper: (data, index) => index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : cyanAccent,
+          ),
+          StackedBarSeries<ChartData, String>(
+            dataSource: _chartData,
+            xValueMapper: (ChartData data, int index) => data.group,
+            yValueMapper: (ChartData data, int index) => data.shot,
+            name: 'Shot',
+            pointColorMapper: (data, index) =>
+                index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : Theme.of(context).colorScheme.secondary,
+          ),
+        ],
       ),
-      primaryYAxis: NumericAxis(
-        axisLine: AxisLine(width: 0),
-        labelFormat: '{value}',
-        majorTickLines: MajorTickLines(size: 0),
-        majorGridLines: MajorGridLines(
-          width: 1,
-          color: defaultOnPrimary,
-        ),
-        labelStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-      ),
-      series: <StackedBarSeries<ChartData, String>>[
-        StackedBarSeries<ChartData, String>(
-          dataSource: _chartData,
-          xValueMapper: (ChartData data, int index) => data.group,
-          yValueMapper: (ChartData data, int index) => data.lutz,
-          name: 'Lutz',
-          pointColorMapper: (data, index) => index < 3 ? Colors.grey : redAccent,
-        ),
-        StackedBarSeries<ChartData, String>(
-          dataSource: _chartData,
-          xValueMapper: (ChartData data, int index) => data.group,
-          yValueMapper: (ChartData data, int index) => data.longdrink == null ? null : data.longdrink! * 2,
-          name: 'Bargetränk',
-          pointColorMapper: (data, index) => index < 3 ? Colors.grey : Theme.of(context).colorScheme.tertiary,
-        ),
-        StackedBarSeries<ChartData, String>(
-          dataSource: _chartData,
-          xValueMapper: (ChartData data, int index) => data.group,
-          yValueMapper: (ChartData data, int index) => data.beer,
-          name: 'Bier',
-          pointColorMapper: (data, index) => index < 3 ? Colors.grey : cyanAccent,
-        ),
-        StackedBarSeries<ChartData, String>(
-          dataSource: _chartData,
-          xValueMapper: (ChartData data, int index) => data.group,
-          yValueMapper: (ChartData data, int index) => data.shot,
-          name: 'Shot',
-          pointColorMapper: (data, index) => index < 3 ? Colors.grey : Theme.of(context).colorScheme.secondary,
-        ),
-      ],
     );
   }
 

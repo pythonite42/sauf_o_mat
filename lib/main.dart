@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:shotcounter_zieefaegge/colors.dart';
+import 'package:shotcounter_zieefaegge/page_diagram.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
@@ -56,7 +57,7 @@ class _MyScaffoldState extends State<MyScaffold> {
     _timer = Timer.periodic(const Duration(seconds: 3), (_) {
       if (_navigatorKey.currentContext != null) {
         int index = Random().nextInt(2);
-        _navigatorKey.currentState!.pushReplacementNamed('/page$index');
+        //_navigatorKey.currentState!.pushReplacementNamed('/page$index');
       }
     });
   }
@@ -105,7 +106,7 @@ class _MyScaffoldState extends State<MyScaffold> {
               onGenerateRoute: (settings) {
                 switch (settings.name) {
                   case '/page0':
-                    return _createRoute(const Page0());
+                    return _createRoute(PageDiagram());
                   case '/page1':
                     return _createRoute(const Page1());
 
@@ -132,15 +133,6 @@ class _MyScaffoldState extends State<MyScaffold> {
         return SlideTransition(position: animation.drive(tween), child: child);
       },
     );
-  }
-}
-
-class Page0 extends StatelessWidget {
-  const Page0({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(child: Text("Page 0"));
   }
 }
 

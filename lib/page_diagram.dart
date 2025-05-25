@@ -12,10 +12,10 @@ class ChartData {
   });
 
   final dynamic group;
-  final num? longdrink;
-  final num? shot;
-  final num? beer;
-  final num? lutz;
+  final int? longdrink;
+  final int? shot;
+  final int? beer;
+  final int? lutz;
 }
 
 class PageDiagram extends StatefulWidget {
@@ -83,7 +83,6 @@ class _PageDiagramState extends State<PageDiagram> {
           yValueMapper: (ChartData data, int index) => data.lutz,
           name: 'Lutz',
           pointColorMapper: (data, index) => index < 3 ? Colors.grey : redAccent,
-          spacing: 0,
         ),
         StackedBarSeries<ChartData, String>(
           dataSource: _chartData,
@@ -91,7 +90,6 @@ class _PageDiagramState extends State<PageDiagram> {
           yValueMapper: (ChartData data, int index) => data.longdrink == null ? null : data.longdrink! * 2,
           name: 'Bargetränk',
           pointColorMapper: (data, index) => index < 3 ? Colors.grey : Theme.of(context).colorScheme.tertiary,
-          spacing: 0,
         ),
         StackedBarSeries<ChartData, String>(
           dataSource: _chartData,
@@ -99,7 +97,6 @@ class _PageDiagramState extends State<PageDiagram> {
           yValueMapper: (ChartData data, int index) => data.beer,
           name: 'Bier',
           pointColorMapper: (data, index) => index < 3 ? Colors.grey : cyanAccent,
-          spacing: 0,
         ),
         StackedBarSeries<ChartData, String>(
           dataSource: _chartData,
@@ -107,7 +104,6 @@ class _PageDiagramState extends State<PageDiagram> {
           yValueMapper: (ChartData data, int index) => data.shot,
           name: 'Shot',
           pointColorMapper: (data, index) => index < 3 ? Colors.grey : Theme.of(context).colorScheme.secondary,
-          spacing: 0,
         ),
       ],
     );

@@ -14,6 +14,8 @@ class MockDataPage0 {
   }
 
   Future<List<Map>> getRandomChartData() async {
+    // Die Datensätze müssen nicht sortiert sein, aber die Anzahl der Bargetränke (longdrinks) muss bereits doppelt sein
+
     await Future.delayed(Duration(seconds: 2));
     List<Map> result = [];
     int groupCount = 9; // Random().nextInt(15) + 2;

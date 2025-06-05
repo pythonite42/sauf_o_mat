@@ -1,0 +1,300 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:shotcounter_zieefaegge/backend_mockdata.dart';
+import 'package:shotcounter_zieefaegge/colors.dart';
+
+import 'dart:math';
+
+import 'package:shotcounter_zieefaegge/globals.dart';
+
+class PieChartData {
+  final int value;
+  final Color color;
+
+  PieChartData({required this.value, required this.color});
+}
+
+class PageTop3 extends StatefulWidget {
+  const PageTop3({super.key});
+
+  @override
+  State<PageTop3> createState() => _PageTop3State();
+}
+
+class _PageTop3State extends State<PageTop3> {
+  List<PieChartData> _chartData1 = [];
+  List<PieChartData> _chartData2 = [];
+  List<PieChartData> _chartData3 = [];
+  String groupName1 = "";
+  String groupName2 = "";
+  String groupName3 = "";
+  late Timer _chartDataReloadTimer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _loadChartData();
+    _startAutoReloadChartData();
+  }
+
+  void _startAutoReloadChartData() {
+    _chartDataReloadTimer = Timer.periodic(Duration(seconds: 7), (_) {
+      _loadChartData();
+    });
+  }
+
+  Future<void> _loadChartData() async {
+    try {
+      List<Map> newDataMapList = await MockDataPage0().getRandomChartData();
+      newDataMapList.sort((a, b) {
+        final aSum = (a["longdrink"] ?? 0) + (a["beer"] ?? 0) + (a["shot"] ?? 0) + (a["lutz"] ?? 0);
+        final bSum = (b["longdrink"] ?? 0) + (b["beer"] ?? 0) + (b["shot"] ?? 0) + (b["lutz"] ?? 0);
+        return bSum.compareTo(aSum);
+      });
+
+      setState(() {
+        groupName1 = newDataMapList[0]["group"];
+        _chartData1 = [
+          PieChartData(value: newDataMapList[0]["longdrink"], color: Theme.of(context).colorScheme.secondary),
+          PieChartData(value: newDataMapList[0]["beer"], color: Theme.of(context).colorScheme.tertiary),
+          PieChartData(value: newDataMapList[0]["shot"], color: cyanAccent),
+          PieChartData(value: newDataMapList[0]["lutz"], color: redAccent),
+        ];
+
+        groupName2 = newDataMapList[1]["group"];
+        _chartData2 = [
+          PieChartData(value: newDataMapList[1]["longdrink"], color: Theme.of(context).colorScheme.secondary),
+          PieChartData(value: newDataMapList[1]["beer"], color: Theme.of(context).colorScheme.tertiary),
+          PieChartData(value: newDataMapList[1]["shot"], color: cyanAccent),
+          PieChartData(value: newDataMapList[1]["lutz"], color: redAccent),
+        ];
+
+        groupName3 = newDataMapList[2]["group"];
+        _chartData3 = [
+          PieChartData(value: newDataMapList[2]["longdrink"], color: Theme.of(context).colorScheme.secondary),
+          PieChartData(value: newDataMapList[2]["beer"], color: Theme.of(context).colorScheme.tertiary),
+          PieChartData(value: newDataMapList[2]["shot"], color: cyanAccent),
+          PieChartData(value: newDataMapList[2]["lutz"], color: redAccent),
+        ];
+      });
+    } catch (e) {
+      debugPrint('Error fetching chart data: $e');
+    }
+  }
+
+  @override
+  void dispose() {
+    _chartDataReloadTimer.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double size1 = MySize(context).w * 0.3;
+    double size2 = MySize(context).w * 0.2;
+    double size3 = MySize(context).w * 0.175;
+    double legendBoxSize = MySize(context).h * 0.04;
+    return Stack(
+      children: [
+        Positioned(
+          top: MySize(context).h * 0.1,
+          left: MySize(context).w * 0.05,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                      height: legendBoxSize, width: legendBoxSize, color: Theme.of(context).colorScheme.secondary),
+                  SizedBox(width: 15),
+                  Text("Bargetränk", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
+                ],
+              ),
+              SizedBox(width: 40),
+              Row(
+                children: [
+                  Container(height: legendBoxSize, width: legendBoxSize, color: Theme.of(context).colorScheme.tertiary),
+                  SizedBox(width: 15),
+                  Text("Bier", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
+                ],
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          top: MySize(context).h * 0.1,
+          right: MySize(context).w * 0.05,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(height: legendBoxSize, width: legendBoxSize, color: cyanAccent),
+                  SizedBox(width: 15),
+                  Text("Shot", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
+                ],
+              ),
+              SizedBox(width: 40),
+              Row(
+                children: [
+                  Container(height: legendBoxSize, width: legendBoxSize, color: redAccent),
+                  SizedBox(width: 15),
+                  Text("Lutz", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
+                ],
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          top: MySize(context).h * 0.1,
+          left: (MySize(context).w / 2) - (size1 / 2),
+          child: PieChartWithImage(
+            chartData: _chartData1,
+            place: 1,
+            badge: '🥇 ',
+            groupName: groupName1,
+            size: size1,
+          ),
+        ),
+        Positioned(
+          top: MySize(context).h * 0.4,
+          left: MySize(context).w * 0.1,
+          child: PieChartWithImage(
+            chartData: _chartData2,
+            place: 2,
+            badge: '🥈 ',
+            groupName: groupName2,
+            size: size2,
+          ),
+        ),
+        Positioned(
+          bottom: MySize(context).h * 0.1,
+          right: MySize(context).w * 0.1,
+          child: PieChartWithImage(
+            chartData: _chartData3,
+            place: 3,
+            badge: '🥉 ',
+            groupName: groupName3,
+            size: size3,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class PieChartWithImage extends StatelessWidget {
+  const PieChartWithImage(
+      {super.key,
+      required this.chartData,
+      required this.place,
+      required this.badge,
+      required this.groupName,
+      required this.size});
+
+  final List<PieChartData> chartData;
+  final int place;
+  final String badge;
+  final String groupName;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [
+      Text(
+        "$badge $place. Platz",
+        style: TextStyle(fontSize: 25),
+      ),
+      SizedBox(height: 20),
+      SizedBox(
+        width: size,
+        height: size,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            CustomPaint(
+              size: Size(size, size),
+              painter: PieChartPainter(data: chartData),
+            ),
+            ClipOval(
+              child: Image.asset(
+                'assets/mock_logo.png',
+                width: size * 0.4,
+                height: size * 0.4,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ],
+        ),
+      ),
+      SizedBox(height: 20),
+      Text(
+        groupName,
+        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+      )
+    ]);
+  }
+}
+
+class PieChartPainter extends CustomPainter {
+  final List<PieChartData> data;
+
+  PieChartPainter({required this.data});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()..style = PaintingStyle.fill;
+    final total = data.fold(0.0, (sum, item) => sum + item.value);
+    final center = size.center(Offset.zero);
+    final radius = min(size.width / 2, size.height / 2);
+
+    double startAngle = -pi / 2;
+
+    for (var item in data) {
+      final sweepAngle = (item.value / total) * 2 * pi;
+      final midAngle = startAngle + sweepAngle / 2;
+
+      // Draw slice
+      paint.color = item.color;
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius),
+        startAngle,
+        sweepAngle,
+        true,
+        paint,
+      );
+
+      // Draw value text inside the slice
+      final labelRadius = radius * 0.7;
+      final labelX = center.dx + labelRadius * cos(midAngle);
+      final labelY = center.dy + labelRadius * sin(midAngle);
+
+      final textSpan = TextSpan(
+        text: '${item.value.toInt()}',
+        style: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      );
+      final textPainter = TextPainter(
+        text: textSpan,
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout();
+
+      final offset = Offset(
+        labelX - textPainter.width / 2,
+        labelY - textPainter.height / 2,
+      );
+      textPainter.paint(canvas, offset);
+
+      startAngle += sweepAngle;
+    }
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
+}

@@ -82,9 +82,7 @@ class _PageDiagramState extends State<PageDiagram> {
 
         _chartData = newData;
         _chartData?.sort((a, b) {
-          final aSum = (a.longdrink ?? 0) + (a.beer ?? 0) + (a.shot ?? 0) + (a.lutz ?? 0);
-          final bSum = (b.longdrink ?? 0) + (b.beer ?? 0) + (b.shot ?? 0) + (b.lutz ?? 0);
-          return bSum.compareTo(aSum);
+          return b.total.compareTo(a.total);
         });
         maxValue = _chartData?[0].total ?? 0 + 50;
 

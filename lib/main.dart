@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shotcounter_zieefaegge/colors.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
 import 'package:shotcounter_zieefaegge/page_diagram.dart';
+import 'package:shotcounter_zieefaegge/page_top3.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
@@ -114,13 +115,13 @@ class _MyScaffoldState extends State<MyScaffold> {
           Expanded(
             child: Navigator(
               key: _navigatorKey,
-              initialRoute: '/page0',
+              initialRoute: '/page1',
               onGenerateRoute: (settings) {
                 switch (settings.name) {
                   case '/page0':
                     return _createRoute(PageDiagram());
                   case '/page1':
-                    return _createRoute(const Page1());
+                    return _createRoute(PageTop3());
 
                   default:
                     return MaterialPageRoute(builder: (_) => const Center(child: Text('Unknown')));
@@ -145,14 +146,5 @@ class _MyScaffoldState extends State<MyScaffold> {
         return SlideTransition(position: animation.drive(tween), child: child);
       },
     );
-  }
-}
-
-class Page1 extends StatelessWidget {
-  const Page1({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(child: Text("Page 1"));
   }
 }

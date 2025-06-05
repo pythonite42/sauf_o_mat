@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shotcounter_zieefaegge/colors.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:shotcounter_zieefaegge/globals.dart';
+//import 'package:syncfusion_flutter_charts/charts.dart';
 
 class ChartData {
   ChartData({
@@ -18,10 +19,275 @@ class ChartData {
   final int? beer;
   final int? lutz;
 
-  int get total => (longdrink ?? 0) * 2 + (shot ?? 0) + (beer ?? 0) + (lutz ?? 0);
+  int get total => (longdrink ?? 0) + (shot ?? 0) + (beer ?? 0) + (lutz ?? 0);
 }
 
 class PageDiagram extends StatefulWidget {
+  const PageDiagram({super.key});
+
+  @override
+  State<PageDiagram> createState() => _PageDiagramState();
+}
+
+class _PageDiagramState extends State<PageDiagram> {
+  final ScrollController _scrollController = ScrollController();
+  late List<ChartData>? _chartData;
+  late Timer _scrollTimer;
+  double barHeight = 0;
+  int? maxValue;
+
+  int countBarsVisible = 5; //-> variabel übers backend?
+  double gridSpace = 10; //vielleicht variabel übers backend?
+  double groupNameSpaceFactor = 0.15; //Anteilig an ganzer Breite -> variabel übers backend?
+  double spaceRightOfFirst = 10; //-> variabel übers backend?
+
+  @override
+  void initState() {
+    super.initState();
+
+    _chartData = [
+      ChartData(group: 'Gruppe1', longdrink: 30 * 2, shot: 6, beer: 18, lutz: 12),
+      ChartData(group: 'Gruppe2', longdrink: 8 * 2, shot: 8, beer: 19, lutz: 15),
+      ChartData(group: 'Gruppe3 Gruppe3 Gruppe3Gruppe3 Gruppe3', longdrink: 10 * 2, shot: 11, beer: 22, lutz: 20),
+      ChartData(group: 'Gruppe4', longdrink: 15 * 2, shot: 16, beer: 25, lutz: 40),
+      ChartData(group: 'Gruppe5Gruppe5Gruppe5Gruppe5Gruppe5Gruppe5', longdrink: 2 * 2, shot: 21, beer: 30, lutz: 13),
+      ChartData(group: 'Gruppe6', longdrink: 18 * 2, shot: 25, beer: 35, lutz: 11),
+      ChartData(group: 'Gruppe7 Gruppe7 Gruppe7', longdrink: 5 * 2, shot: 25, beer: 35, lutz: 11),
+      ChartData(group: 'Gruppe8', longdrink: 12 * 2, shot: 15, beer: 25, lutz: 16),
+    ];
+    _chartData?.sort((a, b) {
+      final aSum = (a.longdrink ?? 0) + (a.shot ?? 0) + (a.beer ?? 0) + (a.lutz ?? 0);
+      final bSum = (b.longdrink ?? 0) + (b.shot ?? 0) + (b.beer ?? 0) + (b.lutz ?? 0);
+      return bSum.compareTo(aSum);
+    });
+    maxValue = _chartData?[0].total ?? 0 + 50;
+
+    final medals = ['🥇 ', '🥈 ', '🥉 '];
+    for (int i = 0; i < _chartData!.length; i++) {
+      final originalName = _chartData![i].group.toString().replaceAll(RegExp(r'[🥇🥈🥉]'), '');
+      if (i < 3) {
+        _chartData![i] = ChartData(
+          group: '${medals[i]}$originalName',
+          longdrink: _chartData![i].longdrink,
+          shot: _chartData![i].shot,
+          beer: _chartData![i].beer,
+          lutz: _chartData![i].lutz,
+        );
+      }
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _startAutoScroll();
+    });
+  }
+
+  void _startAutoScroll() {
+    const duration = Duration(seconds: 2);
+
+    _scrollTimer = Timer.periodic(duration, (timer) {
+      if (!_scrollController.hasClients) return;
+
+      final maxScroll = _scrollController.position.maxScrollExtent;
+      final current = _scrollController.offset;
+      final next = current + barHeight;
+
+      _scrollController.animateTo(
+        next >= (maxScroll + barHeight / 2) ? 0 : next,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollTimer.cancel();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  double getBarHeight(double screenHeight) {
+    return screenHeight / 8;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final padding = MySize(context).h * 0.08;
+    final legendBoxSize = MySize(context).h * 0.04;
+
+    return Padding(
+      padding: EdgeInsetsGeometry.all(padding),
+      child: Column(children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Row(
+              children: [
+                Container(height: legendBoxSize, width: legendBoxSize, color: Theme.of(context).colorScheme.secondary),
+                SizedBox(width: 15),
+                Text("Bargetränk", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
+              ],
+            ),
+            Row(
+              children: [
+                Container(height: legendBoxSize, width: legendBoxSize, color: Theme.of(context).colorScheme.tertiary),
+                SizedBox(width: 15),
+                Text("Bier", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
+              ],
+            ),
+            Row(
+              children: [
+                Container(height: legendBoxSize, width: legendBoxSize, color: cyanAccent),
+                SizedBox(width: 15),
+                Text("Shot", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
+              ],
+            ),
+            Row(
+              children: [
+                Container(height: legendBoxSize, width: legendBoxSize, color: redAccent),
+                SizedBox(width: 15),
+                Text("Lutz", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
+              ],
+            ),
+          ],
+        ),
+        SizedBox(height: 50),
+        Expanded(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              var textStyle = TextStyle(fontSize: 20, color: defaultOnPrimary);
+              var textPainter = TextPainter(
+                  text: TextSpan(text: "20", style: textStyle),
+                  maxLines: 1,
+                  //textScaler: TextScaler.linear(MediaQuery.of(context).textScaleFactor),
+                  textDirection: TextDirection.ltr);
+              final Size size = (textPainter..layout()).size;
+
+              final availableHeight = constraints.maxHeight - size.height;
+              barHeight = (availableHeight / countBarsVisible);
+              double gridLineWidth = 1;
+              var gridLine = Container(width: gridLineWidth, height: availableHeight, color: defaultOnPrimary);
+              var groupNameWidth = constraints.maxWidth * groupNameSpaceFactor;
+              var chartWidth = constraints.maxWidth - groupNameWidth;
+              var gridCount = ((maxValue ?? 1) + spaceRightOfFirst) / gridSpace;
+
+              print("maxValue $maxValue");
+              print("gridCount $gridCount");
+              print("gridCount floored ${gridCount.floor()}");
+
+              return Stack(children: <Widget>[
+                Positioned(
+                    left: groupNameWidth,
+                    child: Container(width: gridLineWidth, height: availableHeight, color: defaultOnPrimary)),
+                Positioned(
+                    left: groupNameWidth,
+                    top: availableHeight - gridLineWidth,
+                    child: Container(width: chartWidth, height: gridLineWidth, color: defaultOnPrimary)),
+                ...List.generate((gridCount).floor(),
+                    (index) => Positioned(left: groupNameWidth + index * (chartWidth / gridCount), child: gridLine)),
+                ...List.generate(
+                  (gridCount - 1).floor(),
+                  (index) => Positioned(
+                    left: groupNameWidth + (index + 1) * (chartWidth / gridCount),
+                    top: availableHeight,
+                    child: Text(
+                      ((index + 1) * gridSpace).toInt().toString(),
+                      style: textStyle,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: availableHeight,
+                  child: ScrollConfiguration(
+                    behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                    child: ListView.builder(
+                      controller: _scrollController,
+                      itemCount: _chartData?.length,
+                      itemBuilder: (context, index) {
+                        final data = _chartData?[index];
+
+                        return SizedBox(
+                          height: barHeight,
+                          child: Row(
+                            children: [
+                              Container(
+                                width: groupNameWidth,
+                                padding: EdgeInsets.only(right: 20),
+                                child: Text(
+                                  data?.group ?? '',
+                                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              Expanded(
+                                child: LayoutBuilder(
+                                  builder: (context, constraints) {
+                                    final totalWidth = constraints.maxWidth;
+                                    final longdrink = (data?.longdrink ?? 0).toDouble();
+                                    final beer = (data?.beer ?? 0).toDouble();
+                                    final shot = (data?.shot ?? 0).toDouble();
+                                    final lutz = (data?.lutz ?? 0).toDouble();
+                                    final maximumValue = (maxValue ?? 0) + spaceRightOfFirst;
+
+                                    // Avoid division by zero
+                                    if (maximumValue == 0) return const SizedBox();
+
+                                    return Padding(
+                                      padding: EdgeInsetsGeometry.symmetric(vertical: constraints.maxHeight * 0.15),
+                                      child: index < 3
+                                          ? Row(
+                                              children: [
+                                                Container(
+                                                  height: double.infinity,
+                                                  width: totalWidth * longdrink / maximumValue,
+                                                  color: Theme.of(context).colorScheme.secondary,
+                                                ),
+                                                Container(
+                                                  height: double.infinity,
+                                                  width: totalWidth * beer / maximumValue,
+                                                  color: Theme.of(context).colorScheme.tertiary,
+                                                ),
+                                                Container(
+                                                  height: double.infinity,
+                                                  width: totalWidth * shot / maximumValue,
+                                                  color: cyanAccent,
+                                                ),
+                                                Container(
+                                                  height: double.infinity,
+                                                  width: totalWidth * lutz / maximumValue,
+                                                  color: redAccent,
+                                                ),
+                                              ],
+                                            )
+                                          : Row(children: [
+                                              Container(
+                                                height: double.infinity,
+                                                width: totalWidth * (longdrink + beer + shot + lutz) / maximumValue,
+                                                color: Colors.grey,
+                                              )
+                                            ]),
+                                    );
+                                  },
+                                ),
+                              )
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                )
+              ]);
+            },
+          ),
+        ),
+      ]),
+    );
+  }
+}
+
+//the following PageDiagram can "scroll" by updating the data but there is no visible scroll effect. Also the colors are not corrected for this version
+
+/* class PageDiagram extends StatefulWidget {
   const PageDiagram({super.key});
 
   @override
@@ -176,3 +442,4 @@ class _PageDiagramState extends State<PageDiagram> {
     super.dispose();
   }
 }
+ */

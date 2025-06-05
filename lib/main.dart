@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:shotcounter_zieefaegge/colors.dart';
+import 'package:shotcounter_zieefaegge/globals.dart';
 import 'package:shotcounter_zieefaegge/page_diagram.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -72,34 +73,43 @@ class _MyScaffoldState extends State<MyScaffold> {
     return Scaffold(
       body: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              titleBarVisible
-                  ? IconButton(
-                      onPressed: () async {
-                        windowManager.setTitleBarStyle(TitleBarStyle.hidden);
-                        setState(() {
-                          titleBarVisible = false;
-                        });
-                        await windowManager.setFullScreen(true);
-                      },
-                      icon: const Icon(Icons.open_in_full),
-                    )
-                  : IconButton(
-                      onPressed: () async {
-                        windowManager.setTitleBarStyle(TitleBarStyle.normal);
-                        setState(() {
-                          titleBarVisible = true;
-                        });
-                        await windowManager.setFullScreen(false);
-                      },
-                      icon: const Icon(
-                        Icons.close_fullscreen,
-                        color: Color(0xFF1b31d1),
+          SizedBox(
+            height: fullscreenIconSize,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                titleBarVisible
+                    ? IconButton(
+                        onPressed: () async {
+                          windowManager.setTitleBarStyle(TitleBarStyle.hidden);
+                          setState(() {
+                            titleBarVisible = false;
+                          });
+                          await windowManager.setFullScreen(true);
+                        },
+                        padding: EdgeInsets.all(0),
+                        icon: Icon(
+                          Icons.open_in_full,
+                          size: fullscreenIconSize,
+                        ),
+                      )
+                    : IconButton(
+                        onPressed: () async {
+                          windowManager.setTitleBarStyle(TitleBarStyle.normal);
+                          setState(() {
+                            titleBarVisible = true;
+                          });
+                          await windowManager.setFullScreen(false);
+                        },
+                        padding: EdgeInsets.all(0),
+                        icon: Icon(
+                          Icons.close_fullscreen,
+                          color: Color(0xFF1b31d1),
+                          size: fullscreenIconSize,
+                        ),
                       ),
-                    ),
-            ],
+              ],
+            ),
           ),
           Expanded(
             child: Navigator(

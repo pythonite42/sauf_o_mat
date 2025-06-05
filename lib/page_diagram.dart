@@ -192,8 +192,8 @@ class _PageDiagramState extends State<PageDiagram> {
 
               final availableHeight = constraints.maxHeight - size.height;
               barHeight = (availableHeight / totalBarsVisible);
-              double gridLineWidth = 1;
-              var gridLine = Container(width: gridLineWidth, height: availableHeight, color: defaultOnPrimary);
+              double frameLineWidth = 2;
+              var gridLine = Container(width: 1, height: availableHeight, color: defaultOnPrimary);
               var groupNameWidth = constraints.maxWidth * groupNameSpaceFactor;
               var chartWidth = constraints.maxWidth - groupNameWidth;
               var gridCount = ((maxValue ?? 1) + emptyCountRightOfFirst) / gridInterval;
@@ -201,15 +201,21 @@ class _PageDiagramState extends State<PageDiagram> {
               return Stack(children: <Widget>[
                 Positioned(
                     left: groupNameWidth,
-                    child: Container(width: gridLineWidth, height: availableHeight, color: defaultOnPrimary)),
+                    child: Container(width: frameLineWidth, height: availableHeight, color: defaultOnPrimary)),
                 Positioned(
                     left: groupNameWidth,
-                    top: availableHeight - gridLineWidth,
-                    child: Container(width: chartWidth, height: gridLineWidth, color: defaultOnPrimary)),
-                ...List.generate((gridCount).floor(),
+                    child: Container(width: chartWidth, height: frameLineWidth, color: defaultOnPrimary)),
+                Positioned(
+                    left: groupNameWidth + chartWidth - frameLineWidth,
+                    child: Container(width: frameLineWidth, height: availableHeight, color: defaultOnPrimary)),
+                Positioned(
+                    left: groupNameWidth,
+                    top: availableHeight - frameLineWidth,
+                    child: Container(width: chartWidth, height: frameLineWidth, color: defaultOnPrimary)),
+                ...List.generate((gridCount + 1).floor(),
                     (index) => Positioned(left: groupNameWidth + index * (chartWidth / gridCount), child: gridLine)),
                 ...List.generate(
-                  (gridCount - 1).floor(),
+                  (gridCount).floor(),
                   (index) => Positioned(
                     left: groupNameWidth + (index + 1) * (chartWidth / gridCount),
                     top: availableHeight,

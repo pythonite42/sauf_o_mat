@@ -10,7 +10,7 @@ import 'dart:math';
 class MockDataPage0 {
   Future<Map> getChartSettings() async {
     await Future.delayed(Duration(seconds: 2));
-    return {"totalBarsVisible": 5, "gridInterval": 10, "groupNameSpaceFactor": 0.15, "emptyCountRightOfFirst": 10};
+    return {"totalBarsVisible": 5, "gridInterval": 20, "groupNameSpaceFactor": 0.15, "emptyCountRightOfFirst": 10};
   }
 
   Future<List<Map>> getRandomChartData() async {

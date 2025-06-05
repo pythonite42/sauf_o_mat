@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:shotcounter_zieefaegge/backend_mockdata.dart';
 import 'package:shotcounter_zieefaegge/colors.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
 //import 'package:syncfusion_flutter_charts/charts.dart';
@@ -8,18 +9,18 @@ class ChartData {
   ChartData({
     this.group,
     this.longdrink,
-    this.shot,
     this.beer,
+    this.shot,
     this.lutz,
   });
 
-  final dynamic group;
+  final String? group;
   final int? longdrink;
-  final int? shot;
   final int? beer;
+  final int? shot;
   final int? lutz;
 
-  int get total => (longdrink ?? 0) + (shot ?? 0) + (beer ?? 0) + (lutz ?? 0);
+  int get total => (longdrink ?? 0) + (beer ?? 0) + (shot ?? 0) + (lutz ?? 0);
 }
 
 class PageDiagram extends StatefulWidget {
@@ -31,54 +32,79 @@ class PageDiagram extends StatefulWidget {
 
 class _PageDiagramState extends State<PageDiagram> {
   final ScrollController _scrollController = ScrollController();
-  late List<ChartData>? _chartData;
+  List<ChartData>? _chartData = [];
   late Timer _scrollTimer;
+  late Timer _chartDataReloadTimer;
   double barHeight = 0;
   int? maxValue;
 
-  int countBarsVisible = 5; //-> variabel übers backend?
-  double gridSpace = 10; //vielleicht variabel übers backend?
-  double groupNameSpaceFactor = 0.15; //Anteilig an ganzer Breite -> variabel übers backend?
-  double spaceRightOfFirst = 10; //-> variabel übers backend?
+  int totalBarsVisible = 5;
+  int gridInterval = 10;
+  double groupNameSpaceFactor = 0.15; //Anteilig an ganzer Breite
+  int emptyCountRightOfFirst = 10;
 
   @override
   void initState() {
     super.initState();
 
-    _chartData = [
-      ChartData(group: 'Gruppe1', longdrink: 30 * 2, shot: 6, beer: 18, lutz: 12),
-      ChartData(group: 'Gruppe2', longdrink: 8 * 2, shot: 8, beer: 19, lutz: 15),
-      ChartData(group: 'Gruppe3 Gruppe3 Gruppe3Gruppe3 Gruppe3', longdrink: 10 * 2, shot: 11, beer: 22, lutz: 20),
-      ChartData(group: 'Gruppe4', longdrink: 15 * 2, shot: 16, beer: 25, lutz: 40),
-      ChartData(group: 'Gruppe5Gruppe5Gruppe5Gruppe5Gruppe5Gruppe5', longdrink: 2 * 2, shot: 21, beer: 30, lutz: 13),
-      ChartData(group: 'Gruppe6', longdrink: 18 * 2, shot: 25, beer: 35, lutz: 11),
-      ChartData(group: 'Gruppe7 Gruppe7 Gruppe7', longdrink: 5 * 2, shot: 25, beer: 35, lutz: 11),
-      ChartData(group: 'Gruppe8', longdrink: 12 * 2, shot: 15, beer: 25, lutz: 16),
-    ];
-    _chartData?.sort((a, b) {
-      final aSum = (a.longdrink ?? 0) + (a.shot ?? 0) + (a.beer ?? 0) + (a.lutz ?? 0);
-      final bSum = (b.longdrink ?? 0) + (b.shot ?? 0) + (b.beer ?? 0) + (b.lutz ?? 0);
-      return bSum.compareTo(aSum);
-    });
-    maxValue = _chartData?[0].total ?? 0 + 50;
-
-    final medals = ['🥇 ', '🥈 ', '🥉 '];
-    for (int i = 0; i < _chartData!.length; i++) {
-      final originalName = _chartData![i].group.toString().replaceAll(RegExp(r'[🥇🥈🥉]'), '');
-      if (i < 3) {
-        _chartData![i] = ChartData(
-          group: '${medals[i]}$originalName',
-          longdrink: _chartData![i].longdrink,
-          shot: _chartData![i].shot,
-          beer: _chartData![i].beer,
-          lutz: _chartData![i].lutz,
-        );
-      }
-    }
+    _loadChartData();
+    _startAutoReloadChartData();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _startAutoScroll();
     });
+  }
+
+  void _startAutoReloadChartData() {
+    _chartDataReloadTimer = Timer.periodic(Duration(seconds: 7), (_) {
+      _loadChartData();
+    });
+  }
+
+  Future<void> _loadChartData() async {
+    try {
+      Map generalSettings = await MockDataPage0().getChartSettings();
+      List<Map> newDataMapList = await MockDataPage0().getRandomChartData();
+      List<ChartData> newData = [];
+      for (var newDataMap in newDataMapList) {
+        newData.add(ChartData(
+            group: newDataMap["group"],
+            longdrink: newDataMap["longdrink"],
+            beer: newDataMap["beer"],
+            shot: newDataMap["shot"],
+            lutz: newDataMap["lutz"]));
+      }
+      setState(() {
+        totalBarsVisible = generalSettings["totalBarsVisible"];
+        gridInterval = generalSettings["gridInterval"];
+        groupNameSpaceFactor = generalSettings["groupNameSpaceFactor"];
+        emptyCountRightOfFirst = generalSettings["emptyCountRightOfFirst"];
+
+        _chartData = newData;
+        _chartData?.sort((a, b) {
+          final aSum = (a.longdrink ?? 0) + (a.beer ?? 0) + (a.shot ?? 0) + (a.lutz ?? 0);
+          final bSum = (b.longdrink ?? 0) + (b.beer ?? 0) + (b.shot ?? 0) + (b.lutz ?? 0);
+          return bSum.compareTo(aSum);
+        });
+        maxValue = _chartData?[0].total ?? 0 + 50;
+
+        final medals = ['🥇 ', '🥈 ', '🥉 '];
+        for (int i = 0; i < _chartData!.length; i++) {
+          final originalName = _chartData![i].group.toString().replaceAll(RegExp(r'[🥇🥈🥉]'), '');
+          if (i < 3) {
+            _chartData![i] = ChartData(
+              group: '${medals[i]}$originalName',
+              longdrink: _chartData![i].longdrink,
+              beer: _chartData![i].beer,
+              shot: _chartData![i].shot,
+              lutz: _chartData![i].lutz,
+            );
+          }
+        }
+      });
+    } catch (e) {
+      debugPrint('Error fetching chart data: $e');
+    }
   }
 
   void _startAutoScroll() {
@@ -101,6 +127,7 @@ class _PageDiagramState extends State<PageDiagram> {
 
   @override
   void dispose() {
+    _chartDataReloadTimer.cancel();
     _scrollTimer.cancel();
     _scrollController.dispose();
     super.dispose();
@@ -164,16 +191,12 @@ class _PageDiagramState extends State<PageDiagram> {
               final Size size = (textPainter..layout()).size;
 
               final availableHeight = constraints.maxHeight - size.height;
-              barHeight = (availableHeight / countBarsVisible);
+              barHeight = (availableHeight / totalBarsVisible);
               double gridLineWidth = 1;
               var gridLine = Container(width: gridLineWidth, height: availableHeight, color: defaultOnPrimary);
               var groupNameWidth = constraints.maxWidth * groupNameSpaceFactor;
               var chartWidth = constraints.maxWidth - groupNameWidth;
-              var gridCount = ((maxValue ?? 1) + spaceRightOfFirst) / gridSpace;
-
-              print("maxValue $maxValue");
-              print("gridCount $gridCount");
-              print("gridCount floored ${gridCount.floor()}");
+              var gridCount = ((maxValue ?? 1) + emptyCountRightOfFirst) / gridInterval;
 
               return Stack(children: <Widget>[
                 Positioned(
@@ -191,7 +214,7 @@ class _PageDiagramState extends State<PageDiagram> {
                     left: groupNameWidth + (index + 1) * (chartWidth / gridCount),
                     top: availableHeight,
                     child: Text(
-                      ((index + 1) * gridSpace).toInt().toString(),
+                      ((index + 1) * gridInterval).toInt().toString(),
                       style: textStyle,
                     ),
                   ),
@@ -226,7 +249,7 @@ class _PageDiagramState extends State<PageDiagram> {
                                     final beer = (data?.beer ?? 0).toDouble();
                                     final shot = (data?.shot ?? 0).toDouble();
                                     final lutz = (data?.lutz ?? 0).toDouble();
-                                    final maximumValue = (maxValue ?? 0) + spaceRightOfFirst;
+                                    final maximumValue = (maxValue ?? 0) + emptyCountRightOfFirst;
 
                                     // Avoid division by zero
                                     if (maximumValue == 0) return const SizedBox();

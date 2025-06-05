@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shotcounter_zieefaegge/colors.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -31,9 +32,18 @@ class _PageDiagramState extends State<PageDiagram> {
   _PageDiagramState();
 
   List<ChartData>? _chartData;
+  int _startIndex = 0;
+  late Timer _scrollTimer;
+  final int visibleBarsCount = 5;
 
   @override
   void initState() {
+    super.initState();
+    _prepareData();
+    _startAutoScroll();
+  }
+
+  void _prepareData() {
     _chartData = <ChartData>[
       ChartData(group: 'Gruppe1', longdrink: 6, shot: 6, beer: 18, lutz: 12),
       ChartData(group: 'Gruppe2', longdrink: 8, shot: 8, beer: 19, lutz: 15),
@@ -63,42 +73,63 @@ class _PageDiagramState extends State<PageDiagram> {
         );
       }
     }
+  }
 
-    super.initState();
+  void _startAutoScroll() {
+    _scrollTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      if (!mounted) return;
+
+      setState(() {
+        final dataLength = _chartData!.length;
+        _startIndex += 1;
+        if (_startIndex + visibleBarsCount > dataLength) {
+          _startIndex = 0; // Wieder von vorne
+        }
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final visibleData = _chartData!.sublist(
+      _startIndex,
+      (_startIndex + visibleBarsCount).clamp(0, _chartData!.length),
+    );
+
     return Padding(
-      padding: EdgeInsetsGeometry.fromLTRB(30, 0, 30, 30),
+      padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
       child: SfCartesianChart(
+        zoomPanBehavior: ZoomPanBehavior(
+          enablePanning: true,
+          zoomMode: ZoomMode.x,
+        ),
         plotAreaBorderWidth: 1,
+        plotAreaBorderColor: defaultOnPrimary,
         //title: ChartTitle(text: 'Saufometer'),
         legend: Legend(
-            isVisible: true,
-            position: LegendPosition.top,
-            textStyle: TextStyle(fontSize: 30),
-            padding: 20,
-            itemPadding: 50),
-        plotAreaBorderColor: defaultOnPrimary,
+          isVisible: true,
+          position: LegendPosition.top,
+          textStyle: const TextStyle(fontSize: 30),
+          padding: 20,
+          itemPadding: 50,
+        ),
         primaryXAxis: CategoryAxis(
-          axisLine: AxisLine(width: 0),
-          majorGridLines: MajorGridLines(width: 0, color: defaultOnPrimary),
-          labelStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          initialVisibleMinimum: _startIndex.toDouble(),
+          initialVisibleMaximum: (_startIndex + visibleBarsCount).toDouble(),
+          labelStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          axisLine: const AxisLine(width: 0),
+          majorGridLines: const MajorGridLines(width: 0),
         ),
         primaryYAxis: NumericAxis(
-          axisLine: AxisLine(width: 0),
+          axisLine: const AxisLine(width: 0),
           labelFormat: '{value}',
-          majorTickLines: MajorTickLines(size: 0),
-          majorGridLines: MajorGridLines(
-            width: 1,
-            color: defaultOnPrimary,
-          ),
-          labelStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          majorTickLines: const MajorTickLines(size: 0),
+          majorGridLines: MajorGridLines(width: 1, color: defaultOnPrimary),
+          labelStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         series: <StackedBarSeries<ChartData, String>>[
           StackedBarSeries<ChartData, String>(
-            dataSource: _chartData,
+            dataSource: visibleData,
             xValueMapper: (ChartData data, int index) => data.group,
             yValueMapper: (ChartData data, int index) => index < ((_chartData?.length ?? 0) - 3)
                 ? data.total
@@ -109,7 +140,7 @@ class _PageDiagramState extends State<PageDiagram> {
                 index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : Theme.of(context).colorScheme.secondary,
           ),
           StackedBarSeries<ChartData, String>(
-            dataSource: _chartData,
+            dataSource: visibleData,
             xValueMapper: (ChartData data, int index) => data.group,
             yValueMapper: (ChartData data, int index) => index < ((_chartData?.length ?? 0) - 3) ? 0 : data.beer,
             name: 'Bier',
@@ -118,7 +149,7 @@ class _PageDiagramState extends State<PageDiagram> {
                 index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : Theme.of(context).colorScheme.tertiary,
           ),
           StackedBarSeries<ChartData, String>(
-            dataSource: _chartData,
+            dataSource: visibleData,
             xValueMapper: (ChartData data, int index) => data.group,
             yValueMapper: (ChartData data, int index) => index < ((_chartData?.length ?? 0) - 3) ? 0 : data.shot,
             name: 'Shot',
@@ -126,7 +157,7 @@ class _PageDiagramState extends State<PageDiagram> {
             pointColorMapper: (data, index) => index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : cyanAccent,
           ),
           StackedBarSeries<ChartData, String>(
-            dataSource: _chartData,
+            dataSource: visibleData,
             xValueMapper: (ChartData data, int index) => data.group,
             yValueMapper: (ChartData data, int index) => index < ((_chartData?.length ?? 0) - 3) ? 0 : data.lutz,
             name: 'Lutz',
@@ -141,6 +172,7 @@ class _PageDiagramState extends State<PageDiagram> {
   @override
   void dispose() {
     _chartData!.clear();
+    _scrollTimer.cancel();
     super.dispose();
   }
 }

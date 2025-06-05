@@ -16,6 +16,8 @@ class ChartData {
   final int? shot;
   final int? beer;
   final int? lutz;
+
+  int get total => (longdrink ?? 0) * 2 + (shot ?? 0) + (beer ?? 0) + (lutz ?? 0);
 }
 
 class PageDiagram extends StatefulWidget {
@@ -98,7 +100,9 @@ class _PageDiagramState extends State<PageDiagram> {
           StackedBarSeries<ChartData, String>(
             dataSource: _chartData,
             xValueMapper: (ChartData data, int index) => data.group,
-            yValueMapper: (ChartData data, int index) => data.longdrink == null ? null : data.longdrink! * 2,
+            yValueMapper: (ChartData data, int index) => index < ((_chartData?.length ?? 0) - 3)
+                ? data.total
+                : (data.longdrink == null ? null : data.longdrink! * 2),
             name: 'Bargetränk',
             color: Theme.of(context).colorScheme.secondary,
             pointColorMapper: (data, index) =>
@@ -107,7 +111,7 @@ class _PageDiagramState extends State<PageDiagram> {
           StackedBarSeries<ChartData, String>(
             dataSource: _chartData,
             xValueMapper: (ChartData data, int index) => data.group,
-            yValueMapper: (ChartData data, int index) => data.beer,
+            yValueMapper: (ChartData data, int index) => index < ((_chartData?.length ?? 0) - 3) ? 0 : data.beer,
             name: 'Bier',
             color: Theme.of(context).colorScheme.tertiary,
             pointColorMapper: (data, index) =>
@@ -116,7 +120,7 @@ class _PageDiagramState extends State<PageDiagram> {
           StackedBarSeries<ChartData, String>(
             dataSource: _chartData,
             xValueMapper: (ChartData data, int index) => data.group,
-            yValueMapper: (ChartData data, int index) => data.shot,
+            yValueMapper: (ChartData data, int index) => index < ((_chartData?.length ?? 0) - 3) ? 0 : data.shot,
             name: 'Shot',
             color: cyanAccent,
             pointColorMapper: (data, index) => index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : cyanAccent,
@@ -124,7 +128,7 @@ class _PageDiagramState extends State<PageDiagram> {
           StackedBarSeries<ChartData, String>(
             dataSource: _chartData,
             xValueMapper: (ChartData data, int index) => data.group,
-            yValueMapper: (ChartData data, int index) => data.lutz,
+            yValueMapper: (ChartData data, int index) => index < ((_chartData?.length ?? 0) - 3) ? 0 : data.lutz,
             name: 'Lutz',
             color: redAccent,
             pointColorMapper: (data, index) => index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : redAccent,

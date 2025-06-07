@@ -137,9 +137,15 @@ class _MyScaffoldState extends State<MyScaffold> {
               onGenerateRoute: (settings) {
                 switch (settings.name) {
                   case '/page0':
-                    return _createRoute(PageDiagram());
+                    return _createRoute(Container(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      child: PageDiagram(),
+                    ));
                   case '/page1':
-                    return _createRoute(PageTop3());
+                    return _createRoute(Container(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      child: PageTop3(),
+                    ));
                   default:
                     return MaterialPageRoute(builder: (_) => const Center(child: Text('Unknown')));
                 }

@@ -147,6 +147,14 @@ class _PageTop3State extends State<PageTop3> {
             ],
           ),
         ),
+        (_chartData1.isEmpty)
+            ? Positioned(
+                top: MySize(context).h * 0.5,
+                left: MySize(context).w * 0.5,
+                child: CircularProgressIndicator(color: defaultOnPrimary),
+              )
+            : Stack(
+                children: [
         Positioned(
           top: MySize(context).h * 0.1,
           left: (MySize(context).w / 2) - (size1 / 2),
@@ -180,6 +188,8 @@ class _PageTop3State extends State<PageTop3> {
             size: size3,
           ),
         ),
+                ],
+              )
       ],
     );
   }

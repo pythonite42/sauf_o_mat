@@ -178,7 +178,11 @@ class _PageDiagramState extends State<PageDiagram> {
         ),
         SizedBox(height: 50),
         Expanded(
-          child: LayoutBuilder(
+          child: (_chartData == null || _chartData!.isEmpty)
+              ? Center(
+                  child: CircularProgressIndicator(color: defaultOnPrimary),
+                )
+              : LayoutBuilder(
             builder: (context, constraints) {
               var textStyle = TextStyle(fontSize: 20, color: defaultOnPrimary);
               var textPainter = TextPainter(

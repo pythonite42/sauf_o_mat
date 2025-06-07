@@ -54,31 +54,33 @@ class _PageTop3State extends State<PageTop3> {
         return bSum.compareTo(aSum);
       });
 
-      setState(() {
-        groupName1 = newDataMapList[0]["group"];
-        _chartData1 = [
-          PieChartData(value: newDataMapList[0]["longdrink"], color: Theme.of(context).colorScheme.secondary),
-          PieChartData(value: newDataMapList[0]["beer"], color: Theme.of(context).colorScheme.tertiary),
-          PieChartData(value: newDataMapList[0]["shot"], color: cyanAccent),
-          PieChartData(value: newDataMapList[0]["lutz"], color: redAccent),
-        ];
+      if (mounted) {
+        setState(() {
+          groupName1 = newDataMapList[0]["group"];
+          _chartData1 = [
+            PieChartData(value: newDataMapList[0]["longdrink"], color: Theme.of(context).colorScheme.secondary),
+            PieChartData(value: newDataMapList[0]["beer"], color: Theme.of(context).colorScheme.tertiary),
+            PieChartData(value: newDataMapList[0]["shot"], color: cyanAccent),
+            PieChartData(value: newDataMapList[0]["lutz"], color: redAccent),
+          ];
 
-        groupName2 = newDataMapList[1]["group"];
-        _chartData2 = [
-          PieChartData(value: newDataMapList[1]["longdrink"], color: Theme.of(context).colorScheme.secondary),
-          PieChartData(value: newDataMapList[1]["beer"], color: Theme.of(context).colorScheme.tertiary),
-          PieChartData(value: newDataMapList[1]["shot"], color: cyanAccent),
-          PieChartData(value: newDataMapList[1]["lutz"], color: redAccent),
-        ];
+          groupName2 = newDataMapList[1]["group"];
+          _chartData2 = [
+            PieChartData(value: newDataMapList[1]["longdrink"], color: Theme.of(context).colorScheme.secondary),
+            PieChartData(value: newDataMapList[1]["beer"], color: Theme.of(context).colorScheme.tertiary),
+            PieChartData(value: newDataMapList[1]["shot"], color: cyanAccent),
+            PieChartData(value: newDataMapList[1]["lutz"], color: redAccent),
+          ];
 
-        groupName3 = newDataMapList[2]["group"];
-        _chartData3 = [
-          PieChartData(value: newDataMapList[2]["longdrink"], color: Theme.of(context).colorScheme.secondary),
-          PieChartData(value: newDataMapList[2]["beer"], color: Theme.of(context).colorScheme.tertiary),
-          PieChartData(value: newDataMapList[2]["shot"], color: cyanAccent),
-          PieChartData(value: newDataMapList[2]["lutz"], color: redAccent),
-        ];
-      });
+          groupName3 = newDataMapList[2]["group"];
+          _chartData3 = [
+            PieChartData(value: newDataMapList[2]["longdrink"], color: Theme.of(context).colorScheme.secondary),
+            PieChartData(value: newDataMapList[2]["beer"], color: Theme.of(context).colorScheme.tertiary),
+            PieChartData(value: newDataMapList[2]["shot"], color: cyanAccent),
+            PieChartData(value: newDataMapList[2]["lutz"], color: redAccent),
+          ];
+        });
+      }
     } catch (e) {
       debugPrint('Error fetching chart data: $e');
     }
@@ -155,39 +157,39 @@ class _PageTop3State extends State<PageTop3> {
               )
             : Stack(
                 children: [
-        Positioned(
-          top: MySize(context).h * 0.1,
-          left: (MySize(context).w / 2) - (size1 / 2),
-          child: PieChartWithImage(
-            chartData: _chartData1,
-            place: 1,
-            badge: '🥇 ',
-            groupName: groupName1,
-            size: size1,
-          ),
-        ),
-        Positioned(
-          top: MySize(context).h * 0.4,
-          left: MySize(context).w * 0.1,
-          child: PieChartWithImage(
-            chartData: _chartData2,
-            place: 2,
-            badge: '🥈 ',
-            groupName: groupName2,
-            size: size2,
-          ),
-        ),
-        Positioned(
-          bottom: MySize(context).h * 0.1,
-          right: MySize(context).w * 0.1,
-          child: PieChartWithImage(
-            chartData: _chartData3,
-            place: 3,
-            badge: '🥉 ',
-            groupName: groupName3,
-            size: size3,
-          ),
-        ),
+                  Positioned(
+                    top: MySize(context).h * 0.1,
+                    left: (MySize(context).w / 2) - (size1 / 2),
+                    child: PieChartWithImage(
+                      chartData: _chartData1,
+                      place: 1,
+                      badge: '🥇 ',
+                      groupName: groupName1,
+                      size: size1,
+                    ),
+                  ),
+                  Positioned(
+                    top: MySize(context).h * 0.4,
+                    left: MySize(context).w * 0.1,
+                    child: PieChartWithImage(
+                      chartData: _chartData2,
+                      place: 2,
+                      badge: '🥈 ',
+                      groupName: groupName2,
+                      size: size2,
+                    ),
+                  ),
+                  Positioned(
+                    bottom: MySize(context).h * 0.1,
+                    right: MySize(context).w * 0.1,
+                    child: PieChartWithImage(
+                      chartData: _chartData3,
+                      place: 3,
+                      badge: '🥉 ',
+                      groupName: groupName3,
+                      size: size3,
+                    ),
+                  ),
                 ],
               )
       ],

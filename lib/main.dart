@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:shotcounter_zieefaegge/backend_mockdata.dart';
 import 'package:shotcounter_zieefaegge/colors.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
 import 'package:shotcounter_zieefaegge/page_diagram.dart';
@@ -49,23 +49,41 @@ class MyScaffold extends StatefulWidget {
 class _MyScaffoldState extends State<MyScaffold> {
   bool titleBarVisible = true;
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
-  Timer? _timer;
+  late Timer _pageIndexReloadTimer;
+
+  int pageIndex = 0;
 
   @override
   void initState() {
     super.initState();
 
-    _timer = Timer.periodic(const Duration(seconds: 3), (_) {
-      if (_navigatorKey.currentContext != null) {
-        int index = Random().nextInt(2);
-        //_navigatorKey.currentState!.pushReplacementNamed('/page$index');
-      }
+    _loadPageIndex();
+    _startAutoReloadPageIndex();
+  }
+
+  void _startAutoReloadPageIndex() {
+    _pageIndexReloadTimer = Timer.periodic(Duration(seconds: 3), (_) {
+      _loadPageIndex();
     });
+  }
+
+  Future<void> _loadPageIndex() async {
+    try {
+      int index = await MockDataNavigation().getPageIndex();
+      if (index != pageIndex && _navigatorKey.currentContext != null) {
+        setState(() {
+          pageIndex = index;
+        });
+        _navigatorKey.currentState!.pushReplacementNamed('/page$index');
+      }
+    } catch (e) {
+      debugPrint('Error fetching page index: $e');
+    }
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _pageIndexReloadTimer.cancel();
     super.dispose();
   }
 
@@ -115,14 +133,13 @@ class _MyScaffoldState extends State<MyScaffold> {
           Expanded(
             child: Navigator(
               key: _navigatorKey,
-              initialRoute: '/page1',
+              initialRoute: '/page0',
               onGenerateRoute: (settings) {
                 switch (settings.name) {
                   case '/page0':
                     return _createRoute(PageDiagram());
                   case '/page1':
                     return _createRoute(PageTop3());
-
                   default:
                     return MaterialPageRoute(builder: (_) => const Center(child: Text('Unknown')));
                 }

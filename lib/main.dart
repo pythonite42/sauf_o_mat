@@ -4,6 +4,7 @@ import 'package:shotcounter_zieefaegge/backend_mockdata.dart';
 import 'package:shotcounter_zieefaegge/colors.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
 import 'package:shotcounter_zieefaegge/page_diagram.dart';
+import 'package:shotcounter_zieefaegge/page_prize.dart';
 import 'package:shotcounter_zieefaegge/page_top3.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -62,7 +63,7 @@ class _MyScaffoldState extends State<MyScaffold> {
   }
 
   void _startAutoReloadPageIndex() {
-    _pageIndexReloadTimer = Timer.periodic(Duration(seconds: 3), (_) {
+    _pageIndexReloadTimer = Timer.periodic(Duration(seconds: 1), (_) {
       _loadPageIndex();
     });
   }
@@ -145,6 +146,11 @@ class _MyScaffoldState extends State<MyScaffold> {
                     return _createRoute(Container(
                       color: Theme.of(context).scaffoldBackgroundColor,
                       child: PageTop3(),
+                    ));
+                  case '/page2':
+                    return _createRoute(Container(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      child: PagePrize(),
                     ));
                   default:
                     return MaterialPageRoute(builder: (_) => const Center(child: Text('Unknown')));

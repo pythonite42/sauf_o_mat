@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 final defaultOnPrimary = Color(0xFFC7C5D0);
 final cyanAccent = Color(0xFF18d9ff);
 final redAccent = Color(0xFFFF5252);
+final greenAccent = Color(0xFF2EC91C);
 
 final ThemeData appTheme = ThemeData(
   colorScheme: ColorScheme.fromSeed(

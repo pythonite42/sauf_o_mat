@@ -47,6 +47,15 @@ class MockDataPage0 {
     }
     return result;
   }
+
+  Future<Map> getPopup() async {
+    await Future.delayed(Duration(seconds: 2));
+    return {
+      "showPopup": false, //hier müssen wir kontrollieren ob das klappt, True vs. true macht einen Unterschied
+      "chaserGroupName": "Gruppe 1",
+      "leaderGroupName": "Gruppe 2",
+    };
+  }
 }
 
 /* 

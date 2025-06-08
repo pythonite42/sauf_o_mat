@@ -52,15 +52,15 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
   }
 
   void _startAutoReloadChartData() {
-    _dataReloadTimer = Timer.periodic(Duration(seconds: 10), (_) {
+    _dataReloadTimer = Timer.periodic(Duration(seconds: 3), (_) {
       _loadData();
     });
   }
 
   Future<void> _loadData() async {
     try {
-      Map settings = await MockDataPrize().getPrizePageSettings();
-      Map data = await MockDataPrize().getPrizePageData();
+      Map settings = await MockDataPage2().getPrizePageSettings();
+      Map data = await MockDataPage2().getPrizePageData();
 
       if (mounted) {
         setState(() {

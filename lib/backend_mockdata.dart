@@ -10,7 +10,7 @@ import 'dart:math';
 class MockDataNavigation {
   Future<int> getPageIndex() async {
     await Future.delayed(Duration(seconds: 2));
-    return 2;
+    return 1;
   }
 }
 
@@ -76,11 +76,43 @@ List<ChartData> chartData = [
 
 /*
 ================================================================================================================
+     Page 1 - Top3
+================================================================================================================
+*/
+
+class MockDataPage1 {
+  Future<List<Map>> getData() async {
+    // Die Datensätze müssen nicht sortiert sein und dürfen auch mehr als nur die top3 sein
+    // die Anzahl der Bargetränke (longdrinks) muss bereits doppelt sein
+
+    await Future.delayed(Duration(seconds: 2));
+    List<Map> result = [];
+    int groupCount = 3; // Random().nextInt(15) + 2;
+    for (var i = 0; i < groupCount; i++) {
+      var longdrink = Random().nextInt(30) * 2;
+      var beer = Random().nextInt(80);
+      var shot = Random().nextInt(60);
+      var lutz = Random().nextInt(60);
+      result.add({
+        "groupName": "Gruppe ${i + 1}",
+        //"groupLogo": ??,
+        "longdrink": longdrink,
+        "beer": beer,
+        "shot": shot,
+        "lutz": lutz,
+      });
+    }
+    return result;
+  }
+}
+
+/*
+================================================================================================================
      Page 2 - Prize 
 ================================================================================================================
 */
 
-class MockDataPrize {
+class MockDataPage2 {
   Future<Map> getPrizePageSettings() async {
     await Future.delayed(Duration(seconds: 2));
     return {

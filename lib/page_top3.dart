@@ -47,7 +47,7 @@ class _PageTop3State extends State<PageTop3> {
 
   Future<void> _loadChartData() async {
     try {
-      List<Map> newDataMapList = await MockDataPage0().getRandomChartData();
+      List<Map> newDataMapList = await MockDataPage1().getData();
       newDataMapList.sort((a, b) {
         final aSum = (a["longdrink"] ?? 0) + (a["beer"] ?? 0) + (a["shot"] ?? 0) + (a["lutz"] ?? 0);
         final bSum = (b["longdrink"] ?? 0) + (b["beer"] ?? 0) + (b["shot"] ?? 0) + (b["lutz"] ?? 0);
@@ -56,7 +56,7 @@ class _PageTop3State extends State<PageTop3> {
 
       if (mounted) {
         setState(() {
-          groupName1 = newDataMapList[0]["group"];
+          groupName1 = newDataMapList[0]["groupName"];
           _chartData1 = [
             PieChartData(value: newDataMapList[0]["longdrink"], color: Theme.of(context).colorScheme.secondary),
             PieChartData(value: newDataMapList[0]["beer"], color: Theme.of(context).colorScheme.tertiary),
@@ -64,7 +64,7 @@ class _PageTop3State extends State<PageTop3> {
             PieChartData(value: newDataMapList[0]["lutz"], color: redAccent),
           ];
 
-          groupName2 = newDataMapList[1]["group"];
+          groupName2 = newDataMapList[1]["groupName"];
           _chartData2 = [
             PieChartData(value: newDataMapList[1]["longdrink"], color: Theme.of(context).colorScheme.secondary),
             PieChartData(value: newDataMapList[1]["beer"], color: Theme.of(context).colorScheme.tertiary),
@@ -72,7 +72,7 @@ class _PageTop3State extends State<PageTop3> {
             PieChartData(value: newDataMapList[1]["lutz"], color: redAccent),
           ];
 
-          groupName3 = newDataMapList[2]["group"];
+          groupName3 = newDataMapList[2]["groupName"];
           _chartData3 = [
             PieChartData(value: newDataMapList[2]["longdrink"], color: Theme.of(context).colorScheme.secondary),
             PieChartData(value: newDataMapList[2]["beer"], color: Theme.of(context).colorScheme.tertiary),

@@ -42,6 +42,7 @@ class _PageDiagramState extends State<PageDiagram> {
   int gridInterval = 10;
   double groupNameSpaceFactor = 0.15; //Anteilig an ganzer Breite
   int emptyCountRightOfFirst = 10;
+  int chasingThreshold = 3;
 
   @override
   void initState() {
@@ -80,6 +81,7 @@ class _PageDiagramState extends State<PageDiagram> {
           gridInterval = generalSettings["gridInterval"];
           groupNameSpaceFactor = generalSettings["groupNameSpaceFactor"];
           emptyCountRightOfFirst = generalSettings["emptyCountRightOfFirst"];
+          chasingThreshold = generalSettings["chasingThreshold"];
 
           _chartData = newData;
           _chartData?.sort((a, b) {
@@ -241,6 +243,27 @@ class _PageDiagramState extends State<PageDiagram> {
                             itemBuilder: (context, index) {
                               final data = _chartData?[index];
 
+                              Color groupNameColor = Colors.white;
+                              int? currentTotal = _chartData?[index].total;
+
+                              int? leadersTotal;
+                              try {
+                                leadersTotal = _chartData?[index - 1].total;
+                              } catch (_) {}
+
+                              int? chasersTotal;
+                              try {
+                                chasersTotal = _chartData?[index + 1].total;
+                              } catch (_) {}
+
+                              if (currentTotal != null) {
+                                if (chasersTotal != null && (currentTotal - chasersTotal) < chasingThreshold) {
+                                  groupNameColor = redAccent;
+                                } else if (leadersTotal != null && (leadersTotal - currentTotal) < chasingThreshold) {
+                                  groupNameColor = greenAccent;
+                                }
+                              }
+
                               return SizedBox(
                                 height: barHeight,
                                 child: Row(
@@ -250,7 +273,8 @@ class _PageDiagramState extends State<PageDiagram> {
                                       padding: EdgeInsets.only(right: 20),
                                       child: Text(
                                         data?.group ?? '',
-                                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                        style:
+                                            TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: groupNameColor),
                                       ),
                                     ),
                                     Expanded(

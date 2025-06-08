@@ -10,7 +10,7 @@ import 'dart:math';
 class MockDataNavigation {
   Future<int> getPageIndex() async {
     await Future.delayed(Duration(seconds: 2));
-    return 1;
+    return 0;
   }
 }
 
@@ -23,7 +23,13 @@ class MockDataNavigation {
 class MockDataPage0 {
   Future<Map> getChartSettings() async {
     await Future.delayed(Duration(seconds: 2));
-    return {"totalBarsVisible": 5, "gridInterval": 20, "groupNameSpaceFactor": 0.15, "emptyCountRightOfFirst": 10};
+    return {
+      "totalBarsVisible": 5,
+      "gridInterval": 20,
+      "groupNameSpaceFactor": 0.15,
+      "emptyCountRightOfFirst": 10,
+      "chasingThreshold": 3,
+    };
   }
 
   Future<List<Map>> getRandomChartData() async {

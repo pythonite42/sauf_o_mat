@@ -10,7 +10,7 @@ import 'dart:math';
 class MockDataNavigation {
   Future<int> getPageIndex() async {
     await Future.delayed(Duration(seconds: 2));
-    return 1;
+    return 2;
   }
 }
 
@@ -73,3 +73,37 @@ List<ChartData> chartData = [
   ChartData(group: 'Gruppe8', longdrink: 12 * 2, beer: 25, shot: 15, lutz: 16),
 ];
 */
+
+/*
+================================================================================================================
+     Page 2 - Prize 
+================================================================================================================
+*/
+
+class MockDataPrize {
+  Future<Map> getPrizePageSettings() async {
+    await Future.delayed(Duration(seconds: 2));
+    return {
+      "flashSpeed": 400,
+      "flashThreshold": 60,
+      "redThreshold": 300,
+      "headlineSize": 35.0,
+      "sublineSize": 20.0,
+      "leadingSize": 18.0,
+      "groupNameSize": 25.0,
+      "counterSize": 25.0
+    };
+  }
+
+  Future<Map> getPrizePageData() async {
+    await Future.delayed(Duration(seconds: 2));
+    return {
+      "groupName": "Gruppe 1",
+      "remainingTimeSeconds": 304,
+      "headline": 'Gewinne zwei Biersäulen!',
+      "subline": 'Sauft Sauft Sauft, zwei Säulen gehen auf uns',
+      //"imagePrize": ??
+      //"groupLogo": ??
+    };
+  }
+}

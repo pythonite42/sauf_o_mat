@@ -31,6 +31,7 @@ flutter:
   assets:
     - assets/mock_logo.png
     - assets/bierpokal.jpg
+    - assets/aufholjagd.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

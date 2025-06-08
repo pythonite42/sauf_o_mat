@@ -54,6 +54,9 @@ class MockDataPage0 {
       "showPopup": false, //hier müssen wir kontrollieren ob das klappt, True vs. true macht einen Unterschied
       "chaserGroupName": "Gruppe 1",
       "leaderGroupName": "Gruppe 2",
+      "difference": 5,
+      "headline": "Die Aufholjagd beginnt",
+      "motivationalText": "Fast geschafft - Trinken, trinken, trinken!"
     };
   }
 }

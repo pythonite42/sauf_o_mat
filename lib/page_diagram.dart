@@ -50,6 +50,9 @@ class _PageDiagramState extends State<PageDiagram> {
   bool showPopup = false;
   String chaserGroupName = "";
   String leaderGroupName = "";
+  int difference = 0;
+  String headline = "";
+  String motivationalText = "";
 
   @override
   void initState() {
@@ -95,6 +98,9 @@ class _PageDiagramState extends State<PageDiagram> {
           showPopup = popupData["showPopup"];
           chaserGroupName = popupData["chaserGroupName"];
           leaderGroupName = popupData["leaderGroupName"];
+          difference = popupData["difference"];
+          headline = popupData["headline"];
+          motivationalText = popupData["motivationalText"];
 
           _chartData = newData;
           _chartData?.sort((a, b) {
@@ -156,7 +162,9 @@ class _PageDiagramState extends State<PageDiagram> {
               key: _popupKey,
               initialLeader: leaderGroupName,
               initialChaser: chaserGroupName,
-              initialDiff: 5,
+              initialDiff: difference,
+              headline: headline,
+              motivationalText: motivationalText,
             );
           },
         );
@@ -174,7 +182,7 @@ class _PageDiagramState extends State<PageDiagram> {
         _popupContext = null;
         _popupKey = null;
       } else if (_isPopupVisible && _popupKey?.currentState != null) {
-        _popupKey?.currentState!.updateData(leaderGroupName, chaserGroupName, 5);
+        _popupKey?.currentState!.updateData(leaderGroupName, chaserGroupName, difference, headline, motivationalText);
       }
     });
   }
@@ -402,11 +410,15 @@ class RacePopupWidget extends StatefulWidget {
   final String initialLeader;
   final String initialChaser;
   final int initialDiff;
+  final String headline;
+  final String motivationalText;
 
   const RacePopupWidget({
     required this.initialLeader,
     required this.initialChaser,
     required this.initialDiff,
+    required this.headline,
+    required this.motivationalText,
     super.key,
   });
 
@@ -418,6 +430,8 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
   late String leader;
   late String chaser;
   late int diff;
+  late String headline;
+  late String motivationalText;
 
   @override
   void initState() {
@@ -425,61 +439,84 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
     leader = widget.initialLeader;
     chaser = widget.initialChaser;
     diff = widget.initialDiff;
+    headline = widget.headline;
+    motivationalText = widget.motivationalText;
   }
 
-  void updateData(String newLeader, String newChaser, int newDiff) {
+  void updateData(String newLeader, String newChaser, int newDiff, String newHeadline, String newMotivationalText) {
     setState(() {
       leader = newLeader;
       chaser = newChaser;
       diff = newDiff;
+      headline = newHeadline;
+      motivationalText = newMotivationalText;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: Colors.black87,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text('🍻', style: TextStyle(fontSize: 40)),
-          const SizedBox(height: 10),
-          Text(
-            'Fasten your liver!',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.amberAccent),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 10),
-          Text(
-            '$chaser is just $diff away from overtaking $leader!',
-            style: TextStyle(color: Colors.white, fontSize: 16),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 20),
-          _buildProgressBar(chaser, 0.85, Colors.redAccent),
-          const SizedBox(height: 10),
-          _buildProgressBar(leader, 0.9, Colors.greenAccent),
-          const SizedBox(height: 20),
-          Text(
-            'Only $diff more shots – chug chug chug!',
-            style: TextStyle(color: Colors.white70, fontStyle: FontStyle.italic),
-          ),
-        ],
+      content: SizedBox(
+        height: MySize(context).h * 0.6,
+        width: MySize(context).w * 0.5,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(height: MySize(context).h * 0.02),
+            Text(
+              '🍻 $headline',
+              style:
+                  TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.tertiary),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: MySize(context).h * 0.02),
+            Text(
+              '$chaser ist nur noch $diff Getränke von $leader entfernt!',
+              style: TextStyle(color: Colors.white, fontSize: 20),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: MySize(context).h * 0.03),
+            Expanded(
+              flex: 3,
+              child: Image.asset(
+                'assets/aufholjagd.png',
+                fit: BoxFit.cover,
+              ),
+            ),
+            SizedBox(height: MySize(context).h * 0.02),
+            Text(
+              motivationalText,
+              style: TextStyle(color: defaultOnPrimary, fontStyle: FontStyle.italic, fontSize: 18),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildProgressBar(String label, double progress, Color color) {
+  Widget _buildProgressBar() {
+    double progress = (100 - diff) / 100; // Calculate the progress based on the difference
+
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(label, style: TextStyle(color: Colors.white70)),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset('assets/mock_logo.png', width: 40, height: 40), // Chaser logo
+            const SizedBox(width: 10),
+            Text(chaser, style: TextStyle(color: Colors.white70)),
+            const SizedBox(width: 10),
+            Image.asset('assets/mock_logo.png', width: 40, height: 40), // Leader logo
+          ],
+        ),
         const SizedBox(height: 5),
         LinearProgressIndicator(
           value: progress,
           backgroundColor: Colors.white12,
-          valueColor: AlwaysStoppedAnimation<Color>(color),
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.redAccent),
           minHeight: 10,
         ),
       ],

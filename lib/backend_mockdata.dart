@@ -10,7 +10,7 @@ import 'dart:math';
 class MockDataNavigation {
   Future<int> getPageIndex() async {
     await Future.delayed(Duration(seconds: 2));
-    return 0;
+    return 3;
   }
 }
 
@@ -154,6 +154,21 @@ class MockDataPage2 {
       "subline": 'Sauft Sauft Sauft, zwei Säulen gehen auf uns',
       //"imagePrize": ??
       //"groupLogo": ??
+    };
+  }
+}
+
+/*
+================================================================================================================
+     Page 3 - Schedule 
+================================================================================================================
+*/
+
+class MockDataPage3 {
+  Future<Map> getImage() async {
+    await Future.delayed(Duration(seconds: 2));
+    return {
+      //"image": ??
     };
   }
 }

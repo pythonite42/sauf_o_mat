@@ -5,6 +5,7 @@ import 'package:shotcounter_zieefaegge/colors.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
 import 'package:shotcounter_zieefaegge/page_diagram.dart';
 import 'package:shotcounter_zieefaegge/page_prize.dart';
+import 'package:shotcounter_zieefaegge/page_schedule.dart';
 import 'package:shotcounter_zieefaegge/page_top3.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -151,6 +152,11 @@ class _MyScaffoldState extends State<MyScaffold> {
                     return _createRoute(Container(
                       color: Theme.of(context).scaffoldBackgroundColor,
                       child: PagePrize(),
+                    ));
+                  case '/page3':
+                    return _createRoute(Container(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      child: PageSchedule(),
                     ));
                   default:
                     return MaterialPageRoute(builder: (_) => const Center(child: Text('Unknown')));

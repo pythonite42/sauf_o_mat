@@ -270,6 +270,8 @@ class PieChartPainter extends CustomPainter {
 
   //TODO Zahl nicht anzeigen wenn Platz zu wenig ist
 
+  //TODO Zahl bei Bargetränken soll Anzahl statt Punktzahl drinnen stehen (also /2)
+
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()..style = PaintingStyle.fill;

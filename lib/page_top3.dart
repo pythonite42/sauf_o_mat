@@ -102,7 +102,7 @@ class _PageTop3State extends State<PageTop3> {
       children: [
         Positioned(
           top: MySize(context).h * 0.1,
-          left: MySize(context).w * 0.05,
+          left: MySize(context).w * 0.1,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -111,15 +111,15 @@ class _PageTop3State extends State<PageTop3> {
                   Container(
                       height: legendBoxSize, width: legendBoxSize, color: Theme.of(context).colorScheme.secondary),
                   SizedBox(width: 15),
-                  Text("Bargetränk", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
+                  Text("Bargetränk", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold))
                 ],
               ),
-              SizedBox(width: 40),
+              SizedBox(width: 50),
               Row(
                 children: [
                   Container(height: legendBoxSize, width: legendBoxSize, color: Theme.of(context).colorScheme.tertiary),
                   SizedBox(width: 15),
-                  Text("Bier", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
+                  Text("Bier", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold))
                 ],
               ),
             ],
@@ -127,7 +127,7 @@ class _PageTop3State extends State<PageTop3> {
         ),
         Positioned(
           top: MySize(context).h * 0.1,
-          right: MySize(context).w * 0.05,
+          right: MySize(context).w * 0.1,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -135,15 +135,15 @@ class _PageTop3State extends State<PageTop3> {
                 children: [
                   Container(height: legendBoxSize, width: legendBoxSize, color: cyanAccent),
                   SizedBox(width: 15),
-                  Text("Shot", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
+                  Text("Shot", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold))
                 ],
               ),
-              SizedBox(width: 40),
+              SizedBox(width: 50),
               Row(
                 children: [
                   Container(height: legendBoxSize, width: legendBoxSize, color: redAccent),
                   SizedBox(width: 15),
-                  Text("Lutz", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
+                  Text("Lutz", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold))
                 ],
               ),
             ],
@@ -217,7 +217,7 @@ class PieChartWithImage extends StatelessWidget {
     return Column(children: [
       Text(
         "$badge $place. Platz",
-        style: TextStyle(fontSize: 25),
+        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
       ),
       SizedBox(height: 20),
       SizedBox(
@@ -235,16 +235,16 @@ class PieChartWithImage extends StatelessWidget {
                 alignment: AlignmentDirectional.center,
                 children: [
                   Image.asset(
-                'assets/mock_logo.png',
-                width: size * 0.4,
-                height: size * 0.4,
-                fit: BoxFit.cover,
+                    'assets/mock_logo.png',
+                    width: size * 0.55,
+                    height: size * 0.55,
+                    fit: BoxFit.cover,
                   ),
                   Text(
                     //TODO Text ist nicht mittig (vertikal)
                     "888", //TODO correct total
                     style: TextStyle(
-color: const Color.fromARGB(200, 255, 255, 255),
+                        color: const Color.fromARGB(200, 255, 255, 255),
                         fontSize: size * 0.3, //TODO text macht kreis nicht mehr rund
                         fontWeight: FontWeight.w800),
                   ),
@@ -257,7 +257,7 @@ color: const Color.fromARGB(200, 255, 255, 255),
       SizedBox(height: 20),
       Text(
         groupName,
-        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+        style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
       )
     ]);
   }
@@ -294,7 +294,7 @@ class PieChartPainter extends CustomPainter {
       );
 
       // Draw value text inside the slice
-      final labelRadius = radius * 0.7;
+      final labelRadius = radius * 0.75;
       final labelX = center.dx + labelRadius * cos(midAngle);
       final labelY = center.dy + labelRadius * sin(midAngle);
 

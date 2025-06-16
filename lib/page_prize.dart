@@ -131,10 +131,10 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
           ? Center(
               child: CircularProgressIndicator(color: defaultOnPrimary),
             )
-          : Column(
+          : Row(
               children: [
                 Expanded(
-                  flex: 3,
+                  flex: 5,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
                     child: Image.asset(
@@ -143,23 +143,70 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
                     ),
                   ),
                 ),
-                SizedBox(height: MySize(context).h * 0.05),
-                Text(
-                  headline,
-                  style: TextStyle(fontSize: headlineSize, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: MySize(context).h * 0.02),
-                Text(
-                  subline,
-                  style: TextStyle(fontSize: sublineSize),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: MySize(context).h * 0.05),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: (_remainingTime.inSeconds > redThreshold)
+                SizedBox(width: MySize(context).w * 0.05), // spacing between image and content
+
+                Expanded(
+                  flex: 3,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(height: MySize(context).h * 0.05),
+                      Text(
+                        headline,
+                        style: TextStyle(fontSize: headlineSize, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: MySize(context).h * 0.02),
+                      Text(
+                        subline,
+                        style: TextStyle(fontSize: sublineSize),
+                        textAlign: TextAlign.left,
+                      ),
+                      SizedBox(height: MySize(context).h * 0.05),
+                      Container(
+                        height: MySize(context).h * 0.20,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.white10,
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(color: Colors.white24),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            SizedBox(width: MySize(context).w * 0.01),
+                            CircleAvatar(
+                              radius: MySize(context).h * 0.07,
+                              child: ClipOval(
+                                child: Image.asset('assets/mock_logo.png'),
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text('Aktuell führend',
+                                      style: TextStyle(fontSize: leadingSize, color: defaultOnPrimary)),
+                                  Text(
+                                    groupName,
+                                    style: TextStyle(fontSize: groupNameSize, fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            /* SizedBox(width: MySize(context).w * 0.02),
+                            Text(
+                              "123",
+                              style: TextStyle(fontSize: 40, fontWeight: FontWeight.w800),
+                            ) */
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: MySize(context).h * 0.05),
+                      (_remainingTime.inSeconds > redThreshold)
                           ? _buildTimerBox(greenAccent, counterSize)
                           : (_remainingTime.inSeconds > flashThreshold || _remainingTime.inSeconds == 0)
                               ? _buildTimerBox(redAccent, counterSize)
@@ -167,42 +214,9 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
                                   opacity: _fadeAnimation,
                                   child: _buildTimerBox(redAccent, counterSize),
                                 ),
-                    ),
-                    SizedBox(width: MySize(context).w * 0.05),
-                    Expanded(
-                        child: Container(
-                      height: MySize(context).h * 0.15,
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.white10,
-                        borderRadius: BorderRadius.circular(15),
-                        border: Border.all(color: Colors.white24),
-                      ),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            radius: MySize(context).h * 0.05,
-                            child: ClipOval(
-                              child: Image.asset('assets/mock_logo.png'),
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Aktuell führend', style: TextStyle(fontSize: leadingSize, color: Colors.grey)),
-                              Text(
-                                groupName,
-                                style: TextStyle(fontSize: groupNameSize, fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    )),
-                  ],
-                )
+                    ],
+                  ),
+                ),
               ],
             ),
     );

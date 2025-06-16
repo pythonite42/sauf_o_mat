@@ -112,7 +112,7 @@ class _PageDiagramState extends State<PageDiagram> {
           });
           maxValue = _chartData?[0].total ?? 0 + 50;
 
-          final medals = ['🥇 ', '🥈 ', '🥉 '];
+          /* final medals = ['🥇 ', '🥈 ', '🥉 '];
           for (int i = 0; i < _chartData!.length; i++) {
             final originalName = _chartData![i].group.toString().replaceAll(RegExp(r'[🥇🥈🥉]'), '');
             if (i < 3) {
@@ -124,7 +124,7 @@ class _PageDiagramState extends State<PageDiagram> {
                 lutz: _chartData![i].lutz,
               );
             }
-          }
+          } */
         });
       }
       buildPopup();
@@ -134,7 +134,7 @@ class _PageDiagramState extends State<PageDiagram> {
   }
 
   void _startAutoScroll() {
-    const duration = Duration(seconds: 2);
+    const duration = Duration(seconds: 8);
 
     _scrollTimer = Timer.periodic(duration, (timer) {
       if (!_scrollController.hasClients) return;
@@ -206,7 +206,8 @@ class _PageDiagramState extends State<PageDiagram> {
   @override
   Widget build(BuildContext context) {
     final padding = MySize(context).h * 0.08;
-    final legendBoxSize = MySize(context).h * 0.04;
+    final legendBoxSize = MySize(context).h * 0.045;
+    final fontSizeLegend = 30.0;
 
     return Padding(
       padding: EdgeInsetsGeometry.all(padding),
@@ -214,32 +215,35 @@ class _PageDiagramState extends State<PageDiagram> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
+            SizedBox(width: MySize(context).w * 0.01),
+            Text("Leaderboard", style: TextStyle(fontSize: fontSizeLegend * 2, fontWeight: FontWeight.bold)),
+            SizedBox(width: MySize(context).w * 0.05),
             Row(
               children: [
                 Container(height: legendBoxSize, width: legendBoxSize, color: Theme.of(context).colorScheme.secondary),
-                SizedBox(width: 15),
-                Text("Bargetränk", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
+                SizedBox(width: MySize(context).w * 0.01),
+                Text("Bargetränk", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
               ],
             ),
             Row(
               children: [
                 Container(height: legendBoxSize, width: legendBoxSize, color: Theme.of(context).colorScheme.tertiary),
-                SizedBox(width: 15),
-                Text("Bier", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
+                SizedBox(width: MySize(context).w * 0.01),
+                Text("Bier", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
               ],
             ),
             Row(
               children: [
                 Container(height: legendBoxSize, width: legendBoxSize, color: cyanAccent),
-                SizedBox(width: 15),
-                Text("Shot", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
+                SizedBox(width: MySize(context).w * 0.01),
+                Text("Shot", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
               ],
             ),
             Row(
               children: [
                 Container(height: legendBoxSize, width: legendBoxSize, color: redAccent),
-                SizedBox(width: 15),
-                Text("Lutz", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))
+                SizedBox(width: MySize(context).w * 0.01),
+                Text("Lutz", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
               ],
             ),
           ],
@@ -252,7 +256,7 @@ class _PageDiagramState extends State<PageDiagram> {
                 )
               : LayoutBuilder(
                   builder: (context, constraints) {
-                    var textStyle = TextStyle(fontSize: 20, color: defaultOnPrimary);
+                    var textStyle = TextStyle(fontSize: 30, color: defaultOnPrimary);
                     var textPainter = TextPainter(
                         text: TextSpan(text: "20", style: textStyle),
                         maxLines: 1,
@@ -336,9 +340,11 @@ class _PageDiagramState extends State<PageDiagram> {
                                       width: groupNameWidth,
                                       padding: EdgeInsets.only(right: 20),
                                       child: Text(
-                                        data?.group ?? '',
-                                        style:
-                                            TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: groupNameColor),
+                                        data?.group != null ? "${index + 1}.  ${data?.group}" : '',
+                                        style: TextStyle(
+                                            fontSize: fontSizeLegend,
+                                            fontWeight: FontWeight.bold,
+                                            color: groupNameColor),
                                       ),
                                     ),
                                     Expanded(

@@ -10,7 +10,7 @@ import 'dart:math';
 class MockDataNavigation {
   Future<int> getPageIndex() async {
     await Future.delayed(Duration(seconds: 2));
-    return 3;
+    return 0;
   }
 }
 
@@ -25,8 +25,8 @@ class MockDataPage0 {
     await Future.delayed(Duration(seconds: 2));
     return {
       "totalBarsVisible": 5,
-      "gridInterval": 20,
-      "groupNameSpaceFactor": 0.15,
+      "gridInterval": 40,
+      "groupNameSpaceFactor": 0.2,
       "emptyCountRightOfFirst": 10,
       "chasingThreshold": 3,
     };
@@ -45,6 +45,9 @@ class MockDataPage0 {
       var lutz = Random().nextInt(60);
       result.add({"group": "Gruppe ${i + 1}", "longdrink": longdrink, "beer": beer, "shot": shot, "lutz": lutz});
     }
+    /*  result.add({"group": "Gruppe 1", "longdrink": 3 * 2, "beer": 8, "shot": 4, "lutz": 1});
+    result.add({"group": "Gruppe 2", "longdrink": 3 * 2, "beer": 6, "shot": 4, "lutz": 1});
+    result.add({"group": "Gruppe 3", "longdrink": 3 * 2, "beer": 2, "shot": 4, "lutz": 1}); */
     return result;
   }
 
@@ -137,21 +140,22 @@ class MockDataPage2 {
       "flashSpeed": 400,
       "flashThreshold": 60,
       "redThreshold": 300,
-      "headlineSize": 35.0,
+      "headlineSize": 40.0,
       "sublineSize": 20.0,
-      "leadingSize": 18.0,
-      "groupNameSize": 25.0,
-      "counterSize": 25.0
+      "leadingSize": 25.0,
+      "groupNameSize": 30.0,
+      "counterSize": 35.0
     };
   }
 
   Future<Map> getPrizePageData() async {
     await Future.delayed(Duration(seconds: 2));
     return {
-      "groupName": "Gruppe 1",
+      "groupName": "Wollbacher Stachelbieschter",
       "remainingTimeSeconds": 304,
       "headline": 'Gewinne zwei Biersäulen!',
-      "subline": 'Sauft Sauft Sauft, zwei Säulen gehen auf uns',
+      "subline":
+          'Sauft Sauft Sauft, zwei Säulen gehen auf unsSauft Sauft Sauft, zwei Säulen gehen auf unsSauft Sauft Sauft, zwei Säulen gehen auf unsSauft Sauft Sauft, zwei Säulen gehen auf unsSauft Sauft Sauft, zwei Säulen gehen auf uns',
       //"imagePrize": ??
       //"groupLogo": ??
     };

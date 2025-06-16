@@ -5,6 +5,10 @@ import 'package:shotcounter_zieefaegge/colors.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
 //import 'package:syncfusion_flutter_charts/charts.dart';
 
+//TODO schrift rot/grün weg sondern roter/grüner Pfeil nach oben/unten nach dem Überholt wurde, Pfeil 20 Sekunden anzeigen
+
+//TODO gridInterval ändern, es soll immer 5 Intervalle (Zahlen) anzeigen, automatisch dann anpassen wie groß
+
 class ChartData {
   ChartData({
     this.group,

@@ -231,11 +231,24 @@ class PieChartWithImage extends StatelessWidget {
               painter: PieChartPainter(data: chartData),
             ),
             ClipOval(
-              child: Image.asset(
+              child: Stack(
+                alignment: AlignmentDirectional.center,
+                children: [
+                  Image.asset(
                 'assets/mock_logo.png',
                 width: size * 0.4,
                 height: size * 0.4,
                 fit: BoxFit.cover,
+                  ),
+                  Text(
+                    //TODO Text ist nicht mittig (vertikal)
+                    "888", //TODO correct total
+                    style: TextStyle(
+color: const Color.fromARGB(200, 255, 255, 255),
+                        fontSize: size * 0.3, //TODO text macht kreis nicht mehr rund
+                        fontWeight: FontWeight.w800),
+                  ),
+                ],
               ),
             ),
           ],
@@ -254,6 +267,8 @@ class PieChartPainter extends CustomPainter {
   final List<PieChartData> data;
 
   PieChartPainter({required this.data});
+
+  //TODO Zahl nicht anzeigen wenn Platz zu wenig ist
 
   @override
   void paint(Canvas canvas, Size size) {

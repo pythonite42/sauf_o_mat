@@ -9,6 +9,9 @@ import 'package:shotcounter_zieefaegge/page_schedule.dart';
 import 'package:shotcounter_zieefaegge/page_top3.dart';
 import 'package:window_manager/window_manager.dart';
 
+//TODO alle durations checken
+//TODO backend durations checken: statusDisplay
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();

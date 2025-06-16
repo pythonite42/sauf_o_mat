@@ -42,19 +42,21 @@ class MockDataPage0 {
       var beer = Random().nextInt(80);
       var shot = Random().nextInt(60);
       var lutz = Random().nextInt(60);
-      var arrowUp = Random().nextBool();
-      var arrowDown = Random().nextBool();
-      if (arrowDown && arrowUp) {
-        arrowDown = !arrowUp;
+      var statusInt = Random().nextInt(3);
+      var status = "gleichgeblieben";
+      if (statusInt == 1) {
+        status = "aufgestiegen";
+      } else if (statusInt == 2) {
+        status = "abgestiegen";
       }
+
       result.add({
         "group": "Gruppe ${i + 1}",
         "longdrink": longdrink,
         "beer": beer,
         "shot": shot,
         "lutz": lutz,
-        "arrowUp": arrowUp, //Pfeil nach oben/unten nach dem Überholt wurde, Pfeil 20 Sekunden anzeigen
-        "arrowDown": arrowDown,
+        "status": status,
       });
     }
     result.add({
@@ -63,8 +65,7 @@ class MockDataPage0 {
       "beer": 56,
       "shot": 22,
       "lutz": 37,
-      "arrowUp": true,
-      "arrowDown": false
+      "status": "gleichgeblieben"
     });
     /*  result.add({"group": "Gruppe 1", "longdrink": 3 * 2, "beer": 8, "shot": 4, "lutz": 1});
     result.add({"group": "Gruppe 2", "longdrink": 3 * 2, "beer": 6, "shot": 4, "lutz": 1});

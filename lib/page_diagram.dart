@@ -16,8 +16,7 @@ class ChartData {
     this.beer,
     this.shot,
     this.lutz,
-    this.arrowUp,
-    this.arrowDown,
+    this.status,
   });
 
   final String? group;
@@ -25,8 +24,7 @@ class ChartData {
   final int? beer;
   final int? shot;
   final int? lutz;
-  final bool? arrowUp;
-  final bool? arrowDown;
+  final String? status;
 
   int get total => (longdrink ?? 0) + (beer ?? 0) + (shot ?? 0) + (lutz ?? 0);
 }
@@ -94,8 +92,7 @@ class _PageDiagramState extends State<PageDiagram> {
             beer: newDataMap["beer"],
             shot: newDataMap["shot"],
             lutz: newDataMap["lutz"],
-            arrowUp: newDataMap["arrowUp"],
-            arrowDown: newDataMap["arrowDown"],
+            status: newDataMap["status"],
           ),
         );
       }
@@ -327,14 +324,14 @@ class _PageDiagramState extends State<PageDiagram> {
                                       padding: EdgeInsets.only(right: 20),
                                       child: Row(
                                         children: [
-                                          data?.arrowUp == true
+                                          data?.status == "aufgestiegen"
                                               ? SvgPicture.asset(
                                                   'assets/arrow_up.svg',
                                                   width: fontSizeLegend,
                                                   height: fontSizeLegend,
                                                   colorFilter: ColorFilter.mode(greenAccent, BlendMode.srcIn),
                                                 )
-                                              : data?.arrowDown == true
+                                              : data?.status == "abgestiegen"
                                                   ? Transform.rotate(
                                                       angle: pi,
                                                       child: SvgPicture.asset(

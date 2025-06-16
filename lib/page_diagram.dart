@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:shotcounter_zieefaegge/backend_mockdata.dart';
 import 'package:shotcounter_zieefaegge/colors.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'dart:math';
 //import 'package:syncfusion_flutter_charts/charts.dart';
-
-//TODO schrift rot/grün weg sondern roter/grüner Pfeil nach oben/unten nach dem Überholt wurde, Pfeil 20 Sekunden anzeigen
 
 //TODO gridInterval ändern, es soll immer 5 Intervalle (Zahlen) anzeigen, automatisch dann anpassen wie groß
 
@@ -16,6 +16,8 @@ class ChartData {
     this.beer,
     this.shot,
     this.lutz,
+    this.arrowUp,
+    this.arrowDown,
   });
 
   final String? group;
@@ -23,6 +25,8 @@ class ChartData {
   final int? beer;
   final int? shot;
   final int? lutz;
+  final bool? arrowUp;
+  final bool? arrowDown;
 
   int get total => (longdrink ?? 0) + (beer ?? 0) + (shot ?? 0) + (lutz ?? 0);
 }
@@ -49,7 +53,6 @@ class _PageDiagramState extends State<PageDiagram> {
   int gridInterval = 10;
   double groupNameSpaceFactor = 0.15; //Anteilig an ganzer Breite
   int emptyCountRightOfFirst = 10;
-  int chasingThreshold = 5;
 
   bool showPopup = false;
   String chaserGroupName = "";
@@ -84,12 +87,17 @@ class _PageDiagramState extends State<PageDiagram> {
 
       List<ChartData> newData = [];
       for (var newDataMap in newDataMapList) {
-        newData.add(ChartData(
+        newData.add(
+          ChartData(
             group: newDataMap["group"],
             longdrink: newDataMap["longdrink"],
             beer: newDataMap["beer"],
             shot: newDataMap["shot"],
-            lutz: newDataMap["lutz"]));
+            lutz: newDataMap["lutz"],
+            arrowUp: newDataMap["arrowUp"],
+            arrowDown: newDataMap["arrowDown"],
+          ),
+        );
       }
       if (mounted) {
         setState(() {
@@ -97,7 +105,6 @@ class _PageDiagramState extends State<PageDiagram> {
           gridInterval = generalSettings["gridInterval"];
           groupNameSpaceFactor = generalSettings["groupNameSpaceFactor"];
           emptyCountRightOfFirst = generalSettings["emptyCountRightOfFirst"];
-          chasingThreshold = generalSettings["chasingThreshold"];
 
           showPopup = popupData["showPopup"];
           chaserGroupName = popupData["chaserGroupName"];
@@ -311,27 +318,6 @@ class _PageDiagramState extends State<PageDiagram> {
                             itemBuilder: (context, index) {
                               final data = _chartData?[index];
 
-                              Color groupNameColor = Colors.white;
-                              int? currentTotal = _chartData?[index].total;
-
-                              int? leadersTotal;
-                              try {
-                                leadersTotal = _chartData?[index - 1].total;
-                              } catch (_) {}
-
-                              int? chasersTotal;
-                              try {
-                                chasersTotal = _chartData?[index + 1].total;
-                              } catch (_) {}
-
-                              if (currentTotal != null) {
-                                if (chasersTotal != null && (currentTotal - chasersTotal) < chasingThreshold) {
-                                  groupNameColor = redAccent;
-                                } else if (leadersTotal != null && (leadersTotal - currentTotal) < chasingThreshold) {
-                                  groupNameColor = greenAccent;
-                                }
-                              }
-
                               return SizedBox(
                                 height: barHeight,
                                 child: Row(
@@ -339,12 +325,53 @@ class _PageDiagramState extends State<PageDiagram> {
                                     Container(
                                       width: groupNameWidth,
                                       padding: EdgeInsets.only(right: 20),
-                                      child: Text(
-                                        data?.group != null ? "${index + 1}.  ${data?.group}" : '',
-                                        style: TextStyle(
-                                            fontSize: fontSizeLegend,
-                                            fontWeight: FontWeight.bold,
-                                            color: groupNameColor),
+                                      child: Row(
+                                        children: [
+                                          data?.arrowUp == true
+                                              ? SvgPicture.asset(
+                                                  'assets/arrow_up.svg',
+                                                  width: fontSizeLegend,
+                                                  height: fontSizeLegend,
+                                                  colorFilter: ColorFilter.mode(greenAccent, BlendMode.srcIn),
+                                                )
+                                              : data?.arrowDown == true
+                                                  ? Transform.rotate(
+                                                      angle: pi,
+                                                      child: SvgPicture.asset(
+                                                        'assets/arrow_up.svg',
+                                                        width: fontSizeLegend,
+                                                        height: fontSizeLegend,
+                                                        colorFilter: ColorFilter.mode(redAccent, BlendMode.srcIn),
+                                                      ),
+                                                    )
+                                                  : SvgPicture.asset(
+                                                      'assets/arrow_up.svg',
+                                                      width: fontSizeLegend,
+                                                      height: fontSizeLegend,
+                                                      colorFilter:
+                                                          ColorFilter.mode(Colors.transparent, BlendMode.srcIn),
+                                                    ),
+                                          Text(
+                                            data?.group != null ? "  ${index + 1}.  " : '',
+                                            style: TextStyle(
+                                              fontSize: fontSizeLegend,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          Flexible(
+                                            child: Text(
+                                              data?.group != null ? "${data?.group}" : '',
+                                              style: TextStyle(
+                                                fontSize: fontSizeLegend,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                              ),
+                                              softWrap: true,
+                                              overflow: TextOverflow.visible,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                     Expanded(

@@ -16,6 +16,7 @@ dependencies:
   provider: ^6.1.5
   window_manager: ^0.4.3
   syncfusion_flutter_charts: ^29.2.5
+  flutter_svg: ^2.2.0
 
 dev_dependencies:
   flutter_test:
@@ -32,6 +33,7 @@ flutter:
     - assets/mock_logo.png
     - assets/bierpokal.jpg
     - assets/aufholjagd.png
+    - assets/arrow_up.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

@@ -26,9 +26,8 @@ class MockDataPage0 {
     return {
       "totalBarsVisible": 5,
       "gridInterval": 40,
-      "groupNameSpaceFactor": 0.2,
+      "groupNameSpaceFactor": 0.3,
       "emptyCountRightOfFirst": 10,
-      "chasingThreshold": 3,
     };
   }
 
@@ -43,8 +42,30 @@ class MockDataPage0 {
       var beer = Random().nextInt(80);
       var shot = Random().nextInt(60);
       var lutz = Random().nextInt(60);
-      result.add({"group": "Gruppe ${i + 1}", "longdrink": longdrink, "beer": beer, "shot": shot, "lutz": lutz});
+      var arrowUp = Random().nextBool();
+      var arrowDown = Random().nextBool();
+      if (arrowDown && arrowUp) {
+        arrowDown = !arrowUp;
+      }
+      result.add({
+        "group": "Gruppe ${i + 1}",
+        "longdrink": longdrink,
+        "beer": beer,
+        "shot": shot,
+        "lutz": lutz,
+        "arrowUp": arrowUp, //Pfeil nach oben/unten nach dem Überholt wurde, Pfeil 20 Sekunden anzeigen
+        "arrowDown": arrowDown,
+      });
     }
+    result.add({
+      "group": "Wollbacher Stachelbiester",
+      "longdrink": 25 * 2,
+      "beer": 56,
+      "shot": 22,
+      "lutz": 37,
+      "arrowUp": true,
+      "arrowDown": false
+    });
     /*  result.add({"group": "Gruppe 1", "longdrink": 3 * 2, "beer": 8, "shot": 4, "lutz": 1});
     result.add({"group": "Gruppe 2", "longdrink": 3 * 2, "beer": 6, "shot": 4, "lutz": 1});
     result.add({"group": "Gruppe 3", "longdrink": 3 * 2, "beer": 2, "shot": 4, "lutz": 1}); */

@@ -11,8 +11,9 @@ import 'package:shotcounter_zieefaegge/globals.dart';
 class PieChartData {
   final int value;
   final Color color;
+  final bool showAmountInsteadOfPoints;
 
-  PieChartData({required this.value, required this.color});
+  PieChartData({required this.value, required this.color, this.showAmountInsteadOfPoints = false});
 }
 
 class PageTop3 extends StatefulWidget {
@@ -58,7 +59,10 @@ class _PageTop3State extends State<PageTop3> {
         setState(() {
           groupName1 = newDataMapList[0]["groupName"];
           _chartData1 = [
-            PieChartData(value: newDataMapList[0]["longdrink"], color: Theme.of(context).colorScheme.secondary),
+            PieChartData(
+                value: newDataMapList[0]["longdrink"],
+                color: Theme.of(context).colorScheme.secondary,
+                showAmountInsteadOfPoints: true),
             PieChartData(value: newDataMapList[0]["beer"], color: Theme.of(context).colorScheme.tertiary),
             PieChartData(value: newDataMapList[0]["shot"], color: cyanAccent),
             PieChartData(value: newDataMapList[0]["lutz"], color: redAccent),
@@ -66,7 +70,10 @@ class _PageTop3State extends State<PageTop3> {
 
           groupName2 = newDataMapList[1]["groupName"];
           _chartData2 = [
-            PieChartData(value: newDataMapList[1]["longdrink"], color: Theme.of(context).colorScheme.secondary),
+            PieChartData(
+                value: newDataMapList[1]["longdrink"],
+                color: Theme.of(context).colorScheme.secondary,
+                showAmountInsteadOfPoints: true),
             PieChartData(value: newDataMapList[1]["beer"], color: Theme.of(context).colorScheme.tertiary),
             PieChartData(value: newDataMapList[1]["shot"], color: cyanAccent),
             PieChartData(value: newDataMapList[1]["lutz"], color: redAccent),
@@ -74,7 +81,10 @@ class _PageTop3State extends State<PageTop3> {
 
           groupName3 = newDataMapList[2]["groupName"];
           _chartData3 = [
-            PieChartData(value: newDataMapList[2]["longdrink"], color: Theme.of(context).colorScheme.secondary),
+            PieChartData(
+                value: newDataMapList[2]["longdrink"],
+                color: Theme.of(context).colorScheme.secondary,
+                showAmountInsteadOfPoints: true),
             PieChartData(value: newDataMapList[2]["beer"], color: Theme.of(context).colorScheme.tertiary),
             PieChartData(value: newDataMapList[2]["shot"], color: cyanAccent),
             PieChartData(value: newDataMapList[2]["lutz"], color: redAccent),
@@ -324,8 +334,6 @@ class PieChartPainter extends CustomPainter {
 
   //TODO Zahl nicht anzeigen wenn Platz zu wenig ist
 
-  //TODO Zahl bei Bargetränken soll Anzahl statt Punktzahl drinnen stehen (also /2)
-
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()..style = PaintingStyle.fill;
@@ -354,8 +362,13 @@ class PieChartPainter extends CustomPainter {
       final labelX = center.dx + labelRadius * cos(midAngle);
       final labelY = center.dy + labelRadius * sin(midAngle);
 
+      double showValue = item.value.toDouble();
+      if (item.showAmountInsteadOfPoints) {
+        showValue = showValue / 2;
+      }
+
       final textSpan = TextSpan(
-        text: '${item.value.toInt()}',
+        text: '${showValue.toInt()}',
         style: const TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.bold,

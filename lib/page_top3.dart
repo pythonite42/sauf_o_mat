@@ -258,7 +258,7 @@ class PieChartWithImage extends StatelessWidget {
                             : total < 9999
                                 ? size * 0.22
                                 : size * 0.18,
-                        color: Color.fromARGB(200, 255, 255, 255),
+                        color: transparentWhite,
                       ),
                     ),
                   ],

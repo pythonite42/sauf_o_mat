@@ -7,8 +7,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:math';
 //import 'package:syncfusion_flutter_charts/charts.dart';
 
-//TODO gridInterval ändern, es soll immer 5 Intervalle (Zahlen) anzeigen, automatisch dann anpassen wie groß
-
 class ChartData {
   ChartData({
     this.group,
@@ -48,9 +46,8 @@ class _PageDiagramState extends State<PageDiagram> {
   GlobalKey<_RacePopupWidgetState>? _popupKey;
 
   int totalBarsVisible = 5;
-  int gridInterval = 10;
+  int totalGridLinesVisible = 5;
   double groupNameSpaceFactor = 0.15; //Anteilig an ganzer Breite
-  int emptyCountRightOfFirst = 10;
 
   bool showPopup = false;
   String chaserGroupName = "";
@@ -99,9 +96,7 @@ class _PageDiagramState extends State<PageDiagram> {
       if (mounted) {
         setState(() {
           totalBarsVisible = generalSettings["totalBarsVisible"];
-          gridInterval = generalSettings["gridInterval"];
           groupNameSpaceFactor = generalSettings["groupNameSpaceFactor"];
-          emptyCountRightOfFirst = generalSettings["emptyCountRightOfFirst"];
 
           showPopup = popupData["showPopup"];
           chaserGroupName = popupData["chaserGroupName"];
@@ -274,7 +269,25 @@ class _PageDiagramState extends State<PageDiagram> {
                     var gridLine = Container(width: 1, height: availableHeight, color: defaultOnPrimary);
                     var groupNameWidth = constraints.maxWidth * groupNameSpaceFactor;
                     var chartWidth = constraints.maxWidth - groupNameWidth;
-                    var gridCount = ((maxValue ?? 1) + emptyCountRightOfFirst) / gridInterval;
+
+                    int gridIntervalsDividableBy = 10;
+                    int emptyCountRightOfFirst = 10;
+                    if ((maxValue ?? 1) < 50) {
+                      gridIntervalsDividableBy = 5;
+                      emptyCountRightOfFirst = 3;
+                    }
+
+                    int chartMaxValue = maxValue ?? 1 + emptyCountRightOfFirst;
+
+                    while (true) {
+                      if ((chartMaxValue / totalGridLinesVisible) % gridIntervalsDividableBy == 0) {
+                        break;
+                      } else {
+                        chartMaxValue++;
+                      }
+                    }
+
+                    var gridInterval = chartMaxValue / totalGridLinesVisible;
 
                     return Stack(children: <Widget>[
                       Positioned(
@@ -291,13 +304,13 @@ class _PageDiagramState extends State<PageDiagram> {
                           top: availableHeight - frameLineWidth,
                           child: Container(width: chartWidth, height: frameLineWidth, color: defaultOnPrimary)),
                       ...List.generate(
-                          (gridCount + 1).floor(),
-                          (index) =>
-                              Positioned(left: groupNameWidth + index * (chartWidth / gridCount), child: gridLine)),
+                          (totalGridLinesVisible + 1).floor(),
+                          (index) => Positioned(
+                              left: groupNameWidth + index * (chartWidth / totalGridLinesVisible), child: gridLine)),
                       ...List.generate(
-                        (gridCount).floor(),
+                        (totalGridLinesVisible).floor(),
                         (index) => Positioned(
-                          left: groupNameWidth + (index + 1) * (chartWidth / gridCount),
+                          left: groupNameWidth + (index + 1) * (chartWidth / totalGridLinesVisible),
                           top: availableHeight,
                           child: Text(
                             ((index + 1) * gridInterval).toInt().toString(),

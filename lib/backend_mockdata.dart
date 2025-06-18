@@ -25,9 +25,7 @@ class MockDataPage0 {
     await Future.delayed(Duration(seconds: 2));
     return {
       "totalBarsVisible": 5,
-      "gridInterval": 40,
       "groupNameSpaceFactor": 0.3,
-      "emptyCountRightOfFirst": 10,
     };
   }
 

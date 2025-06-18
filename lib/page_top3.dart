@@ -332,8 +332,6 @@ class PieChartPainter extends CustomPainter {
 
   PieChartPainter({required this.data});
 
-  //TODO Zahl nicht anzeigen wenn Platz zu wenig ist
-
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()..style = PaintingStyle.fill;
@@ -381,11 +379,14 @@ class PieChartPainter extends CustomPainter {
       );
       textPainter.layout();
 
-      final offset = Offset(
-        labelX - textPainter.width / 2,
-        labelY - textPainter.height / 2,
-      );
-      textPainter.paint(canvas, offset);
+      final arcLength = sweepAngle * radius;
+      if (arcLength > textPainter.width + 6) {
+        final offset = Offset(
+          labelX - textPainter.width / 2,
+          labelY - textPainter.height / 2,
+        );
+        textPainter.paint(canvas, offset);
+      }
 
       startAngle += sweepAngle;
     }

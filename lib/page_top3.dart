@@ -214,6 +214,11 @@ class PieChartWithImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var total = 0;
+    for (var element in chartData) {
+      total += element.value;
+    }
+
     return Column(children: [
       Text(
         "$badge $place. Platz",
@@ -242,7 +247,7 @@ class PieChartWithImage extends StatelessWidget {
                   ),
                   Text(
                     //TODO Text ist nicht mittig (vertikal)
-                    "888", //TODO correct total
+                    "$total",
                     style: TextStyle(
                         color: const Color.fromARGB(200, 255, 255, 255),
                         fontSize: size * 0.3, //TODO text macht kreis nicht mehr rund

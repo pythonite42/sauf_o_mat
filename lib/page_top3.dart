@@ -218,6 +218,7 @@ class PieChartWithImage extends StatelessWidget {
     for (var element in chartData) {
       total += element.value;
     }
+    var centerSize = size * 0.55;
 
     return Column(children: [
       Text(
@@ -236,24 +237,32 @@ class PieChartWithImage extends StatelessWidget {
               painter: PieChartPainter(data: chartData),
             ),
             ClipOval(
-              child: Stack(
-                alignment: AlignmentDirectional.center,
-                children: [
-                  Image.asset(
-                    'assets/mock_logo.png',
-                    width: size * 0.55,
-                    height: size * 0.55,
-                    fit: BoxFit.cover,
-                  ),
-                  Text(
-                    //TODO Text ist nicht mittig (vertikal)
-                    "$total",
-                    style: TextStyle(
-                        color: const Color.fromARGB(200, 255, 255, 255),
-                        fontSize: size * 0.3, //TODO text macht kreis nicht mehr rund
-                        fontWeight: FontWeight.w800),
-                  ),
-                ],
+              child: SizedBox(
+                width: centerSize,
+                height: centerSize,
+                child: Stack(
+                  alignment: AlignmentDirectional.center,
+                  children: [
+                    Image.asset(
+                      'assets/mock_logo.png',
+                      width: centerSize,
+                      height: centerSize,
+                      fit: BoxFit.cover,
+                    ),
+                    CustomPaint(
+                      size: Size(centerSize, centerSize),
+                      painter: CenteredTextPainter(
+                        text: "$total",
+                        fontSize: total < 999
+                            ? size * 0.3
+                            : total < 9999
+                                ? size * 0.22
+                                : size * 0.18,
+                        color: Color.fromARGB(200, 255, 255, 255),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -266,6 +275,46 @@ class PieChartWithImage extends StatelessWidget {
       )
     ]);
   }
+}
+
+class CenteredTextPainter extends CustomPainter {
+  final String text;
+  final double fontSize;
+  final Color color;
+
+  CenteredTextPainter({
+    required this.text,
+    required this.fontSize,
+    required this.color,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final textSpan = TextSpan(
+      text: text,
+      style: TextStyle(
+        color: color,
+        fontSize: fontSize,
+        fontWeight: FontWeight.w800,
+        height: 1.0,
+      ),
+    );
+
+    final textPainter = TextPainter(
+      text: textSpan,
+      textDirection: TextDirection.ltr,
+    )..layout();
+
+    final offset = Offset(
+      (size.width - textPainter.width) / 2,
+      (size.height - textPainter.height) / 2,
+    );
+
+    textPainter.paint(canvas, offset);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
 
 class PieChartPainter extends CustomPainter {
@@ -301,7 +350,7 @@ class PieChartPainter extends CustomPainter {
       );
 
       // Draw value text inside the slice
-      final labelRadius = radius * 0.75;
+      final labelRadius = radius * 0.76;
       final labelX = center.dx + labelRadius * cos(midAngle);
       final labelY = center.dy + labelRadius * sin(midAngle);
 

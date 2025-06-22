@@ -10,7 +10,7 @@ import 'dart:math';
 class MockDataNavigation {
   Future<int> getPageIndex() async {
     await Future.delayed(Duration(seconds: 2));
-    return 4;
+    return 5;
   }
 }
 
@@ -210,6 +210,22 @@ class MockDataPage4 {
       "image": "",
       "name": "Wollbacher Stachel",
       "quote": "Der Kopf tut weh, die Füße stinken, höchste Zeit ein Bier zu trinken!",
+    };
+  }
+}
+
+/*
+================================================================================================================
+     Page 5 - Advertising 
+================================================================================================================
+*/
+
+class MockDataPage5 {
+  Future<Map> getData() async {
+    await Future.delayed(Duration(seconds: 2));
+    return {
+      "image": "",
+      "text": "Kauft diesen super tollen über geilen Trichter. Mehr trichtern - mehr saufen.",
     };
   }
 }

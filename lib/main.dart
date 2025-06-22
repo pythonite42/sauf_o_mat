@@ -13,6 +13,7 @@ import 'package:window_manager/window_manager.dart';
 
 //TODO alle durations checken
 //TODO backend durations checken: statusDisplay
+//TODO alle imageUrls checken ob die Bilder gut aussehen
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

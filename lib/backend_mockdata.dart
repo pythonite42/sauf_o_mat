@@ -75,6 +75,7 @@ class MockDataPage0 {
     await Future.delayed(Duration(seconds: 2));
     return {
       "showPopup": false, //hier müssen wir kontrollieren ob das klappt, True vs. true macht einen Unterschied
+      "imageUrl": "",
       "chaserGroupName": "Gruppe 1",
       "leaderGroupName": "Gruppe 2",
       "difference": 5,
@@ -136,7 +137,7 @@ class MockDataPage1 {
       var lutz = Random().nextInt(60);
       result.add({
         "groupName": "Gruppe ${i + 1}",
-        //"groupLogo": ??,
+        "groupLogo": "https://randomuser.me/api/portraits/men/1.jpg",
         "longdrink": longdrink,
         "beer": beer,
         "shot": shot,
@@ -176,8 +177,8 @@ class MockDataPage2 {
       "headline": 'Gewinne zwei Biersäulen!',
       "subline":
           'Sauft Sauft Sauft, zwei Säulen gehen auf unsSauft Sauft Sauft, zwei Säulen gehen auf unsSauft Sauft Sauft, zwei Säulen gehen auf unsSauft Sauft Sauft, zwei Säulen gehen auf unsSauft Sauft Sauft, zwei Säulen gehen auf uns',
-      //"imagePrize": ??
-      //"groupLogo": ??
+      "imagePrize": "https://picsum.photos/300/200",
+      "groupLogo": "https://randomuser.me/api/portraits/men/1.jpg",
     };
   }
 }
@@ -191,9 +192,7 @@ class MockDataPage2 {
 class MockDataPage3 {
   Future<Map> getImage() async {
     await Future.delayed(Duration(seconds: 2));
-    return {
-      //"image": ??
-    };
+    return {"imageUrl": ""};
   }
 }
 

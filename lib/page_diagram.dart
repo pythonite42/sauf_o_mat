@@ -50,6 +50,7 @@ class _PageDiagramState extends State<PageDiagram> {
   double groupNameSpaceFactor = 0.15; //Anteilig an ganzer Breite
 
   bool showPopup = false;
+  String imageUrl = "";
   String chaserGroupName = "";
   String leaderGroupName = "";
   int difference = 0;
@@ -99,6 +100,7 @@ class _PageDiagramState extends State<PageDiagram> {
           groupNameSpaceFactor = generalSettings["groupNameSpaceFactor"];
 
           showPopup = popupData["showPopup"];
+          imageUrl = popupData["imageUrl"];
           chaserGroupName = popupData["chaserGroupName"];
           leaderGroupName = popupData["leaderGroupName"];
           difference = popupData["difference"];
@@ -163,6 +165,7 @@ class _PageDiagramState extends State<PageDiagram> {
             _popupContext = popupCtx;
             return RacePopupWidget(
               key: _popupKey,
+              initialImageUrl: imageUrl,
               initialLeader: leaderGroupName,
               initialChaser: chaserGroupName,
               initialDiff: difference,
@@ -185,7 +188,8 @@ class _PageDiagramState extends State<PageDiagram> {
         _popupContext = null;
         _popupKey = null;
       } else if (_isPopupVisible && _popupKey?.currentState != null) {
-        _popupKey?.currentState!.updateData(leaderGroupName, chaserGroupName, difference, headline, motivationalText);
+        _popupKey?.currentState!
+            .updateData(imageUrl, leaderGroupName, chaserGroupName, difference, headline, motivationalText);
       }
     });
   }
@@ -454,6 +458,7 @@ class _PageDiagramState extends State<PageDiagram> {
 }
 
 class RacePopupWidget extends StatefulWidget {
+  final String initialImageUrl;
   final String initialLeader;
   final String initialChaser;
   final int initialDiff;
@@ -461,6 +466,7 @@ class RacePopupWidget extends StatefulWidget {
   final String motivationalText;
 
   const RacePopupWidget({
+    required this.initialImageUrl,
     required this.initialLeader,
     required this.initialChaser,
     required this.initialDiff,
@@ -474,6 +480,7 @@ class RacePopupWidget extends StatefulWidget {
 }
 
 class _RacePopupWidgetState extends State<RacePopupWidget> {
+  late String imageUrl;
   late String leader;
   late String chaser;
   late int diff;
@@ -483,6 +490,7 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
   @override
   void initState() {
     super.initState();
+    imageUrl = widget.initialImageUrl;
     leader = widget.initialLeader;
     chaser = widget.initialChaser;
     diff = widget.initialDiff;
@@ -490,8 +498,10 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
     motivationalText = widget.motivationalText;
   }
 
-  void updateData(String newLeader, String newChaser, int newDiff, String newHeadline, String newMotivationalText) {
+  void updateData(String newImageUrl, String newLeader, String newChaser, int newDiff, String newHeadline,
+      String newMotivationalText) {
     setState(() {
+      imageUrl = newImageUrl;
       leader = newLeader;
       chaser = newChaser;
       diff = newDiff;
@@ -527,9 +537,16 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
             SizedBox(height: MySize(context).h * 0.03),
             Expanded(
               flex: 3,
-              child: Image.asset(
-                'assets/aufholjagd.png',
+              child: Image.network(
+                imageUrl,
                 fit: BoxFit.cover,
+                errorBuilder: (context, _, __) => AspectRatio(
+                  aspectRatio: 1,
+                  child: Container(
+                    color: Colors.grey[300],
+                    child: Icon(Icons.image, size: MySize(context).h * 0.2),
+                  ),
+                ),
               ),
             ),
             SizedBox(height: MySize(context).h * 0.02),
@@ -543,7 +560,7 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
     );
   }
 
-  Widget _buildProgressBar() {
+  /*  Widget _buildProgressBar() {
     double progress = (100 - diff) / 100; // Calculate the progress based on the difference
 
     return Column(
@@ -568,7 +585,7 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
         ),
       ],
     );
-  }
+  } */
 }
 
 //the following PageDiagram can "scroll" by updating the data but there is no visible scroll effect. Also the colors are not corrected for this version

@@ -14,6 +14,7 @@ class PageSchedule extends StatefulWidget {
 
 class _PageScheduleState extends State<PageSchedule> {
   bool imageLoaded = false;
+  String imageUrl = "";
 
   late Timer _dataReloadTimer;
 
@@ -37,7 +38,7 @@ class _PageScheduleState extends State<PageSchedule> {
 
       if (mounted) {
         setState(() {
-          //Set image variable: image = data["image"];
+          imageUrl = data["imageUrl"];
           imageLoaded = true;
         });
       }
@@ -60,7 +61,19 @@ class _PageScheduleState extends State<PageSchedule> {
           ? Center(
               child: CircularProgressIndicator(color: defaultOnPrimary),
             )
-          : Image.asset('assets/mock_logo.png'),
+          : Image.network(
+              imageUrl,
+              errorBuilder: (context, _, __) => AspectRatio(
+                aspectRatio: 1,
+                child: Container(
+                  color: Colors.grey[300],
+                  child: Icon(
+                    Icons.image,
+                    size: MySize(context).h * 0.7,
+                  ),
+                ),
+              ),
+            ),
     );
   }
 }

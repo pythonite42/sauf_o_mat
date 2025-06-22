@@ -30,6 +30,9 @@ class _PageTop3State extends State<PageTop3> {
   String groupName1 = "";
   String groupName2 = "";
   String groupName3 = "";
+  String groupLogo1 = "";
+  String groupLogo2 = "";
+  String groupLogo3 = "";
   late Timer _chartDataReloadTimer;
 
   @override
@@ -58,6 +61,7 @@ class _PageTop3State extends State<PageTop3> {
       if (mounted) {
         setState(() {
           groupName1 = newDataMapList[0]["groupName"];
+          groupLogo1 = newDataMapList[0]["groupLogo"];
           _chartData1 = [
             PieChartData(
                 value: newDataMapList[0]["longdrink"],
@@ -69,6 +73,8 @@ class _PageTop3State extends State<PageTop3> {
           ];
 
           groupName2 = newDataMapList[1]["groupName"];
+          groupLogo2 = newDataMapList[1]["groupLogo"];
+
           _chartData2 = [
             PieChartData(
                 value: newDataMapList[1]["longdrink"],
@@ -80,6 +86,8 @@ class _PageTop3State extends State<PageTop3> {
           ];
 
           groupName3 = newDataMapList[2]["groupName"];
+          groupLogo3 = newDataMapList[2]["groupLogo"];
+
           _chartData3 = [
             PieChartData(
                 value: newDataMapList[2]["longdrink"],
@@ -175,6 +183,7 @@ class _PageTop3State extends State<PageTop3> {
                       place: 1,
                       badge: '🥇 ',
                       groupName: groupName1,
+                      groupLogo: groupLogo1,
                       size: size1,
                     ),
                   ),
@@ -186,6 +195,7 @@ class _PageTop3State extends State<PageTop3> {
                       place: 2,
                       badge: '🥈 ',
                       groupName: groupName2,
+                      groupLogo: groupLogo2,
                       size: size2,
                     ),
                   ),
@@ -197,6 +207,7 @@ class _PageTop3State extends State<PageTop3> {
                       place: 3,
                       badge: '🥉 ',
                       groupName: groupName3,
+                      groupLogo: groupLogo3,
                       size: size3,
                     ),
                   ),
@@ -214,12 +225,14 @@ class PieChartWithImage extends StatelessWidget {
       required this.place,
       required this.badge,
       required this.groupName,
+      required this.groupLogo,
       required this.size});
 
   final List<PieChartData> chartData;
   final int place;
   final String badge;
   final String groupName;
+  final String groupLogo;
   final double size;
 
   @override
@@ -253,11 +266,22 @@ class PieChartWithImage extends StatelessWidget {
                 child: Stack(
                   alignment: AlignmentDirectional.center,
                   children: [
-                    Image.asset(
-                      'assets/mock_logo.png',
+                    Image.network(
+                      groupLogo,
                       width: centerSize,
                       height: centerSize,
                       fit: BoxFit.cover,
+                      errorBuilder: (context, _, __) => AspectRatio(
+                        aspectRatio: 1,
+                        child: Container(
+                          color: Colors.grey[300],
+                          child: Icon(
+                            Icons.person,
+                            size: MySize(context).h * 0.1,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
                     ),
                     CustomPaint(
                       size: Size(centerSize, centerSize),

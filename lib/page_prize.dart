@@ -33,6 +33,8 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
   String groupName = "";
   String headline = "";
   String subline = "";
+  String imagePrize = "";
+  String groupLogo = "";
 
   @override
   void initState() {
@@ -83,6 +85,8 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
           groupName = data["groupName"];
           headline = data["headline"];
           subline = data["subline"];
+          imagePrize = data["imagePrize"];
+          groupLogo = data["groupLogo"];
 
           int newRemainingSeconds = data["remainingTimeSeconds"];
           if ((_remainingTime.inSeconds - newRemainingSeconds).abs() > 2) {
@@ -137,9 +141,16 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
                   flex: 5,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
-                    child: Image.asset(
-                      'assets/bierpokal.jpg',
+                    child: Image.network(
+                      imagePrize,
                       fit: BoxFit.cover,
+                      errorBuilder: (context, _, __) => AspectRatio(
+                        aspectRatio: 1,
+                        child: Container(
+                          color: Colors.grey[300],
+                          child: Icon(Icons.image, size: MySize(context).h * 0.5),
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -178,7 +189,20 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
                             CircleAvatar(
                               radius: MySize(context).h * 0.07,
                               child: ClipOval(
-                                child: Image.asset('assets/mock_logo.png'),
+                                child: Image.network(
+                                  groupLogo,
+                                  errorBuilder: (context, _, __) => AspectRatio(
+                                    aspectRatio: 1,
+                                    child: Container(
+                                      color: Colors.grey[300],
+                                      child: Icon(
+                                        Icons.person,
+                                        size: MySize(context).h * 0.08,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                             const SizedBox(width: 16),

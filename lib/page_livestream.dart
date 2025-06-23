@@ -99,6 +99,7 @@ class BeerGlassBorder extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     double strokeWidth = 6;
+    double cornerRadius = 20;
 
     final outerPaint = Paint()
       ..color = const Color.fromARGB(172, 255, 255, 255)
@@ -110,35 +111,62 @@ class BeerGlassBorder extends CustomPainter {
       ..strokeWidth = strokeWidth
       ..style = PaintingStyle.stroke;
 
-    final outerRect = Rect.fromLTWH(0, 0, size.width, size.height);
+    final borderFillPaint = Paint()
+      ..color = const Color.fromARGB(106, 255, 255, 255)
+      ..style = PaintingStyle.fill;
 
-    final innerBorderRect = Rect.fromLTWH(
-      strokeWidth * 2,
-      strokeWidth * 2,
-      size.width - strokeWidth * 4,
-      size.height - strokeWidth * 4,
+    final outerRRect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(0, 0, size.width, size.height),
+      Radius.circular(cornerRadius),
     );
 
-    // Image goes slightly *inside* the inner border area
-    final imagePadding = strokeWidth / 2; // adjust this value as needed
+    final innerRRect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(
+        strokeWidth * 2,
+        strokeWidth * 2,
+        size.width - strokeWidth * 4,
+        size.height - strokeWidth * 4,
+      ),
+      Radius.circular(cornerRadius - strokeWidth),
+    );
+
+    // Draw the filled border gap using path difference
+    final outerPath = Path()..addRRect(outerRRect);
+    final innerPath = Path()..addRRect(innerRRect);
+    final borderPath = Path.combine(
+      PathOperation.difference,
+      outerPath,
+      innerPath,
+    );
+    canvas.drawPath(borderPath, borderFillPaint);
+
+    // Draw the image inside the inner RRect (slightly inset)
+    final imagePadding = strokeWidth / 2;
     final imageRect = Rect.fromLTWH(
-      innerBorderRect.left + imagePadding,
-      innerBorderRect.top + imagePadding,
-      innerBorderRect.width - imagePadding * 2,
-      innerBorderRect.height - imagePadding * 2,
+      innerRRect.left + imagePadding,
+      innerRRect.top + imagePadding,
+      innerRRect.width - imagePadding * 2,
+      innerRRect.height - imagePadding * 2,
+    );
+    final imageRRect = RRect.fromRectAndRadius(
+      imageRect,
+      Radius.circular(cornerRadius - strokeWidth * 2),
     );
 
-    // Draw the image (inside inner border)
+    // Clip to the rounded image area and draw
+    canvas.save();
+    canvas.clipRRect(imageRRect);
     canvas.drawImageRect(
       image,
       Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble()),
       imageRect,
       Paint(),
     );
+    canvas.restore();
 
-    // Draw borders last
-    canvas.drawRect(outerRect, outerPaint);
-    canvas.drawRect(innerBorderRect, innerPaint);
+    // Draw borders
+    canvas.drawRRect(outerRRect, outerPaint);
+    canvas.drawRRect(innerRRect, innerPaint);
   }
 
   @override

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
 import 'dart:ui' as ui;
+import 'package:flutter_svg/flutter_svg.dart';
 
 class PageLivestream extends StatefulWidget {
   const PageLivestream({super.key});
@@ -29,7 +30,7 @@ class _PageLivestreamState extends State<PageLivestream> {
               : Container(
                   width: size,
                   height: size,
-                  padding: EdgeInsets.symmetric(vertical: MySize(context).h * 0.1),
+                  padding: EdgeInsets.symmetric(vertical: MySize(context).h * 0.05),
                   child: BeerGlassImageStack(size: size),
                 ),
         );
@@ -66,36 +67,88 @@ class _BeerGlassImageStackState extends State<BeerGlassImageStack> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          backgroundImage == null
-              ? CircularProgressIndicator()
-              : CustomPaint(
-                  painter: BeerGlassBorder(image: backgroundImage!),
-                  child: Container(
-                    width: widget.size * 0.5,
-                    height: widget.size,
-                    alignment: Alignment.center,
-                  ),
+    double beerGlassWidth = widget.size * 0.6;
+    return backgroundImage == null
+        ? CircularProgressIndicator()
+        : Stack(alignment: Alignment.topCenter, children: [
+            // Beer glass body (custom painter)
+            Positioned(
+              top: widget.size * 0.11, // Adjust to fit under foam
+              child: CustomPaint(
+                painter: BeerGlassBorderPainter(image: backgroundImage!),
+                child: Container(
+                  width: beerGlassWidth,
+                  height: widget.size * 0.78,
+                  alignment: Alignment.center,
                 ),
-          Container(
-            width: widget.size * 0.2,
-            height: widget.size * 0.4,
-            color: Colors.greenAccent,
-          ),
-        ],
-      )
-    ]);
+              ),
+            ),
+            Positioned(
+              top: -widget.size * 0.24,
+              child: SvgPicture.asset('assets/beer_foam.svg', width: beerGlassWidth * 1.2),
+            )
+          ]);
   }
 }
 
-class BeerGlassBorder extends CustomPainter {
+class BeerGlassPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final glassPaint = Paint()
+      ..color = Colors.amber.shade200
+      ..style = PaintingStyle.fill;
+
+    final borderPaint = Paint()
+      ..color = Colors.brown
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 4;
+
+    final path = Path();
+
+    // Main beer glass (rectangle with rounded corners)
+    path.addRRect(RRect.fromRectAndRadius(
+      Rect.fromLTWH(20, 20, size.width - 60, size.height - 40),
+      Radius.circular(16),
+    ));
+
+    // Handle path (semi-oval curve on the right)
+    final handlePath = Path();
+    final handleLeft = size.width - 40;
+    final handleTop = size.height * 0.25;
+    final handleBottom = size.height * 0.75;
+
+    handlePath.moveTo(handleLeft, handleTop);
+    handlePath.cubicTo(
+      size.width, handleTop, //
+      size.width, handleBottom, //
+      handleLeft, handleBottom,
+    );
+
+    handlePath.cubicTo(
+      size.width - 10,
+      handleBottom - 10,
+      size.width - 10,
+      handleTop + 10,
+      handleLeft,
+      handleTop,
+    );
+
+    path.addPath(handlePath, Offset.zero);
+
+    // Draw
+    canvas.drawPath(path, glassPaint);
+    canvas.drawPath(path, borderPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class BeerGlassBorderPainter extends CustomPainter {
   final ui.Image image;
 
-  BeerGlassBorder({required this.image});
+  BeerGlassBorderPainter({required this.image});
+
   @override
   void paint(Canvas canvas, Size size) {
     double strokeWidth = 6;
@@ -130,9 +183,63 @@ class BeerGlassBorder extends CustomPainter {
       Radius.circular(cornerRadius - strokeWidth),
     );
 
-    // Draw the filled border gap using path difference
+    // Create outer path and add handle shape
     final outerPath = Path()..addRRect(outerRRect);
+
+    // 👉 Handle path (right side of glass)
+
+    final handleWidth = size.width * 0.1;
+
+    final handleLeft = size.width;
+    final handleRight = handleLeft + size.width * 0.3;
+    final handleTop = size.height * 0.15;
+    final handleBottom = size.height * 0.85;
+    final arcMidY = (handleTop + handleBottom) / 2;
+
+// Transition offsets
+    final topBump = size.height * 0.055;
+    final bottomDip = size.height * 0.055;
+
+    final handlePath = Path();
+
+// Start at the glass edge (top flat point)
+    handlePath.moveTo(handleLeft, handleTop);
+
+// Slight upward before curving out
+    handlePath.lineTo(handleLeft, handleTop - topBump);
+
+// Outer top curve
+    handlePath.quadraticBezierTo(
+      handleRight, handleTop - topBump, // control point out and up
+      handleRight, arcMidY, // meet halfway down
+    );
+
+// Outer bottom curve
+    handlePath.quadraticBezierTo(
+      handleRight, handleBottom + bottomDip, // control point out and down
+      handleLeft, handleBottom + bottomDip, // curve inward
+    );
+
+// Slight downward before returning up (bottom flat point)
+    handlePath.lineTo(handleLeft, handleBottom);
+
+    handlePath.lineTo(handleLeft, handleBottom - handleWidth);
+
+    handlePath.quadraticBezierTo(
+      handleRight - handleWidth, handleBottom + bottomDip - handleWidth, // control point out and down
+      handleRight - handleWidth, arcMidY, // meet halfway up
+    );
+
+    handlePath.quadraticBezierTo(
+      handleRight - handleWidth, handleTop - topBump + handleWidth, // control point out and up
+      handleLeft, handleTop + handleWidth, // curve inward
+    );
+
+    outerPath.addPath(handlePath, Offset.zero);
+
     final innerPath = Path()..addRRect(innerRRect);
+
+    // 🟡 Fill area between outer glass and inner (excluding image)
     final borderPath = Path.combine(
       PathOperation.difference,
       outerPath,
@@ -140,7 +247,7 @@ class BeerGlassBorder extends CustomPainter {
     );
     canvas.drawPath(borderPath, borderFillPaint);
 
-    // Draw the image inside the inner RRect (slightly inset)
+    // 🖼️ Draw image inside the inner glass
     final imagePadding = strokeWidth / 2;
     final imageRect = Rect.fromLTWH(
       innerRRect.left + imagePadding,
@@ -153,7 +260,6 @@ class BeerGlassBorder extends CustomPainter {
       Radius.circular(cornerRadius - strokeWidth * 2),
     );
 
-    // Clip to the rounded image area and draw
     canvas.save();
     canvas.clipRRect(imageRRect);
     canvas.drawImageRect(
@@ -164,13 +270,13 @@ class BeerGlassBorder extends CustomPainter {
     );
     canvas.restore();
 
-    // Draw borders
-    canvas.drawRRect(outerRRect, outerPaint);
+    // 🧱 Draw outer borders (glass + handle)
+    canvas.drawPath(outerPath, outerPaint);
     canvas.drawRRect(innerRRect, innerPaint);
   }
 
   @override
-  bool shouldRepaint(covariant BeerGlassBorder oldDelegate) {
+  bool shouldRepaint(covariant BeerGlassBorderPainter oldDelegate) {
     return oldDelegate.image != image;
   }
 }

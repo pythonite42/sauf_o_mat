@@ -1,0 +1,17 @@
+C:/Users/sarah/Documents/Programmieren/shotcounter_zieefaegge/build/windows/x64/runner/Debug/data/icudtl.dat
+C:/Users/sarah/Documents/Programmieren/shotcounter_zieefaegge/build/windows/x64/runner/Debug/flutter_windows.dll
+C:/Users/sarah/Documents/Programmieren/shotcounter_zieefaegge/build/windows/x64/runner/Debug/screen_retriever_windows_plugin.dll
+C:/Users/sarah/Documents/Programmieren/shotcounter_zieefaegge/build/windows/x64/runner/Debug/window_manager_plugin.dll
+C:/Users/sarah/Documents/Programmieren/shotcounter_zieefaegge/build/windows/x64/runner/Debug/data/flutter_assets/AssetManifest.bin
+C:/Users/sarah/Documents/Programmieren/shotcounter_zieefaegge/build/windows/x64/runner/Debug/data/flutter_assets/AssetManifest.json
+C:/Users/sarah/Documents/Programmieren/shotcounter_zieefaegge/build/windows/x64/runner/Debug/data/flutter_assets/assets/arrow_up.svg
+C:/Users/sarah/Documents/Programmieren/shotcounter_zieefaegge/build/windows/x64/runner/Debug/data/flutter_assets/assets/aufholjagd.png
+C:/Users/sarah/Documents/Programmieren/shotcounter_zieefaegge/build/windows/x64/runner/Debug/data/flutter_assets/assets/beer_foam.svg
+C:/Users/sarah/Documents/Programmieren/shotcounter_zieefaegge/build/windows/x64/runner/Debug/data/flutter_assets/assets/bierpokal.jpg
+C:/Users/sarah/Documents/Programmieren/shotcounter_zieefaegge/build/windows/x64/runner/Debug/data/flutter_assets/assets/mock_logo.png
+C:/Users/sarah/Documents/Programmieren/shotcounter_zieefaegge/build/windows/x64/runner/Debug/data/flutter_assets/FontManifest.json
+C:/Users/sarah/Documents/Programmieren/shotcounter_zieefaegge/build/windows/x64/runner/Debug/data/flutter_assets/fonts/MaterialIcons-Regular.otf
+C:/Users/sarah/Documents/Programmieren/shotcounter_zieefaegge/build/windows/x64/runner/Debug/data/flutter_assets/kernel_blob.bin
+C:/Users/sarah/Documents/Programmieren/shotcounter_zieefaegge/build/windows/x64/runner/Debug/data/flutter_assets/NativeAssetsManifest.json
+C:/Users/sarah/Documents/Programmieren/shotcounter_zieefaegge/build/windows/x64/runner/Debug/data/flutter_assets/NOTICES.Z
+C:/Users/sarah/Documents/Programmieren/shotcounter_zieefaegge/build/windows/x64/runner/Debug/data/flutter_assets/shaders/ink_sparkle.frag

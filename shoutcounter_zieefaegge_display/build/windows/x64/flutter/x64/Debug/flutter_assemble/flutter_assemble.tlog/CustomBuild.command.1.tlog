@@ -1,0 +1,28 @@
+^C:\USERS\SARAH\DOCUMENTS\PROGRAMMIEREN\SHOTCOUNTER_ZIEEFAEGGE\BUILD\WINDOWS\X64\CMAKEFILES\18583CC00F31111C894AB2DBE081A16C\FLUTTER_WINDOWS.DLL.RULE
+setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E env FLUTTER_ROOT=C:\Users\sarah\flutter_windows_2.5.3-stable\flutter PROJECT_DIR=C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge FLUTTER_ROOT=C:\Users\sarah\flutter_windows_2.5.3-stable\flutter FLUTTER_EPHEMERAL_DIR=C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\windows\flutter\ephemeral PROJECT_DIR=C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge FLUTTER_TARGET=C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\lib\main.dart DART_DEFINES=RkxVVFRFUl9WRVJTSU9OPTMuMzIuMA==,RkxVVFRFUl9DSEFOTkVMPXN0YWJsZQ==,RkxVVFRFUl9HSVRfVVJMPWh0dHBzOi8vZ2l0aHViLmNvbS9mbHV0dGVyL2ZsdXR0ZXIuZ2l0,RkxVVFRFUl9GUkFNRVdPUktfUkVWSVNJT049YmU2OThjNDhhNg==,RkxVVFRFUl9FTkdJTkVfUkVWSVNJT049MTg4MTgwMDk0OQ==,RkxVVFRFUl9EQVJUX1ZFUlNJT049My44LjA= DART_OBFUSCATION=false TRACK_WIDGET_CREATION=true TREE_SHAKE_ICONS=false PACKAGE_CONFIG=C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\.dart_tool\package_config.json C:/Users/sarah/flutter_windows_2.5.3-stable/flutter/packages/flutter_tools/bin/tool_backend.bat windows-x64 Debug
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\SARAH\DOCUMENTS\PROGRAMMIEREN\SHOTCOUNTER_ZIEEFAEGGE\BUILD\WINDOWS\X64\CMAKEFILES\A8EEAD576A395C550E883112EA07EB3C\FLUTTER_ASSEMBLE.RULE
+setlocal
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\SARAH\DOCUMENTS\PROGRAMMIEREN\SHOTCOUNTER_ZIEEFAEGGE\WINDOWS\FLUTTER\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/sarah/Documents/Programmieren/shotcounter_zieefaegge/windows -BC:/Users/sarah/Documents/Programmieren/shotcounter_zieefaegge/build/windows/x64 --check-stamp-file C:/Users/sarah/Documents/Programmieren/shotcounter_zieefaegge/build/windows/x64/flutter/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

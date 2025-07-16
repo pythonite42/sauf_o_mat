@@ -31,6 +31,16 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int selectedIndex = 0;
+  int currentNavigationIndex = 0;
+  List<String> pages = ["Balkendiagramm", "Top 3", "Gewinn", "Ablaufplan", "Kommentare", "Werbung", "Livestream"];
+
+  Future<int> getCurrentNavigationIndex() async {
+    await Future.delayed(Duration(seconds: 2));
+    setState(() {
+      currentNavigationIndex = 1;
+    });
+    return currentNavigationIndex;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +52,43 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: EdgeInsetsGeometry.only(top: 50),
         child: Column(
           children: <Widget>[
+            FutureBuilder<int>(
+              future: getCurrentNavigationIndex(),
+              builder: (context, AsyncSnapshot<int> snapshot) {
+                if (snapshot.hasData) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text("Seite:", style: TextStyle(fontSize: 20)),
+                      Container(
+                        width: 200,
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(color: darkAccent),
+                        child: DropdownButtonFormField(
+                          value: pages[snapshot.data!],
+                          icon: const Icon(Icons.expand_more),
+                          decoration: InputDecoration(
+                            enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent)),
+                          ),
+                          onChanged: (String? newValue) async {
+                            await Future.delayed(Duration(seconds: 2));
+                            setState(() {
+                              currentNavigationIndex = 1;
+                            });
+                          },
+                          items: pages.map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(value: value, child: Text(value));
+                          }).toList(),
+                        ),
+                      ),
+                    ],
+                  );
+                } else {
+                  return Container();
+                }
+              },
+            ),
+            SizedBox(height: 10),
             LayoutBuilder(
               builder: (context, constraints) {
                 const double borderWidth = 1.0;
@@ -60,8 +107,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   },
                   borderWidth: borderWidth,
                   borderRadius: BorderRadius.circular(8),
-                  color: defaultOnPrimary, // Unselected text/icon color
-                  selectedColor: defaultOnPrimary, // Selected text/icon color (for contrast)
+                  color: Colors.white, // Unselected text/icon color
+                  selectedColor: Colors.white, // Selected text/icon color (for contrast)
                   fillColor: darkAccent, // Selected background
                   splashColor: transparentWhite, // Ripple effect on tap
                   highlightColor: transparentWhite, // Pressed color effect
@@ -98,8 +145,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 );
               },
             ),
-
-            Text('You have pushed the button this many times:'),
+            Expanded(child: Center(child: Text('Kamera erscheint wenn Livestream ausgewählt ist'))),
           ],
         ),
       ),

@@ -25,6 +25,7 @@ final ThemeData appTheme = ThemeData(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
     ),
   ),
+  canvasColor: darkAccent,
   textTheme: const TextTheme(
     headlineSmall: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
     titleMedium: TextStyle(color: Colors.white),

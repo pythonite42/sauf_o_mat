@@ -92,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<int> getCurrentNavigationIndex() async {
     await Future.delayed(Duration(seconds: 2));
     setState(() {
-      currentNavigationIndex = 1;
+      currentNavigationIndex = 0;
     });
     return currentNavigationIndex;
   }
@@ -116,7 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     children: [
                       const Text("Seite:", style: TextStyle(fontSize: 20)),
                       Container(
-                        width: 200,
+                        width: MediaQuery.of(context).size.width * 0.6,
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         decoration: BoxDecoration(color: darkAccent),
                         child: DropdownButtonFormField<String>(

@@ -45,42 +45,6 @@ class _MyHomePageState extends State<MyHomePage> {
   WebSocketChannel? channel;
   RTCPeerConnection? peerConnection;
 
-  /*  Future<void> _startCamera() async {
-    final Map<String, dynamic> mediaConstraints = {
-      'audio': false,
-      'video': {'facingMode': 'environment', 'width': 1280, 'height': 720, 'frameRate': 30},
-    };
-
-    try {
-      _localStream = await navigator.mediaDevices.getUserMedia(mediaConstraints);
-      _localRenderer.srcObject = _localStream;
-    } catch (e) {
-      print('Error getting user media: $e');
-    }
-  }
-
-  Future<void> _stopCamera() async {
-    try {
-      if (_localStream != null) {
-        // Stop all media tracks (both video and audio)
-        for (var track in _localStream!.getTracks()) {
-          track.stop();
-        }
-
-        // Release the stream
-        _localStream = null;
-      }
-
-      // Disconnect the stream from the renderer
-      _localRenderer.srcObject = null;
-
-      // Optionally trigger a rebuild if UI depends on camera state
-      setState(() {});
-    } catch (e) {
-      print('Error stopping camera: $e');
-    }
-  } */
-
   void connectToServer() {
     try {
       channel = WebSocketChannel.connect(Uri.parse("ws://192.168.2.49:8080"));
@@ -175,7 +139,6 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _showCamera = true;
     });
-    //makeCall();
   }
 
   void makeCall() async {
@@ -255,7 +218,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
       // Dispose and re-create the renderer so it's fresh next time
       await localVideo.dispose();
-      //await localVideo.initialize();
       channel = null;
       print("✅ Livestream cleaned up");
     } catch (e) {
@@ -265,9 +227,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    /* connectToServer();
-    localVideo.initialize();
-    initialization(); */
     super.initState();
   }
 
@@ -290,28 +249,6 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     final List<bool> selected = [false, false];
     selected[selectedIndex] = true;
-    /*  return Scaffold(
-      appBar: AppBar(title: const Text("Flutter webrtc websocket")),
-      body: Stack(
-        children: [
-          Positioned(
-            right: 10,
-            child: SizedBox(height: 200, width: 200, child: RTCVideoView(localVideo, mirror: false)),
-          ),
-        ],
-      ),
-      floatingActionButton: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FloatingActionButton(
-            backgroundColor: Colors.green,
-            onPressed: () => {makeCall()},
-            child: const Icon(Icons.call_outlined),
-          ),
-        ],
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-    ); */
 
     return Scaffold(
       body: Padding(

@@ -77,10 +77,10 @@ class _PageDiagramState extends State<PageDiagram> {
   }
 
   Future<void> _loadChartData() async {
-    fetchSalesforceDataPageDiagram();
     try {
       Map generalSettings = await MockDataPage0().getChartSettings();
-      List<Map> newDataMapList = await MockDataPage0().getRandomChartData();
+      //List<Map> newDataMapList = await MockDataPage0().getRandomChartData();
+      List<Map> newDataMapList = await SalesforceService().fetchSalesforceDataPageDiagram();
       Map popupData = await MockDataPage0().getPopup();
 
       List<ChartData> newData = [];

@@ -112,7 +112,7 @@ class SalesforceService {
           "beer": (record["Anzahl_Bier_Wein_Schorle__c"]).toInt(),
           "shot": (record["AnzahlShots__c"]).toInt(),
           "lutz": (record["Anzahl_Kaffee_Lutz__c"]).toInt(),
-          "status": record["Status__c"],
+          "status": record["Status"],
         });
       }
       return returnData;

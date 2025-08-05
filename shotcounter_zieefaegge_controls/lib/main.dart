@@ -350,6 +350,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               await cleanupLivestream();
                               setState(() {
                                 _showCamera = false;
+                                _isRecordingRunning = false;
                               });
                             }
                           },

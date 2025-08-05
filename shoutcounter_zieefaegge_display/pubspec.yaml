@@ -17,6 +17,8 @@ dependencies:
   window_manager: ^0.4.3
   syncfusion_flutter_charts: ^29.2.5
   flutter_svg: ^2.2.0
+  flutter_webrtc: ^0.14.2
+  web_socket_channel: ^3.0.3
 
 dev_dependencies:
   flutter_test:

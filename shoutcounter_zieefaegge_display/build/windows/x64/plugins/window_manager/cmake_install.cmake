@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/sarah/Documents/Programmieren/shotcounter_zieefaegge/windows/flutter/ephemeral/.plugin_symlinks/window_manager/windows
+# Install script for directory: C:/Users/sarah/Documents/Programmieren/shotcounter_zieefaegge/shoutcounter_zieefaegge_display/windows/flutter/ephemeral/.plugin_symlinks/window_manager/windows
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

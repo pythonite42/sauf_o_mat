@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/sarah/Documents/Programmieren/shotcounter_zieefaegge/windows/runner
+# Install script for directory: C:/Users/sarah/Documents/Programmieren/shotcounter_zieefaegge/shoutcounter_zieefaegge_display/windows/runner
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <CustomBuild Include="C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\build\windows\x64\CMakeFiles\1c2f3e5abe9cc7faa6a4e9c88a4e6c65\generate.stamp.rule">
+    <CustomBuild Include="C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\shoutcounter_zieefaegge_display\build\windows\x64\CMakeFiles\95415217cc687a28ce57c78779829dc0\generate.stamp.rule">
       <Filter>CMake Rules</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="CMake Rules">
-      <UniqueIdentifier>{5A249428-70BC-3AE9-82E8-D2D56E48865C}</UniqueIdentifier>
+      <UniqueIdentifier>{F3F4E8CA-543F-3C22-A445-06492B83E8C5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

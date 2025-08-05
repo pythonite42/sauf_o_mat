@@ -2,19 +2,22 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\build\windows\x64\x64\Debug\ZERO_CHECK</FullPath>
+      <FullPath>C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\shoutcounter_zieefaegge_display\build\windows\x64\x64\Debug\ZERO_CHECK</FullPath>
     </ProjectOutput>
     <ProjectOutput>
-      <FullPath>C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\build\windows\x64\flutter\x64\Debug\flutter_assemble</FullPath>
+      <FullPath>C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\shoutcounter_zieefaegge_display\build\windows\x64\flutter\x64\Debug\flutter_assemble</FullPath>
     </ProjectOutput>
     <ProjectOutput>
-      <FullPath>C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\build\windows\x64\plugins\screen_retriever_windows\Debug\screen_retriever_windows_plugin.dll</FullPath>
+      <FullPath>C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\shoutcounter_zieefaegge_display\build\windows\x64\plugins\flutter_webrtc\Debug\flutter_webrtc_plugin.dll</FullPath>
     </ProjectOutput>
     <ProjectOutput>
-      <FullPath>C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\build\windows\x64\plugins\window_manager\Debug\window_manager_plugin.dll</FullPath>
+      <FullPath>C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\shoutcounter_zieefaegge_display\build\windows\x64\plugins\screen_retriever_windows\Debug\screen_retriever_windows_plugin.dll</FullPath>
     </ProjectOutput>
     <ProjectOutput>
-      <FullPath>C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\build\windows\x64\runner\Debug\shotcounter_zieefaegge.exe</FullPath>
+      <FullPath>C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\shoutcounter_zieefaegge_display\build\windows\x64\plugins\window_manager\Debug\window_manager_plugin.dll</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\shoutcounter_zieefaegge_display\build\windows\x64\runner\Debug\shotcounter_zieefaegge.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />

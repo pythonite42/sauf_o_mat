@@ -1,20 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <CustomBuild Include="C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\build\windows\x64\CMakeFiles\18583cc00f31111c894ab2dbe081a16c\flutter_windows.dll.rule">
+    <CustomBuild Include="C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\shoutcounter_zieefaegge_display\build\windows\x64\CMakeFiles\609124fd6bfbf912385ea08065d314a1\flutter_windows.dll.rule">
       <Filter>CMake Rules</Filter>
     </CustomBuild>
-    <CustomBuild Include="C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\build\windows\x64\CMakeFiles\a8eead576a395c550e883112ea07eb3c\flutter_assemble.rule">
+    <CustomBuild Include="C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\shoutcounter_zieefaegge_display\build\windows\x64\CMakeFiles\bcea29fc0b43d34564d40acf50e62089\flutter_assemble.rule">
       <Filter>CMake Rules</Filter>
     </CustomBuild>
-    <CustomBuild Include="C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\windows\flutter\CMakeLists.txt" />
+    <CustomBuild Include="C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\shoutcounter_zieefaegge_display\windows\flutter\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\build\windows\x64\flutter\CMakeFiles\flutter_assemble" />
+    <None Include="C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\shoutcounter_zieefaegge_display\build\windows\x64\flutter\CMakeFiles\flutter_assemble" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="CMake Rules">
-      <UniqueIdentifier>{5A249428-70BC-3AE9-82E8-D2D56E48865C}</UniqueIdentifier>
+      <UniqueIdentifier>{F3F4E8CA-543F-3C22-A445-06492B83E8C5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

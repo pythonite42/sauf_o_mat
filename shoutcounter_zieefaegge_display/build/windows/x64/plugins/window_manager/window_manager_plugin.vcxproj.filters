@@ -1,19 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\windows\flutter\ephemeral\.plugin_symlinks\window_manager\windows\window_manager.cpp">
+    <ClCompile Include="C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\shoutcounter_zieefaegge_display\windows\flutter\ephemeral\.plugin_symlinks\window_manager\windows\window_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\windows\flutter\ephemeral\.plugin_symlinks\window_manager\windows\window_manager_plugin.cpp">
+    <ClCompile Include="C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\shoutcounter_zieefaegge_display\windows\flutter\ephemeral\.plugin_symlinks\window_manager\windows\window_manager_plugin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\windows\flutter\ephemeral\.plugin_symlinks\window_manager\windows\CMakeLists.txt" />
+    <CustomBuild Include="C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\shoutcounter_zieefaegge_display\windows\flutter\ephemeral\.plugin_symlinks\window_manager\windows\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{3ACEF178-0BF1-369B-98E5-E6D00AE7EB9D}</UniqueIdentifier>
+      <UniqueIdentifier>{1A7A7801-602E-389E-B24D-9F18F3FE2E05}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

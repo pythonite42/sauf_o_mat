@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
 import 'dart:ui' as ui;
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+import 'dart:convert';
+import 'dart:typed_data';
 
 class PageLivestream extends StatefulWidget {
   const PageLivestream({super.key});
@@ -11,10 +15,314 @@ class PageLivestream extends StatefulWidget {
 }
 
 class _PageLivestreamState extends State<PageLivestream> {
+  /* RTCPeerConnection? _peerConnection;
+  MediaStream? _localStream;
+  final _remoteRenderer = RTCVideoRenderer();
+
+  @override
+  void dispose() {
+    _localStream?.dispose();
+    _remoteRenderer.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _remoteRenderer.initialize();
+    _peerConnection!.onIceCandidate = (RTCIceCandidate candidate) {
+      // Send this to other peer via signaling
+    };
+  }
+
+  Future<void> _createPeerConnection() async {
+    final configuration = {
+      'iceServers': [
+        {'urls': 'stun:stun.l.google.com:19302'}
+      ]
+    };
+
+    _peerConnection = await createPeerConnection(configuration);
+
+    // Add media tracks
+    if (_localStream != null) {
+      _localStream!.getTracks().forEach((track) {
+        _peerConnection!.addTrack(track, _localStream!);
+      });
+    }
+
+    // Handle ICE candidates
+    _peerConnection!.onIceCandidate = (candidate) {
+      // Send to signaling server
+      print('Send ICE candidate: ${candidate.toMap()}');
+    };
+  }
+
+  Future<void> _setRemoteOffer(String sdp) async {
+    _peerConnection = await createPeerConnection({
+      'iceServers': [
+        {'urls': 'stun:stun.l.google.com:19302'}
+      ]
+    });
+
+    _peerConnection!.onTrack = (event) {
+      // Attach to remote video view
+      _remoteRenderer.srcObject = event.streams.first;
+    };
+
+    await _peerConnection!.setRemoteDescription(
+      RTCSessionDescription(sdp, 'offer'),
+    );
+
+    await _createAndSendAnswer();
+  }
+
+  Future<void> _createAndSendAnswer() async {
+    RTCSessionDescription answer = await _peerConnection!.createAnswer();
+    await _peerConnection!.setLocalDescription(answer);
+
+    // Send answer.sdp and answer.type back to sender
+    print('Send answer SDP to sender: ${answer.sdp}');
+  }
+
+  Future<void> _addRemoteIceCandidate(String candidate, String sdpMid, int sdpMLineIndex) async {
+    await _peerConnection!.addCandidate(
+      RTCIceCandidate(candidate, sdpMid, sdpMLineIndex),
+    );
+  } */
+
+  final RTCVideoRenderer localVideo = RTCVideoRenderer();
+  final RTCVideoRenderer remoteVideo = RTCVideoRenderer();
+  late final MediaStream localStream;
+  late final WebSocketChannel channel;
+  MediaStream? remoteStream;
+  RTCPeerConnection? peerConnection;
+
+  // Connecting with websocket Server
+  void connectToServer() {
+    try {
+      channel = WebSocketChannel.connect(Uri.parse("ws://192.168.2.49:8080"));
+
+      // Listening to the socket event as a stream
+      channel.stream.listen(
+        (message) async {
+          // Convert Uint8List to String
+          final decodedMessage = utf8.decode(message as Uint8List);
+
+          // Now decode JSON
+          final Map<String, dynamic> decoded = jsonDecode(decodedMessage);
+          // If the client receive an offer
+          if (decoded["event"] == "offer") {
+            // Set the offer SDP to remote description
+            await peerConnection?.setRemoteDescription(
+              RTCSessionDescription(
+                decoded["data"]["sdp"],
+                decoded["data"]["type"],
+              ),
+            );
+
+            // Create an answer
+            RTCSessionDescription answer = await peerConnection!.createAnswer();
+
+            // Set the answer as an local description
+            await peerConnection!.setLocalDescription(answer);
+
+            // Send the answer to the other peer
+            channel.sink.add(
+              jsonEncode(
+                {
+                  "event": "answer",
+                  "data": answer.toMap(),
+                },
+              ),
+            );
+          }
+          // If client receive an Ice candidate from the peer
+          else if (decoded["event"] == "ice") {
+            // It add to the RTC peer connection
+            peerConnection?.addCandidate(RTCIceCandidate(
+                decoded["data"]["candidate"], decoded["data"]["sdpMid"], decoded["data"]["sdpMLineIndex"]));
+          }
+          // If Client recive an reply of their offer as answer
+
+          else if (decoded["event"] == "answer") {
+            await peerConnection
+                ?.setRemoteDescription(RTCSessionDescription(decoded["data"]["sdp"], decoded["data"]["type"]));
+          }
+          // If no condition fulfilled? printout the message
+          else {
+            print(decoded);
+          }
+        },
+      );
+    } catch (e) {
+      throw "ERROR $e";
+    }
+  }
+
+  // STUN server configuration
+  Map<String, dynamic> configuration = {
+    'iceServers': [
+      {
+        'urls': ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302']
+      }
+    ]
+  };
+
+  // This must be done as soon as app loads
+  void initialization() async {
+    // Getting video feed from the user camera
+    localStream = await navigator.mediaDevices.getUserMedia({'video': true, 'audio': false});
+
+    // Set the local video to display
+    localVideo.srcObject = localStream;
+    // Initializing the peer connecion
+    peerConnection = await createPeerConnection(configuration);
+    setState(() {});
+    // Adding the local media to peer connection
+    // When connection establish, it send to the remote peer
+    localStream.getTracks().forEach((track) {
+      peerConnection?.addTrack(track, localStream);
+    });
+  }
+
+  void makeCall() async {
+    // Creating a offer for remote peer
+    RTCSessionDescription offer = await peerConnection!.createOffer();
+
+    // Setting own SDP as local description
+    await peerConnection?.setLocalDescription(offer);
+
+    // Sending the offer
+    channel.sink.add(
+      jsonEncode(
+        {"event": "offer", "data": offer.toMap()},
+      ),
+    );
+  }
+
+  // Help to debug our code
+  void registerPeerConnectionListeners() {
+    peerConnection?.onIceGatheringState = (RTCIceGatheringState state) {
+      print('ICE gathering state changed: $state');
+    };
+
+    peerConnection?.onIceCandidate = (RTCIceCandidate candidate) {
+      channel.sink.add(
+        jsonEncode({"event": "ice", "data": candidate.toMap()}),
+      );
+    };
+
+    peerConnection?.onConnectionState = (RTCPeerConnectionState state) {
+      print('Connection state change: $state');
+    };
+
+    peerConnection?.onSignalingState = (RTCSignalingState state) {
+      print('Signaling state change: $state');
+    };
+    peerConnection?.onTrack = (RTCTrackEvent event) {
+      if (event.streams.isNotEmpty) {
+        remoteVideo.srcObject = event.streams.first;
+        print("✅ Remote stream received and attached");
+        setState(() {});
+      } else {
+        print("⚠️ Track received, but no stream available");
+      }
+    };
+    /* peerConnection?.onTrack = ((tracks) {
+      tracks.streams[0].getTracks().forEach((track) {
+        remoteStream?.addTrack(track);
+      });
+    });
+
+    // When stream is added from the remote peer
+    peerConnection?.onAddStream = (MediaStream stream) {
+      remoteVideo.srcObject = stream;
+      setState(() {});
+    }; */
+  }
+
+  @override
+  void initState() {
+    connectToServer();
+    localVideo.initialize();
+    remoteVideo.initialize();
+    initialization();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    peerConnection?.close();
+    localVideo.dispose();
+    remoteVideo.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     bool isKiss = false;
-    return LayoutBuilder(
+    return Column(children: [
+      Stack(
+        children: [
+          SizedBox(
+            height: MediaQuery.of(context).size.height - 100,
+            width: MediaQuery.of(context).size.width,
+            child: RTCVideoView(
+              remoteVideo,
+              mirror: false,
+            ),
+          ),
+          Positioned(
+            right: 10,
+            child: SizedBox(
+              height: 200,
+              width: 200,
+              child: RTCVideoView(
+                localVideo,
+                mirror: true,
+              ),
+            ),
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              FloatingActionButton(
+                backgroundColor: Colors.amberAccent,
+                onPressed: () => registerPeerConnectionListeners(),
+                child: const Icon(Icons.settings_applications_rounded),
+              ),
+              const SizedBox(width: 10),
+              FloatingActionButton(
+                backgroundColor: Colors.green,
+                onPressed: () => {makeCall()},
+                child: const Icon(Icons.call_outlined),
+              ),
+              const SizedBox(width: 10),
+              FloatingActionButton(
+                backgroundColor: Colors.redAccent,
+                onPressed: () {
+                  channel.sink.add(
+                    jsonEncode(
+                      {
+                        "event": "msg",
+                        "data": "Hi this is an offer",
+                      },
+                    ),
+                  );
+                },
+                child: const Icon(
+                  Icons.call_end_outlined,
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    ]);
+
+    /* return LayoutBuilder(
       builder: (context, constraints) {
         double size = constraints.biggest.shortestSide;
         return Center(
@@ -35,7 +343,7 @@ class _PageLivestreamState extends State<PageLivestream> {
                 ),
         );
       },
-    );
+    ); */
   }
 }
 

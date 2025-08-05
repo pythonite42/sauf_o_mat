@@ -1,30 +1,30 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\windows\flutter\ephemeral\.plugin_symlinks\screen_retriever_windows\windows\screen_retriever_windows_plugin_c_api.cpp">
+    <ClCompile Include="C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\shoutcounter_zieefaegge_display\windows\flutter\ephemeral\.plugin_symlinks\screen_retriever_windows\windows\screen_retriever_windows_plugin_c_api.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\windows\flutter\ephemeral\.plugin_symlinks\screen_retriever_windows\windows\screen_retriever_windows_plugin.cpp">
+    <ClCompile Include="C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\shoutcounter_zieefaegge_display\windows\flutter\ephemeral\.plugin_symlinks\screen_retriever_windows\windows\screen_retriever_windows_plugin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\windows\flutter\ephemeral\.plugin_symlinks\screen_retriever_windows\windows\include\screen_retriever_windows\screen_retriever_windows_plugin_c_api.h">
+    <ClInclude Include="C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\shoutcounter_zieefaegge_display\windows\flutter\ephemeral\.plugin_symlinks\screen_retriever_windows\windows\include\screen_retriever_windows\screen_retriever_windows_plugin_c_api.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\windows\flutter\ephemeral\.plugin_symlinks\screen_retriever_windows\windows\screen_retriever_windows_plugin.h">
+    <ClInclude Include="C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\shoutcounter_zieefaegge_display\windows\flutter\ephemeral\.plugin_symlinks\screen_retriever_windows\windows\screen_retriever_windows_plugin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\windows\flutter\ephemeral\.plugin_symlinks\screen_retriever_windows\windows\CMakeLists.txt" />
+    <CustomBuild Include="C:\Users\sarah\Documents\Programmieren\shotcounter_zieefaegge\shoutcounter_zieefaegge_display\windows\flutter\ephemeral\.plugin_symlinks\screen_retriever_windows\windows\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{168AF735-9FA3-32DF-9D5B-AA1D728AD575}</UniqueIdentifier>
+      <UniqueIdentifier>{A9A6B9CA-B985-34F2-BAB2-F835F1E74E99}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{3ACEF178-0BF1-369B-98E5-E6D00AE7EB9D}</UniqueIdentifier>
+      <UniqueIdentifier>{1A7A7801-602E-389E-B24D-9F18F3FE2E05}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

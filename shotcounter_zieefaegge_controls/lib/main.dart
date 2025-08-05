@@ -39,10 +39,8 @@ class _MyHomePageState extends State<MyHomePage> {
   List<String> pages = ["Balkendiagramm", "Top 3", "Gewinn", "Ablaufplan", "Kommentare", "Werbung", "Livestream"];
 
   final RTCVideoRenderer localVideo = RTCVideoRenderer();
-  final RTCVideoRenderer remoteVideo = RTCVideoRenderer();
   late final MediaStream localStream;
   late final WebSocketChannel channel;
-  MediaStream? remoteStream;
   RTCPeerConnection? peerConnection;
 
   /*  Future<void> _startCamera() async {
@@ -159,6 +157,10 @@ class _MyHomePageState extends State<MyHomePage> {
     localStream.getTracks().forEach((track) {
       peerConnection?.addTrack(track, localStream);
     });
+
+    print("initialization");
+    registerPeerConnectionListeners();
+    makeCall();
   }
 
   void makeCall() async {
@@ -191,32 +193,14 @@ class _MyHomePageState extends State<MyHomePage> {
       print('Signaling state change: $state');
     };
     peerConnection?.onTrack = (RTCTrackEvent event) {
-      if (event.streams.isNotEmpty) {
-        remoteVideo.srcObject = event.streams.first;
-        print("✅ Remote stream received and attached");
-        setState(() {});
-      } else {
-        print("⚠️ Track received, but no stream available");
-      }
+      print("⚠️ Track received, but no stream available");
     };
-    /*peerConnection?.onTrack = ((tracks) {
-      tracks.streams[0].getTracks().forEach((track) {
-        remoteStream?.addTrack(track);
-      });
-    });
-
-     // When stream is added from the remote peer
-    peerConnection?.onAddStream = (MediaStream stream) {
-      remoteVideo.srcObject = stream;
-      setState(() {});
-    }; */
   }
 
   @override
   void initState() {
     connectToServer();
     localVideo.initialize();
-    remoteVideo.initialize();
     initialization();
     super.initState();
   }
@@ -225,7 +209,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void dispose() {
     peerConnection?.close();
     localVideo.dispose();
-    remoteVideo.dispose();
     super.dispose();
   }
 
@@ -283,11 +266,6 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(title: const Text("Flutter webrtc websocket")),
       body: Stack(
         children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: RTCVideoView(remoteVideo, mirror: false),
-          ),
           Positioned(
             right: 10,
             child: SizedBox(height: 200, width: 200, child: RTCVideoView(localVideo, mirror: false)),
@@ -298,26 +276,9 @@ class _MyHomePageState extends State<MyHomePage> {
         mainAxisSize: MainAxisSize.min,
         children: [
           FloatingActionButton(
-            backgroundColor: Colors.amberAccent,
-            onPressed: () {
-              print("settings pressed");
-              registerPeerConnectionListeners();
-            },
-            child: const Icon(Icons.settings_applications_rounded),
-          ),
-          const SizedBox(width: 10),
-          FloatingActionButton(
             backgroundColor: Colors.green,
             onPressed: () => {makeCall()},
             child: const Icon(Icons.call_outlined),
-          ),
-          const SizedBox(width: 10),
-          FloatingActionButton(
-            backgroundColor: Colors.redAccent,
-            onPressed: () {
-              channel.sink.add(jsonEncode({"event": "msg", "data": "Hi this is an offer"}));
-            },
-            child: const Icon(Icons.call_end_outlined),
           ),
         ],
       ),

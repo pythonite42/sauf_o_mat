@@ -15,86 +15,7 @@ class PageLivestream extends StatefulWidget {
 }
 
 class _PageLivestreamState extends State<PageLivestream> {
-  /* RTCPeerConnection? _peerConnection;
-  MediaStream? _localStream;
-  final _remoteRenderer = RTCVideoRenderer();
-
-  @override
-  void dispose() {
-    _localStream?.dispose();
-    _remoteRenderer.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    _remoteRenderer.initialize();
-    _peerConnection!.onIceCandidate = (RTCIceCandidate candidate) {
-      // Send this to other peer via signaling
-    };
-  }
-
-  Future<void> _createPeerConnection() async {
-    final configuration = {
-      'iceServers': [
-        {'urls': 'stun:stun.l.google.com:19302'}
-      ]
-    };
-
-    _peerConnection = await createPeerConnection(configuration);
-
-    // Add media tracks
-    if (_localStream != null) {
-      _localStream!.getTracks().forEach((track) {
-        _peerConnection!.addTrack(track, _localStream!);
-      });
-    }
-
-    // Handle ICE candidates
-    _peerConnection!.onIceCandidate = (candidate) {
-      // Send to signaling server
-      print('Send ICE candidate: ${candidate.toMap()}');
-    };
-  }
-
-  Future<void> _setRemoteOffer(String sdp) async {
-    _peerConnection = await createPeerConnection({
-      'iceServers': [
-        {'urls': 'stun:stun.l.google.com:19302'}
-      ]
-    });
-
-    _peerConnection!.onTrack = (event) {
-      // Attach to remote video view
-      _remoteRenderer.srcObject = event.streams.first;
-    };
-
-    await _peerConnection!.setRemoteDescription(
-      RTCSessionDescription(sdp, 'offer'),
-    );
-
-    await _createAndSendAnswer();
-  }
-
-  Future<void> _createAndSendAnswer() async {
-    RTCSessionDescription answer = await _peerConnection!.createAnswer();
-    await _peerConnection!.setLocalDescription(answer);
-
-    // Send answer.sdp and answer.type back to sender
-    print('Send answer SDP to sender: ${answer.sdp}');
-  }
-
-  Future<void> _addRemoteIceCandidate(String candidate, String sdpMid, int sdpMLineIndex) async {
-    await _peerConnection!.addCandidate(
-      RTCIceCandidate(candidate, sdpMid, sdpMLineIndex),
-    );
-  } */
-
-  final RTCVideoRenderer localVideo = RTCVideoRenderer();
   final RTCVideoRenderer remoteVideo = RTCVideoRenderer();
-  late final MediaStream localStream;
   late final WebSocketChannel channel;
   MediaStream? remoteStream;
   RTCPeerConnection? peerConnection;
@@ -172,19 +93,12 @@ class _PageLivestreamState extends State<PageLivestream> {
 
   // This must be done as soon as app loads
   void initialization() async {
-    // Getting video feed from the user camera
-    localStream = await navigator.mediaDevices.getUserMedia({'video': true, 'audio': false});
-
-    // Set the local video to display
-    localVideo.srcObject = localStream;
     // Initializing the peer connecion
     peerConnection = await createPeerConnection(configuration);
     setState(() {});
-    // Adding the local media to peer connection
-    // When connection establish, it send to the remote peer
-    localStream.getTracks().forEach((track) {
-      peerConnection?.addTrack(track, localStream);
-    });
+
+    print("initialization");
+    registerPeerConnectionListeners();
   }
 
   void makeCall() async {
@@ -230,7 +144,7 @@ class _PageLivestreamState extends State<PageLivestream> {
         print("⚠️ Track received, but no stream available");
       }
     };
-    /* peerConnection?.onTrack = ((tracks) {
+    peerConnection?.onTrack = ((tracks) {
       tracks.streams[0].getTracks().forEach((track) {
         remoteStream?.addTrack(track);
       });
@@ -240,13 +154,12 @@ class _PageLivestreamState extends State<PageLivestream> {
     peerConnection?.onAddStream = (MediaStream stream) {
       remoteVideo.srcObject = stream;
       setState(() {});
-    }; */
+    };
   }
 
   @override
   void initState() {
     connectToServer();
-    localVideo.initialize();
     remoteVideo.initialize();
     initialization();
     super.initState();
@@ -255,7 +168,6 @@ class _PageLivestreamState extends State<PageLivestream> {
   @override
   void dispose() {
     peerConnection?.close();
-    localVideo.dispose();
     remoteVideo.dispose();
     super.dispose();
   }
@@ -274,26 +186,9 @@ class _PageLivestreamState extends State<PageLivestream> {
               mirror: false,
             ),
           ),
-          Positioned(
-            right: 10,
-            child: SizedBox(
-              height: 200,
-              width: 200,
-              child: RTCVideoView(
-                localVideo,
-                mirror: true,
-              ),
-            ),
-          ),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              FloatingActionButton(
-                backgroundColor: Colors.amberAccent,
-                onPressed: () => registerPeerConnectionListeners(),
-                child: const Icon(Icons.settings_applications_rounded),
-              ),
-              const SizedBox(width: 10),
               FloatingActionButton(
                 backgroundColor: Colors.green,
                 onPressed: () => {makeCall()},

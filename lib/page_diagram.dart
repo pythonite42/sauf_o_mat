@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shotcounter_zieefaegge/backend_mockdata.dart';
+import 'package:shotcounter_zieefaegge/backend_connection.dart';
 import 'package:shotcounter_zieefaegge/colors.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -75,6 +76,7 @@ class _PageDiagramState extends State<PageDiagram> {
   }
 
   Future<void> _loadChartData() async {
+    fetchSalesforceDataPageDiagram();
     try {
       Map generalSettings = await MockDataPage0().getChartSettings();
       List<Map> newDataMapList = await MockDataPage0().getRandomChartData();

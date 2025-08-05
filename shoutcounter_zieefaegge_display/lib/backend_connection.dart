@@ -102,7 +102,7 @@ class SalesforceService {
   Future<List<Map>> fetchSalesforceDataPageDiagram() async {
     try {
       final data = await getRequest(
-          'SELECT Anzahl_Bargetr_nke__c , Anzahl_Bier_Wein_Schorle__c , Anzahl_Kaffee_Lutz__c , AnzahlShots__c , NAME FROM Team__c');
+          'SELECT Anzahl_Bargetr_nke__c , Anzahl_Bier_Wein_Schorle__c , Anzahl_Kaffee_Lutz__c , AnzahlShots__c , NAME, StatusDisplay__c FROM Team__c');
       var records = data["records"];
       List<Map> returnData = [];
       for (var record in records) {
@@ -112,7 +112,7 @@ class SalesforceService {
           "beer": (record["Anzahl_Bier_Wein_Schorle__c"]).toInt(),
           "shot": (record["AnzahlShots__c"]).toInt(),
           "lutz": (record["Anzahl_Kaffee_Lutz__c"]).toInt(),
-          "status": record["Status"],
+          "status": record["StatusDisplay__c"],
         });
       }
       return returnData;

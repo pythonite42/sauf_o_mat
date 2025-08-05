@@ -37,6 +37,8 @@ class _MyHomePageState extends State<MyHomePage> {
   int selectedIndex = 0;
   int currentNavigationIndex = 0;
   List<String> pages = ["Balkendiagramm", "Top 3", "Gewinn", "Ablaufplan", "Kommentare", "Werbung", "Livestream"];
+  bool _showCamera = false;
+  bool _isRecordingRunning = false;
 
   final RTCVideoRenderer localVideo = RTCVideoRenderer();
   late final MediaStream localStream;
@@ -160,7 +162,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     print("initialization");
     registerPeerConnectionListeners();
-    makeCall();
+    //makeCall();
   }
 
   void makeCall() async {
@@ -197,11 +199,37 @@ class _MyHomePageState extends State<MyHomePage> {
     };
   }
 
+  Future<void> pauseCamera() async {
+    try {
+      if (localStream != null) {
+        for (var track in localStream.getVideoTracks()) {
+          track.enabled = false; // Stop sending frames
+        }
+        print("📷 Camera paused");
+      }
+    } catch (e) {
+      print("❌ Error pausing camera: $e");
+    }
+  }
+
+  Future<void> resumeCamera() async {
+    try {
+      if (localStream != null) {
+        for (var track in localStream.getVideoTracks()) {
+          track.enabled = true; // Resume sending frames
+        }
+        print("📷 Camera resumed");
+      }
+    } catch (e) {
+      print("❌ Error resuming camera: $e");
+    }
+  }
+
   @override
   void initState() {
-    connectToServer();
+    /* connectToServer();
     localVideo.initialize();
-    initialization();
+    initialization(); */
     super.initState();
   }
 
@@ -211,44 +239,6 @@ class _MyHomePageState extends State<MyHomePage> {
     localVideo.dispose();
     super.dispose();
   }
-
-  /* RTCPeerConnection? _peerConnection;
-
-  Future<void> _createPeerConnection() async {
-    final configuration = {
-      'iceServers': [
-        {'urls': 'stun:stun.l.google.com:19302'},
-      ],
-    };
-
-    _peerConnection = await createPeerConnection(configuration);
-
-    // Add media tracks
-    if (_localStream != null) {
-      _localStream!.getTracks().forEach((track) {
-        _peerConnection!.addTrack(track, _localStream!);
-      });
-    }
-
-    // Handle ICE candidates
-    _peerConnection!.onIceCandidate = (candidate) {
-      // Send to signaling server
-      print('Send ICE candidate: ${candidate.toMap()}');
-    };
-  }
-
-  Future<void> _createOffer() async {
-    RTCSessionDescription offer = await _peerConnection!.createOffer();
-    await _peerConnection!.setLocalDescription(offer);
-
-    // Send `offer.sdp` and `offer.type` via signaling to receiver
-    print('Send offer SDP to remote: ${offer.sdp}');
-  }
-
-  Future<void> _setRemoteAnswer(String sdp) async {
-    var description = RTCSessionDescription(sdp, 'answer');
-    await _peerConnection!.setRemoteDescription(description);
-  } */
 
   Future<int> getCurrentNavigationIndex() async {
     await Future.delayed(Duration(seconds: 2));
@@ -262,7 +252,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     final List<bool> selected = [false, false];
     selected[selectedIndex] = true;
-    return Scaffold(
+    /*  return Scaffold(
       appBar: AppBar(title: const Text("Flutter webrtc websocket")),
       body: Stack(
         children: [
@@ -283,9 +273,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-    );
+    ); */
 
-    /*return Scaffold(
+    return Scaffold(
       body: Padding(
         padding: const EdgeInsets.only(top: 50),
         child: Column(
@@ -315,13 +305,15 @@ class _MyHomePageState extends State<MyHomePage> {
                             });
 
                             if (newValue == "Livestream") {
-                              await _startCamera();
+                              connectToServer();
+                              localVideo.initialize();
+                              initialization();
                               setState(() {
                                 _showCamera = true;
                               });
                             } else {
-                              _localStream?.dispose();
-                              _localRenderer.srcObject = null;
+                              peerConnection?.close();
+                              localVideo.dispose();
                               setState(() {
                                 _showCamera = false;
                               });
@@ -407,7 +399,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SizedBox(width: width, height: height, child: RTCVideoView(_localRenderer, mirror: false)),
+                            SizedBox(width: width, height: height, child: RTCVideoView(localVideo, mirror: false)),
                             Container(
                               width: width,
                               height: controlBarHeight,
@@ -415,11 +407,10 @@ class _MyHomePageState extends State<MyHomePage> {
                               child: IconButton(
                                 onPressed: () async {
                                   if (_isRecordingRunning) {
-                                    //stop sending data
-                                    //await _stopCamera();
+                                    await pauseCamera();
                                   } else {
-                                    //send data
-                                    //await _startCamera();
+                                    await resumeCamera();
+                                    makeCall();
                                   }
 
                                   setState(() {
@@ -443,6 +434,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-    );*/
+    );
   }
 }

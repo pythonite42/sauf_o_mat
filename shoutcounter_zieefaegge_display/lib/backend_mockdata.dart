@@ -10,7 +10,7 @@ import 'dart:math';
 class MockDataNavigation {
   Future<int> getPageIndex() async {
     await Future.delayed(Duration(seconds: 2));
-    return 6;
+    return 0;
   }
 }
 
@@ -173,7 +173,7 @@ class MockDataPage2 {
     await Future.delayed(Duration(seconds: 2));
     return {
       "groupName": "Wollbacher Stachelbieschter",
-      "remainingTimeSeconds": 304,
+      "remainingTimeSeconds": 304, //selbst berechnen, vorher festgelegte Uhrzeiten
       "headline": 'Gewinne zwei Biersäulen!',
       "subline":
           'Sauft Sauft Sauft, zwei Säulen gehen auf unsSauft Sauft Sauft, zwei Säulen gehen auf unsSauft Sauft Sauft, zwei Säulen gehen auf unsSauft Sauft Sauft, zwei Säulen gehen auf unsSauft Sauft Sauft, zwei Säulen gehen auf uns',

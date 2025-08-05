@@ -1,44 +1,124 @@
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:io';
+import 'package:jose/jose.dart';
+import 'package:http/http.dart' as http;
 
-const accessToken =
-    'eyJ0bmsiOiJjb3JlL3Byb2QvMDBEMDYwMDAwMDFaSzVHRUFXIiwidmVyIjoiMS4wIiwia2lkIjoiQ09SRV9BVEpXVC4wMEQwNjAwMDAwMVpLNUcuMTcxMjg0NTU4MTQ5NSIsInR0eSI6InNmZGMtY29yZS10b2tlbiIsInR5cCI6IkpXVCIsImFsZyI6IlJTMjU2In0.eyJzY3AiOiJhcGkiLCJhdWQiOlsiaHR0cHM6Ly9obW1obXVsdGltZWRpYWhhdXNhZzktZGV2LWVkLmRldmVsb3AubXkuc2FsZXNmb3JjZS5jb20iXSwic3ViIjoidWlkOjAwNTA2MDAwMDBHOWd5N0FBQiIsIm5iZiI6MTc1NDM5Mjc4MywibXR5Ijoib2F1dGgiLCJzZmkiOiI2MzNlMjM1YWJkYmYyZDFlMTY4ZGVkMGY5NzEzOWU1ZGQwMzAxOTU1NWFjYWNlNTZhYWUyOWFlM2M0OGIxYzAzIiwicm9sZXMiOltdLCJpc3MiOiJodHRwczovL2htbWhtdWx0aW1lZGlhaGF1c2FnOS1kZXYtZWQuZGV2ZWxvcC5teS5zYWxlc2ZvcmNlLmNvbSIsImhzYyI6ZmFsc2UsImV4cCI6MTc1NDM5NDU5OCwiaWF0IjoxNzU0MzkyNzk4LCJjbGllbnRfaWQiOiIzTVZHOV9rWmNMZGU3VTVyZUNGVTdtdEFYLlViNHdZenhpUW52dFVUVGJ6Lk9KamMuN0VIa1hPWEdiODlfRXBxc3hCMUl0YmNNM0xQaGZlNlptbVJkIn0.KLB-8BGYBccm6bVDmWu60SP9APrVLQkSQhfmSBC2hzb2_WJjMnqwvrTVuRsDYJ0T79BtuG6QXl6UTZHUSWxuvP3NJwQsoJa58vL1sZeSp8qGwk0pEoyoiJNh3G9wVn0T_JpQ0RnKzw07S-mgP0qGAiOv3zu7QrybXySv0hScizrYLk5K6451MvzUGJHboUscaMwMAs_XanSi-1j34gGdy5E2APg6kUX5VKfgZjT6i20WBlEbyW58USjAO6yqMQvaVkxPiEnTvUWhUeYtAapldTGn-w6KsfRmHgJQIYls7zg-NTo7o24NZIJz6hs2ADbJwLlkgO_O-QpBAoF1Bclcug';
-const instanceUrl = 'https://hmmhmultimediahausag9-dev-ed.develop.my.salesforce.com';
+/// Singleton service to handle Salesforce JWT integration
+class SalesforceService {
+  static final SalesforceService _instance = SalesforceService._internal();
+  factory SalesforceService() => _instance;
+  SalesforceService._internal();
 
-Future<dynamic> fetchSalesforceData(String soql) async {
-  final url = Uri.parse('$instanceUrl/services/data/v59.0/query/?q=$soql');
+  String? _cachedToken;
+  DateTime? _tokenExpiry;
 
-  final response = await http.get(
-    url,
-    headers: {
-      'Authorization': 'Bearer $accessToken',
-      'Content-Type': 'application/json',
-    },
-  );
+  final String consumerKey = '3MVG9_kZcLde7U5reCFU7mtAX.Ub4wYzxiQnvtUTTbz.OJjc.7EHkXOXGb89_EpqsxB1ItbcM3LPhfe6ZmmRd';
+  final String username = 'simon.weiske@hmmh.de';
+  final String loginUrl = 'https://hmmhmultimediahausag9-dev-ed.develop.my.salesforce.com/';
+  final String privateKeyPath = 'assets/server.key';
 
-  if (response.statusCode == 200) {
-    final data = jsonDecode(response.body);
-    print('Salesforce response from endpoint $soql: $data');
-    return data;
-  } else {
-    print('Failed soql $soql: ${response.statusCode} - ${response.body}');
-    return null;
+  /// Returns a valid access token, caching it until it expires
+  Future<String> getAccessToken() async {
+    if (_cachedToken != null && _tokenExpiry != null && DateTime.now().isBefore(_tokenExpiry!)) {
+      return _cachedToken!;
+    }
+
+    return await _fetchNewToken();
   }
-}
 
-Future<int?> fetchSalesforceDataNavigationIndex() async {
-  final data = await fetchSalesforceData('navigationIndex');
-  return data;
-}
+  /// Generates a signed JWT and exchanges it for a Salesforce access token
+  Future<String> _fetchNewToken() async {
+    final privateKeyPem = await File(privateKeyPath).readAsString();
 
-Future<List<Map>> fetchSalesforceDataPageDiagram() async {
-  var query = prepareSOQL(
-      "SELECT Anzahl_Bargetr_nke__c , Anzahl_Bier_Wein_Schorle__c , Anzahl_Kaffee_Lutz__c , AnzahlShots__c , NAME FROM Team__c");
-  final data = await fetchSalesforceData(query);
-  print(data);
-  return data is List ? List<Map>.from(data) : [];
-}
+    final key = JsonWebKey.fromPem(privateKeyPem);
+    final jwtBuilder = JsonWebSignatureBuilder()
+      ..jsonContent = {
+        'iss': consumerKey,
+        'sub': username,
+        'aud': loginUrl,
+        'exp': DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000 + 180, // 3 minutes
+      }
+      ..setProtectedHeader('alg', 'RS256')
+      ..addRecipient(key, algorithm: 'RS256');
 
-String prepareSOQL(String rawSOQL) {
-  return rawSOQL.replaceAll(" ", "+");
+    final signedJwt = jwtBuilder.build().toCompactSerialization();
+
+    final response = await http.post(
+      Uri.parse('$loginUrl/services/oauth2/token'),
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: {
+        'grant_type': 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+        'assertion': signedJwt,
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to fetch Salesforce token: ${response.body}');
+    }
+
+    final json = jsonDecode(response.body);
+    _cachedToken = json['access_token'];
+    _tokenExpiry = DateTime.now().add(Duration(minutes: 10)); // Short buffer
+
+    return _cachedToken!;
+  }
+
+  /// Generic GET request to Salesforce API
+  Future<Map<String, dynamic>> getRequest(String soql) async {
+    final token = await getAccessToken();
+    final response = await http.get(
+      Uri.parse('$loginUrl/services/data/v61.0/query/?q=$soql'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 401) {
+      // Token may have expired early -> retry once
+      _cachedToken = null;
+      final retryToken = await getAccessToken();
+      return await _retryGet(soql, retryToken);
+    }
+
+    if (response.statusCode != 200) {
+      throw Exception('Salesforce API Error: ${response.body}');
+    }
+
+    return jsonDecode(response.body);
+  }
+
+  Future<Map<String, dynamic>> _retryGet(String rawSoql, String token) async {
+    var soql = rawSoql.replaceAll(" ", "+");
+    final response = await http.get(
+      Uri.parse('$loginUrl/services/data/v61.0/query/?q=$soql'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Salesforce API Error after retry: ${response.body}');
+    }
+
+    return jsonDecode(response.body);
+  }
+
+  Future<List<Map>> fetchSalesforceDataPageDiagram() async {
+    try {
+      final data = await getRequest(
+          'SELECT Anzahl_Bargetr_nke__c , Anzahl_Bier_Wein_Schorle__c , Anzahl_Kaffee_Lutz__c , AnzahlShots__c , NAME FROM Team__c');
+      var records = data["records"];
+      List<Map> returnData = [];
+      for (var record in records) {
+        returnData.add({
+          "group": record["Name"],
+          "longdrink": (record["Anzahl_Bargetr_nke__c"]).toInt(),
+          "beer": (record["Anzahl_Bier_Wein_Schorle__c"]).toInt(),
+          "shot": (record["AnzahlShots__c"]).toInt(),
+          "lutz": (record["Anzahl_Kaffee_Lutz__c"]).toInt(),
+          "status": record["Status__c"],
+        });
+      }
+      return returnData;
+    } catch (e) {
+      print('Error: $e');
+      return [];
+    }
+  }
 }

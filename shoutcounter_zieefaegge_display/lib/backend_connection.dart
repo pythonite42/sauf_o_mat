@@ -85,6 +85,43 @@ class SalesforceService {
     return jsonDecode(response.body);
   }
 
+  /// Generic PATCH request to Salesforce API
+  Future<void> patchRequest(String id, String table, Map body) async {
+    final token = await getAccessToken();
+    final uri = Uri.parse('$loginUrl/services/data/v61.0/sobject/$table/$id');
+    final response = await http.patch(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode == 401) {
+      // Token may have expired -> retry once
+      _cachedToken = null;
+      final retryToken = await getAccessToken();
+      final retryResponse = await http.patch(
+        uri,
+        headers: {
+          'Authorization': 'Bearer $retryToken',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(body),
+      );
+
+      if (retryResponse.statusCode < 200 || retryResponse.statusCode >= 300) {
+        throw Exception('Salesforce PATCH Error: ${retryResponse.body}');
+      }
+      return;
+    }
+
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw Exception('Salesforce PATCH Error: ${response.body}');
+    }
+  }
+
   Future<Map<String, dynamic>> _retryGet(String rawSoql, String token) async {
     var soql = rawSoql.replaceAll(" ", "+");
     final response = await http.get(
@@ -142,6 +179,16 @@ class SalesforceService {
     } catch (e) {
       print('Error: $e');
       return [];
+    }
+  }
+
+  Future<bool> setSalesforceDataPageQueryUsed(String id, bool wasUsed) async {
+    try {
+      patchRequest(id, "SocialMediaComment__c", {"WasUsed__c": wasUsed});
+      return true;
+    } catch (e) {
+      print('Error: $e');
+      return false;
     }
   }
 }

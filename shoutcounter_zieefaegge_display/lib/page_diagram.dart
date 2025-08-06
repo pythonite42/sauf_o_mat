@@ -661,9 +661,9 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
               SizedBox(height: MySize(context).h * 0.03),
               Text(
                 leader,
-                style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 50)),
+                style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 60)),
               ),
-              SizedBox(height: MySize(context).h * 0.03),
+              SizedBox(height: MySize(context).h * 0.01),
 
               /* Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

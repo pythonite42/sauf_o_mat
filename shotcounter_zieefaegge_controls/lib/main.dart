@@ -180,6 +180,7 @@ class _MyHomePageState extends State<MyHomePage> {
       if (localStream != null) {
         for (var track in localStream!.getVideoTracks()) {
           track.enabled = false; // Stop sending frames
+          channel?.sink.add(jsonEncode({"event": "paused"}));
         }
         print("📷 Camera paused");
       }
@@ -193,6 +194,7 @@ class _MyHomePageState extends State<MyHomePage> {
       if (localStream != null) {
         for (var track in localStream!.getVideoTracks()) {
           track.enabled = true; // Resume sending frames
+          channel?.sink.add(jsonEncode({"event": "resumed"}));
         }
         print("📷 Camera resumed");
       }

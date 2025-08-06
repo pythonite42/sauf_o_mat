@@ -22,6 +22,8 @@ class _PageLivestreamState extends State<PageLivestream> {
   MediaStream? remoteStream;
   RTCPeerConnection? peerConnection;
 
+  bool videoIsRunning = false;
+
   Future<void> connectToServer() async {
     try {
       final socket = await WebSocket.connect("ws://192.168.2.49:8080");
@@ -51,6 +53,16 @@ class _PageLivestreamState extends State<PageLivestream> {
               await peerConnection?.setRemoteDescription(
                 RTCSessionDescription(decoded["data"]["sdp"], decoded["data"]["type"]),
               );
+            } else if (decoded["event"] == "paused") {
+              print("🚫 Remote video paused");
+              setState(() {
+                videoIsRunning = false;
+              });
+            } else if (decoded["event"] == "resumed") {
+              print("▶️ Remote video resumed");
+              setState(() {
+                videoIsRunning = true;
+              });
             } else {
               print(decoded);
             }
@@ -85,23 +97,7 @@ class _PageLivestreamState extends State<PageLivestream> {
     peerConnection = await createPeerConnection(configuration);
     setState(() {});
 
-    print("initialization");
     registerPeerConnectionListeners();
-  }
-
-  void makeCall() async {
-    // Creating a offer for remote peer
-    RTCSessionDescription offer = await peerConnection!.createOffer();
-
-    // Setting own SDP as local description
-    await peerConnection?.setLocalDescription(offer);
-
-    // Sending the offer
-    channel.sink.add(
-      jsonEncode(
-        {"event": "offer", "data": offer.toMap()},
-      ),
-    );
   }
 
   // Help to debug our code
@@ -123,7 +119,7 @@ class _PageLivestreamState extends State<PageLivestream> {
     peerConnection?.onSignalingState = (RTCSignalingState state) {
       print('Signaling state change: $state');
     };
-    peerConnection?.onTrack = (RTCTrackEvent event) {
+    /* peerConnection?.onTrack = (RTCTrackEvent event) {
       if (event.streams.isNotEmpty) {
         remoteVideo.srcObject = event.streams.first;
         print("✅ Remote stream received and attached");
@@ -131,7 +127,7 @@ class _PageLivestreamState extends State<PageLivestream> {
       } else {
         print("⚠️ Track received, but no stream available");
       }
-    };
+    }; */
     peerConnection?.onTrack = ((tracks) {
       tracks.streams[0].getTracks().forEach((track) {
         remoteStream?.addTrack(track);
@@ -163,70 +159,37 @@ class _PageLivestreamState extends State<PageLivestream> {
   @override
   Widget build(BuildContext context) {
     bool isKiss = false;
-    return Column(children: [
-      Stack(
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height - 100,
-            width: MediaQuery.of(context).size.width,
-            child: RTCVideoView(
-              remoteVideo,
-              mirror: false,
-            ),
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              FloatingActionButton(
-                backgroundColor: Colors.green,
-                onPressed: () => {makeCall()},
-                child: const Icon(Icons.call_outlined),
-              ),
-              const SizedBox(width: 10),
-              FloatingActionButton(
-                backgroundColor: Colors.redAccent,
-                onPressed: () {
-                  channel.sink.add(
-                    jsonEncode(
-                      {
-                        "event": "msg",
-                        "data": "Hi this is an offer",
-                      },
-                    ),
-                  );
-                },
-                child: const Icon(
-                  Icons.call_end_outlined,
-                ),
-              ),
-            ],
-          )
-        ],
-      ),
-    ]);
-
-    /* return LayoutBuilder(
+    return LayoutBuilder(
       builder: (context, constraints) {
         double size = constraints.biggest.shortestSide;
         return Center(
-          child: isKiss
-              ? ClipPath(
-                  clipper: HeartClipper(),
-                  child: Container(
-                    width: size,
-                    height: size,
-                    color: Colors.greenAccent,
+          child: videoIsRunning
+              ? SizedBox(
+                  height: MediaQuery.of(context).size.height - 100,
+                  width: MediaQuery.of(context).size.width,
+                  child: RTCVideoView(
+                    remoteVideo,
+                    mirror: false,
                   ),
                 )
-              : Container(
-                  width: size,
-                  height: size,
-                  padding: EdgeInsets.symmetric(vertical: MySize(context).h * 0.05),
-                  child: BeerGlassImageStack(size: size),
-                ),
+              : isKiss
+                  ? ClipPath(
+                      clipper: HeartClipper(),
+                      child: Container(
+                        width: size,
+                        height: size,
+                        color: Colors.greenAccent,
+                      ),
+                    )
+                  : Container(
+                      width: size,
+                      height: size,
+                      padding: EdgeInsets.symmetric(vertical: MySize(context).h * 0.05),
+                      child: BeerGlassImageStack(size: size),
+                    ),
         );
       },
-    ); */
+    );
   }
 }
 

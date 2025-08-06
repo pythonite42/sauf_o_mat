@@ -23,6 +23,7 @@ class _PageLivestreamState extends State<PageLivestream> {
   RTCPeerConnection? peerConnection;
 
   bool videoIsRunning = false;
+  bool isKiss = false;
 
   Future<void> connectToServer() async {
     try {
@@ -62,6 +63,14 @@ class _PageLivestreamState extends State<PageLivestream> {
               print("▶️ Remote video resumed");
               setState(() {
                 videoIsRunning = true;
+              });
+            } else if (decoded["selectedCam"] == 0) {
+              setState(() {
+                isKiss = false;
+              });
+            } else if (decoded["selectedCam"] == 1) {
+              setState(() {
+                isKiss = true;
               });
             } else {
               print(decoded);
@@ -158,7 +167,6 @@ class _PageLivestreamState extends State<PageLivestream> {
 
   @override
   Widget build(BuildContext context) {
-    bool isKiss = true;
     return LayoutBuilder(
       builder: (context, constraints) {
         double size = constraints.biggest.shortestSide;

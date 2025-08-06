@@ -321,6 +321,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       }
                       selectedIndex = index;
                     });
+                    channel?.sink.add(jsonEncode({"selectedCam": index}));
                   },
                   borderWidth: borderWidth,
                   borderRadius: BorderRadius.circular(8),

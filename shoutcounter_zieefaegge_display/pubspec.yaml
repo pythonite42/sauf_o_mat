@@ -39,6 +39,7 @@ flutter:
     - assets/parchment.png
     - assets/arrow_up.svg
     - assets/beer_foam.svg
+    - assets/cowboy_chasing.gif
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

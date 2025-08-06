@@ -638,13 +638,25 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
               Divider(thickness: 2),
               SizedBox(height: MySize(context).h * 0.03),
               Container(
+                padding: EdgeInsets.only(top: MySize(context).w * 0.01, right: MySize(context).w * 0.01),
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: Colors.brown.shade900,
                     width: 4,
                   ),
                 ),
-                child: Image.asset('assets/mock_logo.png', height: MySize(context).h * 0.3),
+                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  Stack(
+                    children: [
+                      Image.asset('assets/cowboy_chasing.gif', fit: BoxFit.cover, width: MySize(context).w * 0.18),
+                      Positioned(
+                          top: MySize(context).h * 0.037,
+                          left: MySize(context).w * 0.065,
+                          child: Image.asset('assets/mock_logo.png', width: MySize(context).w * 0.03)),
+                    ],
+                  ),
+                  Image.asset('assets/mock_logo.png', width: MySize(context).w * 0.1),
+                ]),
               ),
               SizedBox(height: MySize(context).h * 0.03),
               Text(

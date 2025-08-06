@@ -628,7 +628,7 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
             children: [
               Text(
                 'WANTED',
-                style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 70)),
+                style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 80)),
               ),
               Divider(thickness: 2),
               Text(
@@ -658,7 +658,7 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
                   Image.asset('assets/mock_logo.png', width: MySize(context).w * 0.1),
                 ]),
               ),
-              SizedBox(height: MySize(context).h * 0.03),
+              SizedBox(height: MySize(context).h * 0.02),
               Text(
                 leader,
                 style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 60)),

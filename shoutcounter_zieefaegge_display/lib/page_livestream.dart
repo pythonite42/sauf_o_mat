@@ -6,6 +6,8 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'dart:convert';
 import 'dart:typed_data';
+import 'dart:io';
+import 'package:web_socket_channel/io.dart';
 
 class PageLivestream extends StatefulWidget {
   const PageLivestream({super.key});
@@ -20,65 +22,51 @@ class _PageLivestreamState extends State<PageLivestream> {
   MediaStream? remoteStream;
   RTCPeerConnection? peerConnection;
 
-  // Connecting with websocket Server
-  void connectToServer() {
+  Future<void> connectToServer() async {
     try {
-      channel = WebSocketChannel.connect(Uri.parse("ws://192.168.2.49:8080"));
+      final socket = await WebSocket.connect("ws://192.168.2.49:8080");
 
-      // Listening to the socket event as a stream
+      channel = IOWebSocketChannel(socket);
+
       channel.stream.listen(
         (message) async {
-          // Convert Uint8List to String
-          final decodedMessage = utf8.decode(message as Uint8List);
+          try {
+            final decodedMessage = utf8.decode(message as Uint8List);
+            final Map<String, dynamic> decoded = jsonDecode(decodedMessage);
 
-          // Now decode JSON
-          final Map<String, dynamic> decoded = jsonDecode(decodedMessage);
-          // If the client receive an offer
-          if (decoded["event"] == "offer") {
-            // Set the offer SDP to remote description
-            await peerConnection?.setRemoteDescription(
-              RTCSessionDescription(
-                decoded["data"]["sdp"],
-                decoded["data"]["type"],
-              ),
-            );
-
-            // Create an answer
-            RTCSessionDescription answer = await peerConnection!.createAnswer();
-
-            // Set the answer as an local description
-            await peerConnection!.setLocalDescription(answer);
-
-            // Send the answer to the other peer
-            channel.sink.add(
-              jsonEncode(
-                {
-                  "event": "answer",
-                  "data": answer.toMap(),
-                },
-              ),
-            );
+            if (decoded["event"] == "offer") {
+              await peerConnection?.setRemoteDescription(
+                RTCSessionDescription(decoded["data"]["sdp"], decoded["data"]["type"]),
+              );
+              RTCSessionDescription answer = await peerConnection!.createAnswer();
+              await peerConnection!.setLocalDescription(answer);
+              channel.sink.add(jsonEncode({"event": "answer", "data": answer.toMap()}));
+            } else if (decoded["event"] == "ice") {
+              peerConnection?.addCandidate(RTCIceCandidate(
+                decoded["data"]["candidate"],
+                decoded["data"]["sdpMid"],
+                decoded["data"]["sdpMLineIndex"],
+              ));
+            } else if (decoded["event"] == "answer") {
+              await peerConnection?.setRemoteDescription(
+                RTCSessionDescription(decoded["data"]["sdp"], decoded["data"]["type"]),
+              );
+            } else {
+              print(decoded);
+            }
+          } catch (e) {
+            print("❌ Error processing message: $e");
           }
-          // If client receive an Ice candidate from the peer
-          else if (decoded["event"] == "ice") {
-            // It add to the RTC peer connection
-            peerConnection?.addCandidate(RTCIceCandidate(
-                decoded["data"]["candidate"], decoded["data"]["sdpMid"], decoded["data"]["sdpMLineIndex"]));
-          }
-          // If Client recive an reply of their offer as answer
-
-          else if (decoded["event"] == "answer") {
-            await peerConnection
-                ?.setRemoteDescription(RTCSessionDescription(decoded["data"]["sdp"], decoded["data"]["type"]));
-          }
-          // If no condition fulfilled? printout the message
-          else {
-            print(decoded);
-          }
+        },
+        onError: (error) {
+          print("❌ WebSocket error: $error");
+        },
+        onDone: () {
+          print("⚠️ WebSocket closed");
         },
       );
     } catch (e) {
-      throw "ERROR $e";
+      print("❌ Could not connect: $e");
     }
   }
 

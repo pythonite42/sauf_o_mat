@@ -158,36 +158,50 @@ class _PageLivestreamState extends State<PageLivestream> {
 
   @override
   Widget build(BuildContext context) {
-    bool isKiss = false;
+    bool isKiss = true;
     return LayoutBuilder(
       builder: (context, constraints) {
         double size = constraints.biggest.shortestSide;
         return Center(
           child: videoIsRunning
-              ? /* SizedBox(
-                  height: MediaQuery.of(context).size.height - 100,
-                  width: MediaQuery.of(context).size.width,
-                  child: RTCVideoView(
-                    remoteVideo,
-                    mirror: false,
-                  ),
-                ) */
-              Container(
-                  width: size,
-                  height: size,
-                  padding: EdgeInsets.symmetric(vertical: MySize(context).h * 0.05),
-                  child: BeerGlassStack(
-                    size: size,
-                    videoRenderer: remoteVideo,
-                  ),
-                )
+              ? isKiss
+                  ? ClipPath(
+                      clipper: HeartClipper(),
+                      child: Container(
+                        width: size,
+                        height: size,
+                        child: RTCVideoView(
+                          remoteVideo,
+                          mirror: false,
+                          objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+                        ),
+                      ),
+                    )
+                  : Container(
+                      width: size,
+                      height: size,
+                      padding: EdgeInsets.symmetric(vertical: MySize(context).h * 0.05),
+                      child: BeerGlassStack(
+                        size: size,
+                        videoRenderer: remoteVideo,
+                      ),
+                    )
               : isKiss
                   ? ClipPath(
                       clipper: HeartClipper(),
                       child: Container(
                         width: size,
                         height: size,
-                        color: Colors.greenAccent,
+                        color: Color.fromARGB(172, 255, 255, 255),
+                        child: Center(
+                          child: SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 8,
+                            ),
+                          ),
+                        ),
                       ),
                     )
                   : Container(

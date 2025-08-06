@@ -54,7 +54,7 @@ class _PageDiagramState extends State<PageDiagram> {
   String imageUrl = "";
   String chaserGroupName = "";
   String leaderGroupName = "";
-  int difference = 0;
+  int leaderPoints = 0;
   String headline = "";
   String motivationalText = "";
 
@@ -106,7 +106,7 @@ class _PageDiagramState extends State<PageDiagram> {
           imageUrl = popupData["imageUrl"];
           chaserGroupName = popupData["chaserGroupName"];
           leaderGroupName = popupData["leaderGroupName"];
-          difference = popupData["difference"];
+          leaderPoints = popupData["leaderPoints"];
           headline = popupData["headline"];
           motivationalText = popupData["motivationalText"];
 
@@ -171,7 +171,7 @@ class _PageDiagramState extends State<PageDiagram> {
               initialImageUrl: imageUrl,
               initialLeader: leaderGroupName,
               initialChaser: chaserGroupName,
-              initialDiff: difference,
+              initialPointsOfLeader: leaderPoints,
               headline: headline,
               motivationalText: motivationalText,
             );
@@ -192,7 +192,7 @@ class _PageDiagramState extends State<PageDiagram> {
         _popupKey = null;
       } else if (_isPopupVisible && _popupKey?.currentState != null) {
         _popupKey?.currentState!
-            .updateData(imageUrl, leaderGroupName, chaserGroupName, difference, headline, motivationalText);
+            .updateData(imageUrl, leaderGroupName, chaserGroupName, leaderPoints, headline, motivationalText);
       }
     });
   }
@@ -508,7 +508,7 @@ class RacePopupWidget extends StatefulWidget {
   final String initialImageUrl;
   final String initialLeader;
   final String initialChaser;
-  final int initialDiff;
+  final int initialPointsOfLeader;
   final String headline;
   final String motivationalText;
 
@@ -516,7 +516,7 @@ class RacePopupWidget extends StatefulWidget {
     required this.initialImageUrl,
     required this.initialLeader,
     required this.initialChaser,
-    required this.initialDiff,
+    required this.initialPointsOfLeader,
     required this.headline,
     required this.motivationalText,
     super.key,
@@ -530,7 +530,7 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
   late String imageUrl;
   late String leader;
   late String chaser;
-  late int diff;
+  late int pointsOfLeader;
   late String headline;
   late String motivationalText;
 
@@ -540,18 +540,18 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
     imageUrl = widget.initialImageUrl;
     leader = widget.initialLeader;
     chaser = widget.initialChaser;
-    diff = widget.initialDiff;
+    pointsOfLeader = widget.initialPointsOfLeader;
     headline = widget.headline;
     motivationalText = widget.motivationalText;
   }
 
-  void updateData(String newImageUrl, String newLeader, String newChaser, int newDiff, String newHeadline,
+  void updateData(String newImageUrl, String newLeader, String newChaser, int newPointsOfLeader, String newHeadline,
       String newMotivationalText) {
     setState(() {
       imageUrl = newImageUrl;
       leader = newLeader;
       chaser = newChaser;
-      diff = newDiff;
+      pointsOfLeader = newPointsOfLeader;
       headline = newHeadline;
       motivationalText = newMotivationalText;
     });
@@ -661,16 +661,79 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
               SizedBox(height: MySize(context).h * 0.03),
               Text(
                 leader,
-                style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 40)),
+                style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 50)),
               ),
-              Text(
-                "Nur $diff Punkte unterschied",
-                style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
+              SizedBox(height: MySize(context).h * 0.03),
+
+              /* Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Mit ",
+                            style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
+                          ),
+                          Text(
+                            pointsOfLeader.toString(),
+                            style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 40)),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        " Punkten",
+                        style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Gejagt von ",
+                        style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
+                      ),
+                      Text(
+                        chaser,
+                        style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 40)),
+                      ),
+                    ],
+                  ),
+                ],
+              ) */
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Mit ",
+                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
+                  ),
+                  Text(
+                    pointsOfLeader.toString(),
+                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 40)),
+                  ),
+                  Text(
+                    " Punkten",
+                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
+                  ),
+                ],
               ),
-              Text(
-                "Gejagt von $chaser",
-                style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
-              )
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Gejagt von ",
+                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
+                  ),
+                  Text(
+                    chaser,
+                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 40)),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

@@ -5,6 +5,7 @@ import 'package:shotcounter_zieefaegge/colors.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:math';
+import 'package:google_fonts/google_fonts.dart';
 //import 'package:syncfusion_flutter_charts/charts.dart';
 
 class ChartData {
@@ -558,19 +559,21 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
+    return /* AlertDialog(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       content: SizedBox(
-        height: MySize(context).h * 0.6,
-        width: MySize(context).w * 0.5,
+        height: MySize(context).h * 0.8,
+        width: MySize(context).w * 0.7,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(height: MySize(context).h * 0.02),
             Text(
               '🍻 $headline',
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: cactusGreen),
+              style: GoogleFonts.rye(
+                textStyle: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: cactusGreen),
+              ),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: MySize(context).h * 0.02),
@@ -600,6 +603,64 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
               style: TextStyle(color: defaultOnPrimary, fontStyle: FontStyle.italic, fontSize: 18),
             ),
           ],
+        ),
+      ),
+    ); */
+        AlertDialog(
+      backgroundColor: Colors.transparent, // make dialog itself transparent
+      contentPadding: EdgeInsets.zero, // remove default padding
+      content: Container(
+        height: MySize(context).h * 0.9,
+        width: MySize(context).w * 0.42,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/parchment.png'),
+            fit: BoxFit.cover, // cover entire container
+          ),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: MySize(context).w * 0.05,
+            vertical: MySize(context).h * 0.07,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'WANTED',
+                style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 70)),
+              ),
+              Divider(thickness: 2),
+              Text(
+                'DEAD OR ALIVE',
+                style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 25)),
+              ),
+              Divider(thickness: 2),
+              SizedBox(height: MySize(context).h * 0.03),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.brown.shade900,
+                    width: 4,
+                  ),
+                ),
+                child: Image.asset('assets/mock_logo.png', height: MySize(context).h * 0.3),
+              ),
+              SizedBox(height: MySize(context).h * 0.03),
+              Text(
+                leader,
+                style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 40)),
+              ),
+              Text(
+                "Nur $diff Punkte unterschied",
+                style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
+              ),
+              Text(
+                "Gejagt von $chaser",
+                style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
+              )
+            ],
+          ),
         ),
       ),
     );

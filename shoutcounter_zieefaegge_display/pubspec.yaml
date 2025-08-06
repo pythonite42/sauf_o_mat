@@ -17,6 +17,7 @@ dependencies:
   window_manager: ^0.4.3
   syncfusion_flutter_charts: ^29.2.5
   flutter_svg: ^2.2.0
+  google_fonts: ^6.3.0
 
 dev_dependencies:
   flutter_test:
@@ -35,6 +36,7 @@ flutter:
     - assets/aufholjagd.png
     - assets/billboard.png
     - assets/scroll.png
+    - assets/parchment.png
     - assets/arrow_up.svg
     - assets/beer_foam.svg
 

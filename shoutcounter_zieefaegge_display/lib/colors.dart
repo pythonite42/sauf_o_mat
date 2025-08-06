@@ -58,6 +58,10 @@ final ThemeData appTheme = ThemeData(
       fontWeight: FontWeight.bold,
       fontFamily: 'Georgia',
     ),
+    titleLarge: TextStyle(
+      color: Colors.brown.shade800,
+      fontSize: 60,
+    ),
     titleMedium: TextStyle(
       color: Colors.brown.shade800,
       fontFamily: 'Georgia',

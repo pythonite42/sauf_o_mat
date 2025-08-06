@@ -210,251 +210,287 @@ class _PageDiagramState extends State<PageDiagram> {
 
   @override
   Widget build(BuildContext context) {
-    final padding = MySize(context).h * 0.08;
     final legendBoxSize = MySize(context).h * 0.045;
     final fontSizeLegend = 30.0;
 
-    return Padding(
-      padding: EdgeInsetsGeometry.all(padding),
-      child: Column(children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            SizedBox(width: MySize(context).w * 0.01),
-            Text("Leaderboard", style: TextStyle(fontSize: fontSizeLegend * 2, fontWeight: FontWeight.bold)),
-            SizedBox(width: MySize(context).w * 0.05),
-            Row(
-              children: [
-                Container(height: legendBoxSize, width: legendBoxSize, color: rustOrange),
-                SizedBox(width: MySize(context).w * 0.01),
-                Text("Bargetränk", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
-              ],
+    return Stack(
+      children: [
+        Align(
+          alignment: Alignment.topCenter,
+          child: SizedBox(
+            child: Image.asset(
+              'assets/scroll.png',
+              width: MySize(context).w,
+              fit: BoxFit.cover,
+              alignment: Alignment.topCenter,
             ),
-            Row(
-              children: [
-                Container(height: legendBoxSize, width: legendBoxSize, color: cactusGreen),
-                SizedBox(width: MySize(context).w * 0.01),
-                Text("Bier", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
-              ],
-            ),
-            Row(
-              children: [
-                Container(height: legendBoxSize, width: legendBoxSize, color: desertSand),
-                SizedBox(width: MySize(context).w * 0.01),
-                Text("Shot", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
-              ],
-            ),
-            Row(
-              children: [
-                Container(height: legendBoxSize, width: legendBoxSize, color: sunsetRed),
-                SizedBox(width: MySize(context).w * 0.01),
-                Text("Lutz", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
-              ],
-            ),
-          ],
+          ),
         ),
-        SizedBox(height: 50),
-        Expanded(
-          child: (_chartData == null || _chartData!.isEmpty)
-              ? Center(
-                  child: CircularProgressIndicator(color: defaultOnPrimary),
-                )
-              : LayoutBuilder(
-                  builder: (context, constraints) {
-                    var textStyle = TextStyle(fontSize: 30, color: defaultOnPrimary);
-                    var textPainter = TextPainter(
-                        text: TextSpan(text: "20", style: textStyle),
-                        maxLines: 1,
-                        //textScaler: TextScaler.linear(MediaQuery.of(context).textScaleFactor),
-                        textDirection: TextDirection.ltr);
-                    final Size size = (textPainter..layout()).size;
+        Padding(
+          padding: EdgeInsetsGeometry.only(
+            left: MySize(context).h * 0.2,
+            top: MySize(context).h * 0.12,
+            right: MySize(context).h * 0.08,
+            bottom: MySize(context).h * 0.04,
+          ),
+          child: Column(children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                /* SizedBox(width: MySize(context).w * 0.01),
+                Text("Leaderboard", style: TextStyle(fontSize: fontSizeLegend * 2, fontWeight: FontWeight.bold)),
+                SizedBox(width: MySize(context).w * 0.05), */
+                //SizedBox(width: MySize(context).w * 0.2),
+                SizedBox(width: MySize(context).w * 0.05),
 
-                    final availableHeight = constraints.maxHeight - size.height;
-                    barHeight = (availableHeight / totalBarsVisible);
-                    double frameLineWidth = 2;
-                    var gridLine = Container(width: 1, height: availableHeight, color: defaultOnPrimary);
-                    var groupNameWidth = constraints.maxWidth * groupNameSpaceFactor;
-                    var chartWidth = constraints.maxWidth - groupNameWidth;
+                Row(
+                  children: [
+                    Container(height: legendBoxSize, width: legendBoxSize, color: rustOrange),
+                    SizedBox(width: MySize(context).w * 0.01),
+                    Text("Bargetränk", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
+                  ],
+                ),
+                SizedBox(width: MySize(context).w * 0.05),
+                Row(
+                  children: [
+                    Container(height: legendBoxSize, width: legendBoxSize, color: cactusGreen),
+                    SizedBox(width: MySize(context).w * 0.01),
+                    Text("Bier", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
+                  ],
+                ),
+                SizedBox(width: MySize(context).w * 0.2),
+                Row(
+                  children: [
+                    Container(height: legendBoxSize, width: legendBoxSize, color: desertSand),
+                    SizedBox(width: MySize(context).w * 0.01),
+                    Text("Shot", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
+                  ],
+                ),
+                SizedBox(width: MySize(context).w * 0.05),
 
-                    int gridIntervalsDividableBy = 10;
-                    int emptyCountRightOfFirst = 10;
-                    if ((maxValue ?? 1) < 50) {
-                      gridIntervalsDividableBy = 5;
-                      emptyCountRightOfFirst = 3;
-                    }
+                Row(
+                  children: [
+                    Container(height: legendBoxSize, width: legendBoxSize, color: sunsetRed),
+                    SizedBox(width: MySize(context).w * 0.01),
+                    Text("Lutz", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(height: 50),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsetsGeometry.only(
+                  top: MySize(context).h * 0.1,
+                  right: MySize(context).w * 0.05,
+                ),
+                child: (_chartData == null || _chartData!.isEmpty)
+                    ? Center(
+                        child: CircularProgressIndicator(color: defaultOnScroll),
+                      )
+                    : LayoutBuilder(
+                        builder: (context, constraints) {
+                          var textStyle = TextStyle(fontSize: 30, color: defaultOnScroll);
+                          var textPainter = TextPainter(
+                              text: TextSpan(text: "20", style: textStyle),
+                              maxLines: 1,
+                              //textScaler: TextScaler.linear(MediaQuery.of(context).textScaleFactor),
+                              textDirection: TextDirection.ltr);
+                          final Size size = (textPainter..layout()).size;
 
-                    int chartMaxValue = maxValue ?? 1 + emptyCountRightOfFirst;
+                          final availableHeight = constraints.maxHeight - size.height;
+                          barHeight = (availableHeight / totalBarsVisible);
+                          double frameLineWidth = 2;
+                          var gridLine = Container(width: 1, height: availableHeight, color: defaultOnScroll);
+                          var groupNameWidth = constraints.maxWidth * groupNameSpaceFactor;
+                          var chartWidth = constraints.maxWidth - groupNameWidth;
 
-                    while (true) {
-                      if ((chartMaxValue / totalGridLinesVisible) % gridIntervalsDividableBy == 0) {
-                        break;
-                      } else {
-                        chartMaxValue++;
-                      }
-                    }
+                          int gridIntervalsDividableBy = 10;
+                          int emptyCountRightOfFirst = 10;
+                          if ((maxValue ?? 1) < 50) {
+                            gridIntervalsDividableBy = 5;
+                            emptyCountRightOfFirst = 3;
+                          }
 
-                    var gridInterval = chartMaxValue / totalGridLinesVisible;
+                          int chartMaxValue = maxValue ?? 1 + emptyCountRightOfFirst;
 
-                    return Stack(children: <Widget>[
-                      Positioned(
-                          left: groupNameWidth,
-                          child: Container(width: frameLineWidth, height: availableHeight, color: defaultOnPrimary)),
-                      Positioned(
-                          left: groupNameWidth,
-                          child: Container(width: chartWidth, height: frameLineWidth, color: defaultOnPrimary)),
-                      Positioned(
-                          left: groupNameWidth + chartWidth - frameLineWidth,
-                          child: Container(width: frameLineWidth, height: availableHeight, color: defaultOnPrimary)),
-                      Positioned(
-                          left: groupNameWidth,
-                          top: availableHeight - frameLineWidth,
-                          child: Container(width: chartWidth, height: frameLineWidth, color: defaultOnPrimary)),
-                      ...List.generate(
-                          (totalGridLinesVisible + 1).floor(),
-                          (index) => Positioned(
-                              left: groupNameWidth + index * (chartWidth / totalGridLinesVisible), child: gridLine)),
-                      ...List.generate(
-                        (totalGridLinesVisible).floor(),
-                        (index) => Positioned(
-                          left: groupNameWidth + (index + 1) * (chartWidth / totalGridLinesVisible),
-                          top: availableHeight,
-                          child: Text(
-                            ((index + 1) * gridInterval).toInt().toString(),
-                            style: textStyle,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: availableHeight,
-                        child: ScrollConfiguration(
-                          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-                          child: ListView.builder(
-                            controller: _scrollController,
-                            itemCount: _chartData?.length,
-                            itemBuilder: (context, index) {
-                              final data = _chartData?[index];
+                          while (true) {
+                            if ((chartMaxValue / totalGridLinesVisible) % gridIntervalsDividableBy == 0) {
+                              break;
+                            } else {
+                              chartMaxValue++;
+                            }
+                          }
 
-                              return SizedBox(
-                                height: barHeight,
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: groupNameWidth,
-                                      padding: EdgeInsets.only(right: 20),
+                          var gridInterval = chartMaxValue / totalGridLinesVisible;
+
+                          return Stack(children: <Widget>[
+                            Positioned(
+                                left: groupNameWidth,
+                                child:
+                                    Container(width: frameLineWidth, height: availableHeight, color: defaultOnScroll)),
+                            Positioned(
+                                left: groupNameWidth,
+                                child: Container(width: chartWidth, height: frameLineWidth, color: defaultOnScroll)),
+                            Positioned(
+                                left: groupNameWidth + chartWidth - frameLineWidth,
+                                child:
+                                    Container(width: frameLineWidth, height: availableHeight, color: defaultOnScroll)),
+                            Positioned(
+                                left: groupNameWidth,
+                                top: availableHeight - frameLineWidth,
+                                child: Container(width: chartWidth, height: frameLineWidth, color: defaultOnScroll)),
+                            ...List.generate(
+                                (totalGridLinesVisible + 1).floor(),
+                                (index) => Positioned(
+                                    left: groupNameWidth + index * (chartWidth / totalGridLinesVisible),
+                                    child: gridLine)),
+                            ...List.generate(
+                              (totalGridLinesVisible).floor(),
+                              (index) => Positioned(
+                                left: groupNameWidth + (index + 1) * (chartWidth / totalGridLinesVisible),
+                                top: availableHeight,
+                                child: Text(
+                                  ((index + 1) * gridInterval).toInt().toString(),
+                                  style: textStyle,
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: availableHeight,
+                              child: ScrollConfiguration(
+                                behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                                child: ListView.builder(
+                                  controller: _scrollController,
+                                  itemCount: _chartData?.length,
+                                  itemBuilder: (context, index) {
+                                    final data = _chartData?[index];
+
+                                    return SizedBox(
+                                      height: barHeight,
                                       child: Row(
                                         children: [
-                                          data?.status == "aufgestiegen"
-                                              ? SvgPicture.asset(
-                                                  'assets/arrow_up.svg',
-                                                  width: fontSizeLegend,
-                                                  height: fontSizeLegend,
-                                                  colorFilter: ColorFilter.mode(greenAccent, BlendMode.srcIn),
-                                                )
-                                              : data?.status == "abgestiegen"
-                                                  ? Transform.rotate(
-                                                      angle: pi,
-                                                      child: SvgPicture.asset(
+                                          Container(
+                                            width: groupNameWidth,
+                                            padding: EdgeInsets.only(right: 20),
+                                            child: Row(
+                                              children: [
+                                                data?.status == "aufgestiegen"
+                                                    ? SvgPicture.asset(
                                                         'assets/arrow_up.svg',
                                                         width: fontSizeLegend,
                                                         height: fontSizeLegend,
-                                                        colorFilter: ColorFilter.mode(redAccent, BlendMode.srcIn),
-                                                      ),
-                                                    )
-                                                  : SvgPicture.asset(
-                                                      'assets/arrow_up.svg',
-                                                      width: fontSizeLegend,
-                                                      height: fontSizeLegend,
-                                                      colorFilter:
-                                                          ColorFilter.mode(Colors.transparent, BlendMode.srcIn),
+                                                        colorFilter: ColorFilter.mode(greenAccent, BlendMode.srcIn),
+                                                      )
+                                                    : data?.status == "abgestiegen"
+                                                        ? Transform.rotate(
+                                                            angle: pi,
+                                                            child: SvgPicture.asset(
+                                                              'assets/arrow_up.svg',
+                                                              width: fontSizeLegend,
+                                                              height: fontSizeLegend,
+                                                              colorFilter: ColorFilter.mode(redAccent, BlendMode.srcIn),
+                                                            ),
+                                                          )
+                                                        : SvgPicture.asset(
+                                                            'assets/arrow_up.svg',
+                                                            width: fontSizeLegend,
+                                                            height: fontSizeLegend,
+                                                            colorFilter:
+                                                                ColorFilter.mode(Colors.transparent, BlendMode.srcIn),
+                                                          ),
+                                                Text(
+                                                  data?.group != null ? "  ${index + 1}.  " : '',
+                                                  style: TextStyle(
+                                                    fontSize: fontSizeLegend,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: fontColor,
+                                                  ),
+                                                ),
+                                                Flexible(
+                                                  child: Text(
+                                                    data?.group != null ? "${data?.group}" : '',
+                                                    style: TextStyle(
+                                                      fontSize: fontSizeLegend,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: fontColor,
                                                     ),
-                                          Text(
-                                            data?.group != null ? "  ${index + 1}.  " : '',
-                                            style: TextStyle(
-                                              fontSize: fontSizeLegend,
-                                              fontWeight: FontWeight.bold,
-                                              color: fontColor,
+                                                    softWrap: true,
+                                                    overflow: TextOverflow.visible,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                          Flexible(
-                                            child: Text(
-                                              data?.group != null ? "${data?.group}" : '',
-                                              style: TextStyle(
-                                                fontSize: fontSizeLegend,
-                                                fontWeight: FontWeight.bold,
-                                                color: fontColor,
-                                              ),
-                                              softWrap: true,
-                                              overflow: TextOverflow.visible,
+                                          Expanded(
+                                            child: LayoutBuilder(
+                                              builder: (context, constraints) {
+                                                final totalWidth = constraints.maxWidth;
+                                                final longdrink = (data?.longdrink ?? 0).toDouble();
+                                                final beer = (data?.beer ?? 0).toDouble();
+                                                final shot = (data?.shot ?? 0).toDouble();
+                                                final lutz = (data?.lutz ?? 0).toDouble();
+                                                final maximumValue = (maxValue ?? 0) + emptyCountRightOfFirst;
+
+                                                // Avoid division by zero
+                                                if (maximumValue == 0) return const SizedBox();
+
+                                                return Padding(
+                                                  padding: EdgeInsetsGeometry.symmetric(
+                                                      vertical: constraints.maxHeight * 0.15),
+                                                  child: index < 3
+                                                      ? Row(
+                                                          children: [
+                                                            Container(
+                                                              height: double.infinity,
+                                                              width: totalWidth * longdrink / maximumValue,
+                                                              color: rustOrange,
+                                                            ),
+                                                            Container(
+                                                              height: double.infinity,
+                                                              width: totalWidth * beer / maximumValue,
+                                                              color: cactusGreen,
+                                                            ),
+                                                            Container(
+                                                              height: double.infinity,
+                                                              width: totalWidth * shot / maximumValue,
+                                                              color: desertSand,
+                                                            ),
+                                                            Container(
+                                                              height: double.infinity,
+                                                              width: totalWidth * lutz / maximumValue,
+                                                              color: sunsetRed,
+                                                            ),
+                                                          ],
+                                                        )
+                                                      : Row(children: [
+                                                          Container(
+                                                            height: double.infinity,
+                                                            width: totalWidth *
+                                                                (longdrink + beer + shot + lutz) /
+                                                                maximumValue,
+                                                            color: Colors.grey,
+                                                          )
+                                                        ]),
+                                                );
+                                              },
                                             ),
-                                          ),
+                                          )
                                         ],
                                       ),
-                                    ),
-                                    Expanded(
-                                      child: LayoutBuilder(
-                                        builder: (context, constraints) {
-                                          final totalWidth = constraints.maxWidth;
-                                          final longdrink = (data?.longdrink ?? 0).toDouble();
-                                          final beer = (data?.beer ?? 0).toDouble();
-                                          final shot = (data?.shot ?? 0).toDouble();
-                                          final lutz = (data?.lutz ?? 0).toDouble();
-                                          final maximumValue = (maxValue ?? 0) + emptyCountRightOfFirst;
-
-                                          // Avoid division by zero
-                                          if (maximumValue == 0) return const SizedBox();
-
-                                          return Padding(
-                                            padding:
-                                                EdgeInsetsGeometry.symmetric(vertical: constraints.maxHeight * 0.15),
-                                            child: index < 3
-                                                ? Row(
-                                                    children: [
-                                                      Container(
-                                                        height: double.infinity,
-                                                        width: totalWidth * longdrink / maximumValue,
-                                                        color: rustOrange,
-                                                      ),
-                                                      Container(
-                                                        height: double.infinity,
-                                                        width: totalWidth * beer / maximumValue,
-                                                        color: cactusGreen,
-                                                      ),
-                                                      Container(
-                                                        height: double.infinity,
-                                                        width: totalWidth * shot / maximumValue,
-                                                        color: desertSand,
-                                                      ),
-                                                      Container(
-                                                        height: double.infinity,
-                                                        width: totalWidth * lutz / maximumValue,
-                                                        color: sunsetRed,
-                                                      ),
-                                                    ],
-                                                  )
-                                                : Row(children: [
-                                                    Container(
-                                                      height: double.infinity,
-                                                      width:
-                                                          totalWidth * (longdrink + beer + shot + lutz) / maximumValue,
-                                                      color: Colors.grey,
-                                                    )
-                                                  ]),
-                                          );
-                                        },
-                                      ),
-                                    )
-                                  ],
+                                    );
+                                  },
                                 ),
-                              );
-                            },
-                          ),
-                        ),
-                      )
-                    ]);
-                  },
-                ),
-        ),
-      ]),
+                              ),
+                            )
+                          ]);
+                        },
+                      ),
+              ),
+            ),
+          ]),
+        )
+      ],
     );
   }
 }

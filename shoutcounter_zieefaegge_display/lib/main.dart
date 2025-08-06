@@ -124,6 +124,7 @@ class _MyScaffoldState extends State<MyScaffold> {
                           },
                           padding: EdgeInsets.all(0),
                           icon: Icon(
+                            color: Theme.of(context).colorScheme.primary,
                             Icons.open_in_full,
                             size: fullscreenIconSize,
                           ),
@@ -139,7 +140,7 @@ class _MyScaffoldState extends State<MyScaffold> {
                           padding: EdgeInsets.all(0),
                           icon: Icon(
                             Icons.close_fullscreen,
-                            color: Color(0xFF1b31d1),
+                            color: Theme.of(context).colorScheme.secondary,
                             size: fullscreenIconSize,
                           ),
                         ),

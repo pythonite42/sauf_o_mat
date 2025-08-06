@@ -164,12 +164,21 @@ class _PageLivestreamState extends State<PageLivestream> {
         double size = constraints.biggest.shortestSide;
         return Center(
           child: videoIsRunning
-              ? SizedBox(
+              ? /* SizedBox(
                   height: MediaQuery.of(context).size.height - 100,
                   width: MediaQuery.of(context).size.width,
                   child: RTCVideoView(
                     remoteVideo,
                     mirror: false,
+                  ),
+                ) */
+              Container(
+                  width: size,
+                  height: size,
+                  padding: EdgeInsets.symmetric(vertical: MySize(context).h * 0.05),
+                  child: BeerGlassImageStack(
+                    size: size,
+                    videoRenderer: remoteVideo,
                   ),
                 )
               : isKiss
@@ -185,7 +194,7 @@ class _PageLivestreamState extends State<PageLivestream> {
                       width: size,
                       height: size,
                       padding: EdgeInsets.symmetric(vertical: MySize(context).h * 0.05),
-                      child: BeerGlassImageStack(size: size),
+                      child: BeerGlassImageStack(size: size, videoRenderer: null),
                     ),
         );
       },
@@ -193,55 +202,70 @@ class _PageLivestreamState extends State<PageLivestream> {
   }
 }
 
-class BeerGlassImageStack extends StatefulWidget {
-  const BeerGlassImageStack({super.key, required this.size});
+class BeerGlassImageStack extends StatelessWidget {
   final double size;
+  final RTCVideoRenderer? videoRenderer;
 
-  @override
-  State<BeerGlassImageStack> createState() => _BeerGlassImageStackState();
-}
-
-class _BeerGlassImageStackState extends State<BeerGlassImageStack> {
-  ui.Image? backgroundImage;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadImage('assets/mock_logo.png');
-  }
-
-  Future<void> _loadImage(String assetPath) async {
-    final data = await DefaultAssetBundle.of(context).load(assetPath);
-    final codec = await ui.instantiateImageCodec(data.buffer.asUint8List());
-    final frame = await codec.getNextFrame();
-    setState(() {
-      backgroundImage = frame.image;
-    });
-  }
+  const BeerGlassImageStack({
+    super.key,
+    required this.size,
+    required this.videoRenderer,
+  });
 
   @override
   Widget build(BuildContext context) {
-    double beerGlassWidth = widget.size * 0.6;
-    return backgroundImage == null
-        ? CircularProgressIndicator()
-        : Stack(alignment: Alignment.topCenter, children: [
-            // Beer glass body (custom painter)
-            Positioned(
-              top: widget.size * 0.11, // Adjust to fit under foam
-              child: CustomPaint(
-                painter: BeerGlassBorderPainter(image: backgroundImage!),
-                child: Container(
-                  width: beerGlassWidth,
-                  height: widget.size * 0.78,
-                  alignment: Alignment.center,
+    double beerGlassWidth = size * 0.6;
+
+    return Stack(
+      alignment: Alignment.topCenter,
+      children: [
+        // Glass border and clipping
+        if (videoRenderer != null)
+          Positioned(
+            top: size * 0.11, // adjust to match foam position
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20), // match your inner glass radius
+              child: SizedBox(
+                width: beerGlassWidth,
+                height: size * 0.78,
+                child: RTCVideoView(
+                  videoRenderer!,
+                  objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
                 ),
               ),
             ),
-            Positioned(
-              top: -widget.size * 0.24,
-              child: SvgPicture.asset('assets/beer_foam.svg', width: beerGlassWidth * 1.2),
-            )
-          ]);
+          ),
+        if (videoRenderer == null)
+          Positioned(
+            top: size * 0.45,
+            child: CircularProgressIndicator(
+              color: Color.fromARGB(172, 255, 255, 255),
+              strokeWidth: 8,
+            ),
+          ),
+
+        // Beer glass border overlay
+        Positioned(
+          top: size * 0.11,
+          child: CustomPaint(
+            painter: BeerGlassBorderPainter(), // adjust painter to only paint border
+            child: Container(
+              width: beerGlassWidth,
+              height: size * 0.78,
+            ),
+          ),
+        ),
+
+        // Foam on top
+        Positioned(
+          top: -size * 0.24,
+          child: SvgPicture.asset(
+            'assets/beer_foam.svg',
+            width: beerGlassWidth * 1.2,
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -299,10 +323,6 @@ class BeerGlassPainter extends CustomPainter {
 }
 
 class BeerGlassBorderPainter extends CustomPainter {
-  final ui.Image image;
-
-  BeerGlassBorderPainter({required this.image});
-
   @override
   void paint(Canvas canvas, Size size) {
     double strokeWidth = 6;
@@ -416,12 +436,12 @@ class BeerGlassBorderPainter extends CustomPainter {
 
     canvas.save();
     canvas.clipRRect(imageRRect);
-    canvas.drawImageRect(
+    /* canvas.drawImageRect(
       image,
       Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble()),
       imageRect,
       Paint(),
-    );
+    ); */
     canvas.restore();
 
     // 🧱 Draw outer borders (glass + handle)
@@ -431,7 +451,7 @@ class BeerGlassBorderPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant BeerGlassBorderPainter oldDelegate) {
-    return oldDelegate.image != image;
+    return false;
   }
 }
 

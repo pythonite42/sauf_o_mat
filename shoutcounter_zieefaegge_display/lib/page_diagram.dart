@@ -57,7 +57,7 @@ class _PageDiagramState extends State<PageDiagram> {
   String headline = "";
   String motivationalText = "";
 
-  Color fontColor = Colors.white;
+  Color fontColor = defaultOnScroll;
 
   @override
   void initState() {
@@ -290,7 +290,7 @@ class _PageDiagramState extends State<PageDiagram> {
                       )
                     : LayoutBuilder(
                         builder: (context, constraints) {
-                          var textStyle = TextStyle(fontSize: 30, color: defaultOnScroll);
+                          var textStyle = TextStyle(fontSize: 30, color: defaultOnScroll, fontWeight: FontWeight.bold);
                           var textPainter = TextPainter(
                               text: TextSpan(text: "20", style: textStyle),
                               maxLines: 1,
@@ -300,7 +300,7 @@ class _PageDiagramState extends State<PageDiagram> {
 
                           final availableHeight = constraints.maxHeight - size.height;
                           barHeight = (availableHeight / totalBarsVisible);
-                          double frameLineWidth = 2;
+                          double frameLineWidth = 4;
                           var gridLine = Container(width: 1, height: availableHeight, color: defaultOnScroll);
                           var groupNameWidth = constraints.maxWidth * groupNameSpaceFactor;
                           var chartWidth = constraints.maxWidth - groupNameWidth;
@@ -329,13 +329,13 @@ class _PageDiagramState extends State<PageDiagram> {
                                 left: groupNameWidth,
                                 child:
                                     Container(width: frameLineWidth, height: availableHeight, color: defaultOnScroll)),
-                            Positioned(
+                            /* Positioned(
                                 left: groupNameWidth,
-                                child: Container(width: chartWidth, height: frameLineWidth, color: defaultOnScroll)),
-                            Positioned(
+                                child: Container(width: chartWidth, height: frameLineWidth, color: defaultOnScroll)), */
+                            /* Positioned(
                                 left: groupNameWidth + chartWidth - frameLineWidth,
                                 child:
-                                    Container(width: frameLineWidth, height: availableHeight, color: defaultOnScroll)),
+                                    Container(width: frameLineWidth, height: availableHeight, color: defaultOnScroll)), */
                             Positioned(
                                 left: groupNameWidth,
                                 top: availableHeight - frameLineWidth,
@@ -436,43 +436,51 @@ class _PageDiagramState extends State<PageDiagram> {
                                                 if (maximumValue == 0) return const SizedBox();
 
                                                 return Padding(
-                                                  padding: EdgeInsetsGeometry.symmetric(
-                                                      vertical: constraints.maxHeight * 0.15),
-                                                  child: index < 3
-                                                      ? Row(
-                                                          children: [
-                                                            Container(
-                                                              height: double.infinity,
-                                                              width: totalWidth * longdrink / maximumValue,
-                                                              color: rustOrange,
-                                                            ),
-                                                            Container(
-                                                              height: double.infinity,
-                                                              width: totalWidth * beer / maximumValue,
-                                                              color: cactusGreen,
-                                                            ),
-                                                            Container(
-                                                              height: double.infinity,
-                                                              width: totalWidth * shot / maximumValue,
-                                                              color: desertSand,
-                                                            ),
-                                                            Container(
-                                                              height: double.infinity,
-                                                              width: totalWidth * lutz / maximumValue,
-                                                              color: sunsetRed,
-                                                            ),
-                                                          ],
+                                                    padding: EdgeInsetsGeometry.symmetric(
+                                                        vertical: constraints.maxHeight * 0.15),
+                                                    child: Stack(
+                                                      children: [
+                                                        index < 3
+                                                            ? Row(
+                                                                children: [
+                                                                  Container(
+                                                                    height: double.infinity,
+                                                                    width: totalWidth * longdrink / maximumValue,
+                                                                    color: rustOrange,
+                                                                  ),
+                                                                  Container(
+                                                                    height: double.infinity,
+                                                                    width: totalWidth * beer / maximumValue,
+                                                                    color: cactusGreen,
+                                                                  ),
+                                                                  Container(
+                                                                    height: double.infinity,
+                                                                    width: totalWidth * shot / maximumValue,
+                                                                    color: desertSand,
+                                                                  ),
+                                                                  Container(
+                                                                    height: double.infinity,
+                                                                    width: totalWidth * lutz / maximumValue,
+                                                                    color: sunsetRed,
+                                                                  ),
+                                                                ],
+                                                              )
+                                                            : Row(children: [
+                                                                Container(
+                                                                  height: double.infinity,
+                                                                  width: totalWidth *
+                                                                      (longdrink + beer + shot + lutz) /
+                                                                      maximumValue,
+                                                                  color: Colors.grey,
+                                                                )
+                                                              ]),
+                                                        Container(
+                                                          height: double.infinity,
+                                                          width: frameLineWidth,
+                                                          color: defaultOnScroll,
                                                         )
-                                                      : Row(children: [
-                                                          Container(
-                                                            height: double.infinity,
-                                                            width: totalWidth *
-                                                                (longdrink + beer + shot + lutz) /
-                                                                maximumValue,
-                                                            color: Colors.grey,
-                                                          )
-                                                        ]),
-                                                );
+                                                      ],
+                                                    ));
                                               },
                                             ),
                                           )

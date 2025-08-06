@@ -33,6 +33,7 @@ flutter:
     - assets/mock_logo.png
     - assets/bierpokal.jpg
     - assets/aufholjagd.png
+    - assets/billboard.png
     - assets/arrow_up.svg
     - assets/beer_foam.svg
 

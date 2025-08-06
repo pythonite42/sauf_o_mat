@@ -57,6 +57,8 @@ class _PageDiagramState extends State<PageDiagram> {
   String headline = "";
   String motivationalText = "";
 
+  Color fontColor = Colors.white;
+
   @override
   void initState() {
     super.initState();
@@ -223,28 +225,28 @@ class _PageDiagramState extends State<PageDiagram> {
             SizedBox(width: MySize(context).w * 0.05),
             Row(
               children: [
-                Container(height: legendBoxSize, width: legendBoxSize, color: Theme.of(context).colorScheme.secondary),
+                Container(height: legendBoxSize, width: legendBoxSize, color: rustOrange),
                 SizedBox(width: MySize(context).w * 0.01),
                 Text("Bargetränk", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
               ],
             ),
             Row(
               children: [
-                Container(height: legendBoxSize, width: legendBoxSize, color: Theme.of(context).colorScheme.tertiary),
+                Container(height: legendBoxSize, width: legendBoxSize, color: cactusGreen),
                 SizedBox(width: MySize(context).w * 0.01),
                 Text("Bier", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
               ],
             ),
             Row(
               children: [
-                Container(height: legendBoxSize, width: legendBoxSize, color: cyanAccent),
+                Container(height: legendBoxSize, width: legendBoxSize, color: desertSand),
                 SizedBox(width: MySize(context).w * 0.01),
                 Text("Shot", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
               ],
             ),
             Row(
               children: [
-                Container(height: legendBoxSize, width: legendBoxSize, color: redAccent),
+                Container(height: legendBoxSize, width: legendBoxSize, color: sunsetRed),
                 SizedBox(width: MySize(context).w * 0.01),
                 Text("Lutz", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
               ],
@@ -370,7 +372,7 @@ class _PageDiagramState extends State<PageDiagram> {
                                             style: TextStyle(
                                               fontSize: fontSizeLegend,
                                               fontWeight: FontWeight.bold,
-                                              color: Colors.white,
+                                              color: fontColor,
                                             ),
                                           ),
                                           Flexible(
@@ -379,7 +381,7 @@ class _PageDiagramState extends State<PageDiagram> {
                                               style: TextStyle(
                                                 fontSize: fontSizeLegend,
                                                 fontWeight: FontWeight.bold,
-                                                color: Colors.white,
+                                                color: fontColor,
                                               ),
                                               softWrap: true,
                                               overflow: TextOverflow.visible,
@@ -410,22 +412,22 @@ class _PageDiagramState extends State<PageDiagram> {
                                                       Container(
                                                         height: double.infinity,
                                                         width: totalWidth * longdrink / maximumValue,
-                                                        color: Theme.of(context).colorScheme.secondary,
+                                                        color: rustOrange,
                                                       ),
                                                       Container(
                                                         height: double.infinity,
                                                         width: totalWidth * beer / maximumValue,
-                                                        color: Theme.of(context).colorScheme.tertiary,
+                                                        color: cactusGreen,
                                                       ),
                                                       Container(
                                                         height: double.infinity,
                                                         width: totalWidth * shot / maximumValue,
-                                                        color: cyanAccent,
+                                                        color: desertSand,
                                                       ),
                                                       Container(
                                                         height: double.infinity,
                                                         width: totalWidth * lutz / maximumValue,
-                                                        color: redAccent,
+                                                        color: sunsetRed,
                                                       ),
                                                     ],
                                                   )
@@ -524,8 +526,7 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
             SizedBox(height: MySize(context).h * 0.02),
             Text(
               '🍻 $headline',
-              style:
-                  TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.tertiary),
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: cactusGreen),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: MySize(context).h * 0.02),
@@ -580,7 +581,7 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
         LinearProgressIndicator(
           value: progress,
           backgroundColor: Colors.white12,
-          valueColor: AlwaysStoppedAnimation<Color>(Colors.redAccent),
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.sunsetRed),
           minHeight: 10,
         ),
       ],
@@ -704,34 +705,34 @@ class _PageDiagramState extends State<PageDiagram> {
                 ? data.total
                 : (data.longdrink == null ? null : data.longdrink! * 2),
             name: 'Bargetränk',
-            color: Theme.of(context).colorScheme.secondary,
+            color: rustOrange,
             pointColorMapper: (data, index) =>
-                index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : Theme.of(context).colorScheme.secondary,
+                index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : rustOrange,
           ),
           StackedBarSeries<ChartData, String>(
             dataSource: visibleData,
             xValueMapper: (ChartData data, int index) => data.group,
             yValueMapper: (ChartData data, int index) => index < ((_chartData?.length ?? 0) - 3) ? 0 : data.beer,
             name: 'Bier',
-            color: Theme.of(context).colorScheme.tertiary,
+            color: cactusGreen,
             pointColorMapper: (data, index) =>
-                index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : Theme.of(context).colorScheme.tertiary,
+                index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : cactusGreen,
           ),
           StackedBarSeries<ChartData, String>(
             dataSource: visibleData,
             xValueMapper: (ChartData data, int index) => data.group,
             yValueMapper: (ChartData data, int index) => index < ((_chartData?.length ?? 0) - 3) ? 0 : data.shot,
             name: 'Shot',
-            color: cyanAccent,
-            pointColorMapper: (data, index) => index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : cyanAccent,
+            color: desertSand,
+            pointColorMapper: (data, index) => index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : desertSand,
           ),
           StackedBarSeries<ChartData, String>(
             dataSource: visibleData,
             xValueMapper: (ChartData data, int index) => data.group,
             yValueMapper: (ChartData data, int index) => index < ((_chartData?.length ?? 0) - 3) ? 0 : data.lutz,
             name: 'Lutz',
-            color: redAccent,
-            pointColorMapper: (data, index) => index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : redAccent,
+            color: sunsetRed,
+            pointColorMapper: (data, index) => index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : sunsetRed,
           ),
         ],
       ),

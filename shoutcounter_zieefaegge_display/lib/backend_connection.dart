@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:jose/jose.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// Singleton service to handle Salesforce JWT integration
 class SalesforceService {
@@ -12,9 +13,9 @@ class SalesforceService {
   String? _cachedToken;
   DateTime? _tokenExpiry;
 
-  final String consumerKey = '3MVG9_kZcLde7U5reCFU7mtAX.Ub4wYzxiQnvtUTTbz.OJjc.7EHkXOXGb89_EpqsxB1ItbcM3LPhfe6ZmmRd';
-  final String username = 'simon.weiske@hmmh.de';
-  final String loginUrl = 'https://hmmhmultimediahausag9-dev-ed.develop.my.salesforce.com/';
+  final String? consumerKey = dotenv.env['SALESFORCE_CONSUMER_KEY'];
+  final String? username = dotenv.env['SALESFORCE_USERNAME'];
+  final String? loginUrl = dotenv.env['SALESFORCE_LOGIN_URL'];
   final String privateKeyPath = 'assets/server.key';
 
   /// Returns a valid access token, caching it until it expires

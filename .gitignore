@@ -31,6 +31,8 @@ migrate_working_dir/
 .pub/
 **/build/
 **/shoutcounter_zieefaegge_display/build/
+**/.env
+**/shoutcounter_zieefaegge_display/assets/server.key
 
 
 # Symbolication related

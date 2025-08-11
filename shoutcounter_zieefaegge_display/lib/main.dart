@@ -11,6 +11,7 @@ import 'package:shotcounter_zieefaegge/page_schedule.dart';
 import 'package:shotcounter_zieefaegge/page_top3.dart';
 import 'package:shotcounter_zieefaegge/page_advertising.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 //TODO alle durations checken
 //TODO backend durations checken: statusDisplay
@@ -30,6 +31,7 @@ void main() async {
     await windowManager.show();
     await windowManager.focus();
   });
+  await dotenv.load(fileName: ".env");
 
   runApp(const MyApp());
 }

@@ -93,14 +93,14 @@ class _MyHomePageState extends State<MyHomePage> {
           }
           // If no condition fulfilled? printout the message
           else {
-            print(decoded);
+            debugPrint(decoded.toString());
           }
         } catch (e) {
-          print("ERROR $e");
+          debugPrint("ERROR $e");
         }
       });
     } catch (e) {
-      print("ERROR $e");
+      debugPrint("ERROR $e");
     }
   }
 
@@ -134,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
       peerConnection?.addTrack(track, localStream!);
     });
 
-    print("initialization");
+    debugPrint("initialization");
     registerPeerConnectionListeners();
     setState(() {
       _showCamera = true;
@@ -154,9 +154,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Help to debug our code
   void registerPeerConnectionListeners() {
-    print("registerPeerConnectionListeners");
+    debugPrint("registerPeerConnectionListeners");
     peerConnection?.onIceGatheringState = (RTCIceGatheringState state) {
-      print('ICE gathering state changed: $state');
+      debugPrint('ICE gathering state changed: $state');
     };
 
     peerConnection?.onIceCandidate = (RTCIceCandidate candidate) {
@@ -164,14 +164,14 @@ class _MyHomePageState extends State<MyHomePage> {
     };
 
     peerConnection?.onConnectionState = (RTCPeerConnectionState state) {
-      print('Connection state change: $state');
+      debugPrint('Connection state change: $state');
     };
 
     peerConnection?.onSignalingState = (RTCSignalingState state) {
-      print('Signaling state change: $state');
+      debugPrint('Signaling state change: $state');
     };
     peerConnection?.onTrack = (RTCTrackEvent event) {
-      print("⚠️ Track received, but no stream available");
+      debugPrint("⚠️ Track received, but no stream available");
     };
   }
 
@@ -182,10 +182,10 @@ class _MyHomePageState extends State<MyHomePage> {
           track.enabled = false; // Stop sending frames
           channel?.sink.add(jsonEncode({"event": "paused"}));
         }
-        print("📷 Camera paused");
+        debugPrint("📷 Camera paused");
       }
     } catch (e) {
-      print("❌ Error pausing camera: $e");
+      debugPrint("❌ Error pausing camera: $e");
     }
   }
 
@@ -196,10 +196,10 @@ class _MyHomePageState extends State<MyHomePage> {
           track.enabled = true; // Resume sending frames
           channel?.sink.add(jsonEncode({"event": "resumed"}));
         }
-        print("📷 Camera resumed");
+        debugPrint("📷 Camera resumed");
       }
     } catch (e) {
-      print("❌ Error resuming camera: $e");
+      debugPrint("❌ Error resuming camera: $e");
     }
   }
 
@@ -221,9 +221,9 @@ class _MyHomePageState extends State<MyHomePage> {
       // Dispose and re-create the renderer so it's fresh next time
       await localVideo.dispose();
       channel = null;
-      print("✅ Livestream cleaned up");
+      debugPrint("✅ Livestream cleaned up");
     } catch (e) {
-      print("❌ Error cleaning up livestream: $e");
+      debugPrint("❌ Error cleaning up livestream: $e");
     }
   }
 

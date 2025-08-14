@@ -40,7 +40,7 @@ class _PageLivestreamState extends State<PageLivestream> {
   // Help to debug our code
   void registerPeerConnectionListeners() {
     peerConnection?.onIceGatheringState = (RTCIceGatheringState state) {
-      print('ICE gathering state changed: $state');
+      debugPrint('ICE gathering state changed: $state');
     };
 
     peerConnection?.onIceCandidate = (RTCIceCandidate candidate) {
@@ -50,11 +50,11 @@ class _PageLivestreamState extends State<PageLivestream> {
     };
 
     peerConnection?.onConnectionState = (RTCPeerConnectionState state) {
-      print('Connection state change: $state');
+      debugPrint('Connection state change: $state');
     };
 
     peerConnection?.onSignalingState = (RTCSignalingState state) {
-      print('Signaling state change: $state');
+      debugPrint('Signaling state change: $state');
     };
 
     peerConnection?.onTrack = ((tracks) {
@@ -121,7 +121,7 @@ class _PageLivestreamState extends State<PageLivestream> {
               ? isKiss
                   ? ClipPath(
                       clipper: HeartClipper(),
-                      child: Container(
+                      child: SizedBox(
                         width: size,
                         height: size,
                         child: RTCVideoView(
@@ -217,7 +217,7 @@ class BeerGlassStack extends StatelessWidget {
           top: size * 0.11,
           child: CustomPaint(
             painter: BeerGlassBorderPainter(), // adjust painter to only paint border
-            child: Container(
+            child: SizedBox(
               width: beerGlassWidth,
               height: size * 0.78,
             ),

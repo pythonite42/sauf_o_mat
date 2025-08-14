@@ -10,6 +10,7 @@ import 'package:shotcounter_zieefaegge/page_quote.dart';
 import 'package:shotcounter_zieefaegge/page_schedule.dart';
 import 'package:shotcounter_zieefaegge/page_top3.dart';
 import 'package:shotcounter_zieefaegge/page_advertising.dart';
+import 'package:shotcounter_zieefaegge/server_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
 //TODO alle durations checken
@@ -30,6 +31,7 @@ void main() async {
     await windowManager.show();
     await windowManager.focus();
   });
+  await ServerManager().connect("ws://192.168.2.49:8080");
 
   runApp(const MyApp());
 }

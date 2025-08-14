@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
-import 'dart:ui' as ui;
+import 'package:shotcounter_zieefaegge/server_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
-import 'dart:convert';
-import 'dart:typed_data';
-import 'dart:io';
-import 'package:web_socket_channel/io.dart';
 
 class PageLivestream extends StatefulWidget {
   const PageLivestream({super.key});
@@ -18,78 +13,11 @@ class PageLivestream extends StatefulWidget {
 
 class _PageLivestreamState extends State<PageLivestream> {
   final RTCVideoRenderer remoteVideo = RTCVideoRenderer();
-  late final WebSocketChannel channel;
   MediaStream? remoteStream;
   RTCPeerConnection? peerConnection;
 
   bool videoIsRunning = false;
   bool isKiss = false;
-
-  Future<void> connectToServer() async {
-    try {
-      final socket = await WebSocket.connect("ws://192.168.2.49:8080");
-
-      channel = IOWebSocketChannel(socket);
-
-      channel.stream.listen(
-        (message) async {
-          try {
-            final decodedMessage = utf8.decode(message as Uint8List);
-            final Map<String, dynamic> decoded = jsonDecode(decodedMessage);
-
-            if (decoded["event"] == "offer") {
-              await peerConnection?.setRemoteDescription(
-                RTCSessionDescription(decoded["data"]["sdp"], decoded["data"]["type"]),
-              );
-              RTCSessionDescription answer = await peerConnection!.createAnswer();
-              await peerConnection!.setLocalDescription(answer);
-              channel.sink.add(jsonEncode({"event": "answer", "data": answer.toMap()}));
-            } else if (decoded["event"] == "ice") {
-              peerConnection?.addCandidate(RTCIceCandidate(
-                decoded["data"]["candidate"],
-                decoded["data"]["sdpMid"],
-                decoded["data"]["sdpMLineIndex"],
-              ));
-            } else if (decoded["event"] == "answer") {
-              await peerConnection?.setRemoteDescription(
-                RTCSessionDescription(decoded["data"]["sdp"], decoded["data"]["type"]),
-              );
-            } else if (decoded["event"] == "paused") {
-              print("🚫 Remote video paused");
-              setState(() {
-                videoIsRunning = false;
-              });
-            } else if (decoded["event"] == "resumed") {
-              print("▶️ Remote video resumed");
-              setState(() {
-                videoIsRunning = true;
-              });
-            } else if (decoded["selectedCam"] == 0) {
-              setState(() {
-                isKiss = false;
-              });
-            } else if (decoded["selectedCam"] == 1) {
-              setState(() {
-                isKiss = true;
-              });
-            } else {
-              print(decoded);
-            }
-          } catch (e) {
-            print("❌ Error processing message: $e");
-          }
-        },
-        onError: (error) {
-          print("❌ WebSocket error: $error");
-        },
-        onDone: () {
-          print("⚠️ WebSocket closed");
-        },
-      );
-    } catch (e) {
-      print("❌ Could not connect: $e");
-    }
-  }
 
   // STUN server configuration
   Map<String, dynamic> configuration = {
@@ -116,8 +44,8 @@ class _PageLivestreamState extends State<PageLivestream> {
     };
 
     peerConnection?.onIceCandidate = (RTCIceCandidate candidate) {
-      channel.sink.add(
-        jsonEncode({"event": "ice", "data": candidate.toMap()}),
+      ServerManager().send(
+        {"event": "ice", "data": candidate.toMap()},
       );
     };
 
@@ -128,15 +56,7 @@ class _PageLivestreamState extends State<PageLivestream> {
     peerConnection?.onSignalingState = (RTCSignalingState state) {
       print('Signaling state change: $state');
     };
-    /* peerConnection?.onTrack = (RTCTrackEvent event) {
-      if (event.streams.isNotEmpty) {
-        remoteVideo.srcObject = event.streams.first;
-        print("✅ Remote stream received and attached");
-        setState(() {});
-      } else {
-        print("⚠️ Track received, but no stream available");
-      }
-    }; */
+
     peerConnection?.onTrack = ((tracks) {
       tracks.streams[0].getTracks().forEach((track) {
         remoteStream?.addTrack(track);
@@ -150,16 +70,42 @@ class _PageLivestreamState extends State<PageLivestream> {
     };
   }
 
+  void handleSocketMessage(Map<String, dynamic> decoded) async {
+    if (decoded["event"] == "offer") {
+      await peerConnection?.setRemoteDescription(
+        RTCSessionDescription(decoded["data"]["sdp"], decoded["data"]["type"]),
+      );
+      RTCSessionDescription answer = await peerConnection!.createAnswer();
+      await peerConnection!.setLocalDescription(answer);
+      ServerManager().send({"event": "answer", "data": answer.toMap()});
+    } else if (decoded["event"] == "ice") {
+      peerConnection?.addCandidate(RTCIceCandidate(
+        decoded["data"]["candidate"],
+        decoded["data"]["sdpMid"],
+        decoded["data"]["sdpMLineIndex"],
+      ));
+    } else if (decoded["event"] == "paused") {
+      setState(() => videoIsRunning = false);
+    } else if (decoded["event"] == "resumed") {
+      setState(() => videoIsRunning = true);
+    } else if (decoded["selectedCam"] == 0) {
+      setState(() => isKiss = false);
+    } else if (decoded["selectedCam"] == 1) {
+      setState(() => isKiss = true);
+    }
+  }
+
   @override
   void initState() {
-    connectToServer();
+    super.initState();
     remoteVideo.initialize();
     initialization();
-    super.initState();
+    ServerManager().addListener(handleSocketMessage);
   }
 
   @override
   void dispose() {
+    ServerManager().removeListener(handleSocketMessage);
     peerConnection?.close();
     remoteVideo.dispose();
     super.dispose();

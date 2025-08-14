@@ -202,6 +202,9 @@ class _PageDiagramState extends State<PageDiagram> {
     _chartDataReloadTimer.cancel();
     _scrollTimer.cancel();
     _scrollController.dispose();
+    try {
+      Navigator.of(_popupContext!).pop();
+    } catch (_) {}
     super.dispose();
   }
 

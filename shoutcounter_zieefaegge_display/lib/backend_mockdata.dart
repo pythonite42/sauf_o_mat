@@ -10,7 +10,7 @@ import 'dart:math';
 class MockDataNavigation {
   Future<int> getPageIndex() async {
     await Future.delayed(Duration(seconds: 2));
-    return 6;
+    return 0;
   }
 }
 
@@ -74,11 +74,11 @@ class MockDataPage0 {
   Future<Map> getPopup() async {
     await Future.delayed(Duration(seconds: 2));
     return {
-      "showPopup": false, //hier müssen wir kontrollieren ob das klappt, True vs. true macht einen Unterschied
+      "showPopup": true, //hier müssen wir kontrollieren ob das klappt, True vs. true macht einen Unterschied
       "imageUrl": "",
       "chaserGroupName": "Gruppe 1",
       "leaderGroupName": "Gruppe 2",
-      "difference": 5,
+      "leaderPoints": 87,
       "headline": "Die Aufholjagd beginnt",
       "motivationalText": "Fast geschafft - Trinken, trinken, trinken!"
     };

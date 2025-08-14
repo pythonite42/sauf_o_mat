@@ -99,94 +99,82 @@ class _MyScaffoldState extends State<MyScaffold> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          SizedBox(
-            height: fullscreenIconSize,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                titleBarVisible
-                    ? IconButton(
-                        onPressed: () async {
-                          windowManager.setTitleBarStyle(TitleBarStyle.hidden);
-                          setState(() {
-                            titleBarVisible = false;
-                          });
-                          await windowManager.setFullScreen(true);
-                        },
-                        padding: EdgeInsets.all(0),
-                        icon: Icon(
-                          Icons.open_in_full,
-                          size: fullscreenIconSize,
-                        ),
-                      )
-                    : IconButton(
-                        onPressed: () async {
-                          windowManager.setTitleBarStyle(TitleBarStyle.normal);
-                          setState(() {
-                            titleBarVisible = true;
-                          });
-                          await windowManager.setFullScreen(false);
-                        },
-                        padding: EdgeInsets.all(0),
-                        icon: Icon(
-                          Icons.close_fullscreen,
-                          color: Color(0xFF1b31d1),
-                          size: fullscreenIconSize,
-                        ),
-                      ),
-              ],
-            ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/billboard.png"),
+            fit: BoxFit.cover,
           ),
-          Expanded(
-            child: Navigator(
-              key: _navigatorKey,
-              initialRoute: '/page0',
-              onGenerateRoute: (settings) {
-                switch (settings.name) {
-                  case '/page0':
-                    return _createRoute(Container(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      child: PageDiagram(),
-                    ));
-                  case '/page1':
-                    return _createRoute(Container(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      child: PageTop3(),
-                    ));
-                  case '/page2':
-                    return _createRoute(Container(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      child: PagePrize(),
-                    ));
-                  case '/page3':
-                    return _createRoute(Container(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      child: PageSchedule(),
-                    ));
-                  case '/page4':
-                    return _createRoute(Container(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      child: PageQuote(),
-                    ));
-                  case '/page5':
-                    return _createRoute(Container(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      child: PageAdvertising(),
-                    ));
-                  case '/page6':
-                    return _createRoute(Container(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      child: PageLivestream(),
-                    ));
-                  default:
-                    return MaterialPageRoute(builder: (_) => const Center(child: Text('Unknown')));
-                }
-              },
+        ),
+        child: Column(
+          children: [
+            SizedBox(
+              height: fullscreenIconSize,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  titleBarVisible
+                      ? IconButton(
+                          onPressed: () async {
+                            windowManager.setTitleBarStyle(TitleBarStyle.hidden);
+                            setState(() {
+                              titleBarVisible = false;
+                            });
+                            await windowManager.setFullScreen(true);
+                          },
+                          padding: EdgeInsets.all(0),
+                          icon: Icon(
+                            color: Theme.of(context).colorScheme.primary,
+                            Icons.open_in_full,
+                            size: fullscreenIconSize,
+                          ),
+                        )
+                      : IconButton(
+                          onPressed: () async {
+                            windowManager.setTitleBarStyle(TitleBarStyle.normal);
+                            setState(() {
+                              titleBarVisible = true;
+                            });
+                            await windowManager.setFullScreen(false);
+                          },
+                          padding: EdgeInsets.all(0),
+                          icon: Icon(
+                            Icons.close_fullscreen,
+                            color: Theme.of(context).colorScheme.secondary,
+                            size: fullscreenIconSize,
+                          ),
+                        ),
+                ],
+              ),
             ),
-          ),
-        ],
+            Expanded(
+              child: Navigator(
+                key: _navigatorKey,
+                initialRoute: '/page0',
+                onGenerateRoute: (settings) {
+                  switch (settings.name) {
+                    case '/page0':
+                      return _createRoute(PageDiagram());
+                    case '/page1':
+                      return _createRoute(PageTop3());
+                    case '/page2':
+                      return _createRoute(PagePrize());
+                    case '/page3':
+                      return _createRoute(PageSchedule());
+                    case '/page4':
+                      return _createRoute(PageQuote());
+                    case '/page5':
+                      return _createRoute(PageAdvertising());
+                    case '/page6':
+                      return _createRoute(PageLivestream());
+                    default:
+                      return MaterialPageRoute(builder: (_) => const Center(child: Text('Unknown')));
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

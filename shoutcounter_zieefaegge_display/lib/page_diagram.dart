@@ -5,6 +5,7 @@ import 'package:shotcounter_zieefaegge/colors.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:math';
+import 'package:google_fonts/google_fonts.dart';
 //import 'package:syncfusion_flutter_charts/charts.dart';
 
 class ChartData {
@@ -53,9 +54,11 @@ class _PageDiagramState extends State<PageDiagram> {
   String imageUrl = "";
   String chaserGroupName = "";
   String leaderGroupName = "";
-  int difference = 0;
+  int leaderPoints = 0;
   String headline = "";
   String motivationalText = "";
+
+  Color fontColor = defaultOnScroll;
 
   @override
   void initState() {
@@ -103,7 +106,7 @@ class _PageDiagramState extends State<PageDiagram> {
           imageUrl = popupData["imageUrl"];
           chaserGroupName = popupData["chaserGroupName"];
           leaderGroupName = popupData["leaderGroupName"];
-          difference = popupData["difference"];
+          leaderPoints = popupData["leaderPoints"];
           headline = popupData["headline"];
           motivationalText = popupData["motivationalText"];
 
@@ -168,7 +171,7 @@ class _PageDiagramState extends State<PageDiagram> {
               initialImageUrl: imageUrl,
               initialLeader: leaderGroupName,
               initialChaser: chaserGroupName,
-              initialDiff: difference,
+              initialPointsOfLeader: leaderPoints,
               headline: headline,
               motivationalText: motivationalText,
             );
@@ -189,7 +192,7 @@ class _PageDiagramState extends State<PageDiagram> {
         _popupKey = null;
       } else if (_isPopupVisible && _popupKey?.currentState != null) {
         _popupKey?.currentState!
-            .updateData(imageUrl, leaderGroupName, chaserGroupName, difference, headline, motivationalText);
+            .updateData(imageUrl, leaderGroupName, chaserGroupName, leaderPoints, headline, motivationalText);
       }
     });
   }
@@ -208,251 +211,295 @@ class _PageDiagramState extends State<PageDiagram> {
 
   @override
   Widget build(BuildContext context) {
-    final padding = MySize(context).h * 0.08;
     final legendBoxSize = MySize(context).h * 0.045;
     final fontSizeLegend = 30.0;
 
-    return Padding(
-      padding: EdgeInsetsGeometry.all(padding),
-      child: Column(children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            SizedBox(width: MySize(context).w * 0.01),
-            Text("Leaderboard", style: TextStyle(fontSize: fontSizeLegend * 2, fontWeight: FontWeight.bold)),
-            SizedBox(width: MySize(context).w * 0.05),
-            Row(
-              children: [
-                Container(height: legendBoxSize, width: legendBoxSize, color: Theme.of(context).colorScheme.secondary),
-                SizedBox(width: MySize(context).w * 0.01),
-                Text("Bargetränk", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
-              ],
+    return Stack(
+      children: [
+        Align(
+          alignment: Alignment.topCenter,
+          child: SizedBox(
+            child: Image.asset(
+              'assets/scroll.png',
+              width: MySize(context).w,
+              fit: BoxFit.cover,
+              alignment: Alignment.topCenter,
             ),
-            Row(
-              children: [
-                Container(height: legendBoxSize, width: legendBoxSize, color: Theme.of(context).colorScheme.tertiary),
-                SizedBox(width: MySize(context).w * 0.01),
-                Text("Bier", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
-              ],
-            ),
-            Row(
-              children: [
-                Container(height: legendBoxSize, width: legendBoxSize, color: cyanAccent),
-                SizedBox(width: MySize(context).w * 0.01),
-                Text("Shot", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
-              ],
-            ),
-            Row(
-              children: [
-                Container(height: legendBoxSize, width: legendBoxSize, color: redAccent),
-                SizedBox(width: MySize(context).w * 0.01),
-                Text("Lutz", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
-              ],
-            ),
-          ],
+          ),
         ),
-        SizedBox(height: 50),
-        Expanded(
-          child: (_chartData == null || _chartData!.isEmpty)
-              ? Center(
-                  child: CircularProgressIndicator(color: defaultOnPrimary),
-                )
-              : LayoutBuilder(
-                  builder: (context, constraints) {
-                    var textStyle = TextStyle(fontSize: 30, color: defaultOnPrimary);
-                    var textPainter = TextPainter(
-                        text: TextSpan(text: "20", style: textStyle),
-                        maxLines: 1,
-                        //textScaler: TextScaler.linear(MediaQuery.of(context).textScaleFactor),
-                        textDirection: TextDirection.ltr);
-                    final Size size = (textPainter..layout()).size;
+        Padding(
+          padding: EdgeInsetsGeometry.only(
+            left: MySize(context).h * 0.2,
+            top: MySize(context).h * 0.12,
+            right: MySize(context).h * 0.08,
+            bottom: MySize(context).h * 0.04,
+          ),
+          child: Column(children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                /* SizedBox(width: MySize(context).w * 0.01),
+                Text("Leaderboard", style: TextStyle(fontSize: fontSizeLegend * 2, fontWeight: FontWeight.bold)),
+                SizedBox(width: MySize(context).w * 0.05), */
+                //SizedBox(width: MySize(context).w * 0.2),
+                SizedBox(width: MySize(context).w * 0.05),
 
-                    final availableHeight = constraints.maxHeight - size.height;
-                    barHeight = (availableHeight / totalBarsVisible);
-                    double frameLineWidth = 2;
-                    var gridLine = Container(width: 1, height: availableHeight, color: defaultOnPrimary);
-                    var groupNameWidth = constraints.maxWidth * groupNameSpaceFactor;
-                    var chartWidth = constraints.maxWidth - groupNameWidth;
+                Row(
+                  children: [
+                    Container(height: legendBoxSize, width: legendBoxSize, color: rustOrange),
+                    SizedBox(width: MySize(context).w * 0.01),
+                    Text("Bargetränk", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
+                  ],
+                ),
+                SizedBox(width: MySize(context).w * 0.05),
+                Row(
+                  children: [
+                    Container(height: legendBoxSize, width: legendBoxSize, color: cactusGreen),
+                    SizedBox(width: MySize(context).w * 0.01),
+                    Text("Bier", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
+                  ],
+                ),
+                SizedBox(width: MySize(context).w * 0.2),
+                Row(
+                  children: [
+                    Container(height: legendBoxSize, width: legendBoxSize, color: desertSand),
+                    SizedBox(width: MySize(context).w * 0.01),
+                    Text("Shot", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
+                  ],
+                ),
+                SizedBox(width: MySize(context).w * 0.05),
 
-                    int gridIntervalsDividableBy = 10;
-                    int emptyCountRightOfFirst = 10;
-                    if ((maxValue ?? 1) < 50) {
-                      gridIntervalsDividableBy = 5;
-                      emptyCountRightOfFirst = 3;
-                    }
+                Row(
+                  children: [
+                    Container(height: legendBoxSize, width: legendBoxSize, color: sunsetRed),
+                    SizedBox(width: MySize(context).w * 0.01),
+                    Text("Lutz", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(height: 50),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsetsGeometry.only(
+                  top: MySize(context).h * 0.1,
+                  right: MySize(context).w * 0.05,
+                ),
+                child: (_chartData == null || _chartData!.isEmpty)
+                    ? Center(
+                        child: CircularProgressIndicator(color: defaultOnScroll),
+                      )
+                    : LayoutBuilder(
+                        builder: (context, constraints) {
+                          var textStyle = TextStyle(fontSize: 30, color: defaultOnScroll, fontWeight: FontWeight.bold);
+                          var textPainter = TextPainter(
+                              text: TextSpan(text: "20", style: textStyle),
+                              maxLines: 1,
+                              //textScaler: TextScaler.linear(MediaQuery.of(context).textScaleFactor),
+                              textDirection: TextDirection.ltr);
+                          final Size size = (textPainter..layout()).size;
 
-                    int chartMaxValue = maxValue ?? 1 + emptyCountRightOfFirst;
+                          final availableHeight = constraints.maxHeight - size.height;
+                          barHeight = (availableHeight / totalBarsVisible);
+                          double frameLineWidth = 4;
+                          var gridLine = Container(width: 1, height: availableHeight, color: defaultOnScroll);
+                          var groupNameWidth = constraints.maxWidth * groupNameSpaceFactor;
+                          var chartWidth = constraints.maxWidth - groupNameWidth;
 
-                    while (true) {
-                      if ((chartMaxValue / totalGridLinesVisible) % gridIntervalsDividableBy == 0) {
-                        break;
-                      } else {
-                        chartMaxValue++;
-                      }
-                    }
+                          int gridIntervalsDividableBy = 10;
+                          int emptyCountRightOfFirst = 10;
+                          if ((maxValue ?? 1) < 50) {
+                            gridIntervalsDividableBy = 5;
+                            emptyCountRightOfFirst = 3;
+                          }
 
-                    var gridInterval = chartMaxValue / totalGridLinesVisible;
+                          int chartMaxValue = maxValue ?? 1 + emptyCountRightOfFirst;
 
-                    return Stack(children: <Widget>[
-                      Positioned(
-                          left: groupNameWidth,
-                          child: Container(width: frameLineWidth, height: availableHeight, color: defaultOnPrimary)),
-                      Positioned(
-                          left: groupNameWidth,
-                          child: Container(width: chartWidth, height: frameLineWidth, color: defaultOnPrimary)),
-                      Positioned(
-                          left: groupNameWidth + chartWidth - frameLineWidth,
-                          child: Container(width: frameLineWidth, height: availableHeight, color: defaultOnPrimary)),
-                      Positioned(
-                          left: groupNameWidth,
-                          top: availableHeight - frameLineWidth,
-                          child: Container(width: chartWidth, height: frameLineWidth, color: defaultOnPrimary)),
-                      ...List.generate(
-                          (totalGridLinesVisible + 1).floor(),
-                          (index) => Positioned(
-                              left: groupNameWidth + index * (chartWidth / totalGridLinesVisible), child: gridLine)),
-                      ...List.generate(
-                        (totalGridLinesVisible).floor(),
-                        (index) => Positioned(
-                          left: groupNameWidth + (index + 1) * (chartWidth / totalGridLinesVisible),
-                          top: availableHeight,
-                          child: Text(
-                            ((index + 1) * gridInterval).toInt().toString(),
-                            style: textStyle,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: availableHeight,
-                        child: ScrollConfiguration(
-                          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-                          child: ListView.builder(
-                            controller: _scrollController,
-                            itemCount: _chartData?.length,
-                            itemBuilder: (context, index) {
-                              final data = _chartData?[index];
+                          while (true) {
+                            if ((chartMaxValue / totalGridLinesVisible) % gridIntervalsDividableBy == 0) {
+                              break;
+                            } else {
+                              chartMaxValue++;
+                            }
+                          }
 
-                              return SizedBox(
-                                height: barHeight,
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: groupNameWidth,
-                                      padding: EdgeInsets.only(right: 20),
+                          var gridInterval = chartMaxValue / totalGridLinesVisible;
+
+                          return Stack(children: <Widget>[
+                            Positioned(
+                                left: groupNameWidth,
+                                child:
+                                    Container(width: frameLineWidth, height: availableHeight, color: defaultOnScroll)),
+                            /* Positioned(
+                                left: groupNameWidth,
+                                child: Container(width: chartWidth, height: frameLineWidth, color: defaultOnScroll)), */
+                            /* Positioned(
+                                left: groupNameWidth + chartWidth - frameLineWidth,
+                                child:
+                                    Container(width: frameLineWidth, height: availableHeight, color: defaultOnScroll)), */
+                            Positioned(
+                                left: groupNameWidth,
+                                top: availableHeight - frameLineWidth,
+                                child: Container(width: chartWidth, height: frameLineWidth, color: defaultOnScroll)),
+                            ...List.generate(
+                                (totalGridLinesVisible + 1).floor(),
+                                (index) => Positioned(
+                                    left: groupNameWidth + index * (chartWidth / totalGridLinesVisible),
+                                    child: gridLine)),
+                            ...List.generate(
+                              (totalGridLinesVisible).floor(),
+                              (index) => Positioned(
+                                left: groupNameWidth + (index + 1) * (chartWidth / totalGridLinesVisible),
+                                top: availableHeight,
+                                child: Text(
+                                  ((index + 1) * gridInterval).toInt().toString(),
+                                  style: textStyle,
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: availableHeight,
+                              child: ScrollConfiguration(
+                                behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                                child: ListView.builder(
+                                  controller: _scrollController,
+                                  itemCount: _chartData?.length,
+                                  itemBuilder: (context, index) {
+                                    final data = _chartData?[index];
+
+                                    return SizedBox(
+                                      height: barHeight,
                                       child: Row(
                                         children: [
-                                          data?.status == "aufgestiegen"
-                                              ? SvgPicture.asset(
-                                                  'assets/arrow_up.svg',
-                                                  width: fontSizeLegend,
-                                                  height: fontSizeLegend,
-                                                  colorFilter: ColorFilter.mode(greenAccent, BlendMode.srcIn),
-                                                )
-                                              : data?.status == "abgestiegen"
-                                                  ? Transform.rotate(
-                                                      angle: pi,
-                                                      child: SvgPicture.asset(
+                                          Container(
+                                            width: groupNameWidth,
+                                            padding: EdgeInsets.only(right: 20),
+                                            child: Row(
+                                              children: [
+                                                data?.status == "aufgestiegen"
+                                                    ? SvgPicture.asset(
                                                         'assets/arrow_up.svg',
                                                         width: fontSizeLegend,
                                                         height: fontSizeLegend,
-                                                        colorFilter: ColorFilter.mode(redAccent, BlendMode.srcIn),
-                                                      ),
-                                                    )
-                                                  : SvgPicture.asset(
-                                                      'assets/arrow_up.svg',
-                                                      width: fontSizeLegend,
-                                                      height: fontSizeLegend,
-                                                      colorFilter:
-                                                          ColorFilter.mode(Colors.transparent, BlendMode.srcIn),
+                                                        colorFilter: ColorFilter.mode(greenAccent, BlendMode.srcIn),
+                                                      )
+                                                    : data?.status == "abgestiegen"
+                                                        ? Transform.rotate(
+                                                            angle: pi,
+                                                            child: SvgPicture.asset(
+                                                              'assets/arrow_up.svg',
+                                                              width: fontSizeLegend,
+                                                              height: fontSizeLegend,
+                                                              colorFilter: ColorFilter.mode(redAccent, BlendMode.srcIn),
+                                                            ),
+                                                          )
+                                                        : SvgPicture.asset(
+                                                            'assets/arrow_up.svg',
+                                                            width: fontSizeLegend,
+                                                            height: fontSizeLegend,
+                                                            colorFilter:
+                                                                ColorFilter.mode(Colors.transparent, BlendMode.srcIn),
+                                                          ),
+                                                Text(
+                                                  data?.group != null ? "  ${index + 1}.  " : '',
+                                                  style: TextStyle(
+                                                    fontSize: fontSizeLegend,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: fontColor,
+                                                  ),
+                                                ),
+                                                Flexible(
+                                                  child: Text(
+                                                    data?.group != null ? "${data?.group}" : '',
+                                                    style: TextStyle(
+                                                      fontSize: fontSizeLegend,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: fontColor,
                                                     ),
-                                          Text(
-                                            data?.group != null ? "  ${index + 1}.  " : '',
-                                            style: TextStyle(
-                                              fontSize: fontSizeLegend,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white,
+                                                    softWrap: true,
+                                                    overflow: TextOverflow.visible,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                          Flexible(
-                                            child: Text(
-                                              data?.group != null ? "${data?.group}" : '',
-                                              style: TextStyle(
-                                                fontSize: fontSizeLegend,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                              ),
-                                              softWrap: true,
-                                              overflow: TextOverflow.visible,
+                                          Expanded(
+                                            child: LayoutBuilder(
+                                              builder: (context, constraints) {
+                                                final totalWidth = constraints.maxWidth;
+                                                final longdrink = (data?.longdrink ?? 0).toDouble();
+                                                final beer = (data?.beer ?? 0).toDouble();
+                                                final shot = (data?.shot ?? 0).toDouble();
+                                                final lutz = (data?.lutz ?? 0).toDouble();
+                                                final maximumValue = (maxValue ?? 0) + emptyCountRightOfFirst;
+
+                                                // Avoid division by zero
+                                                if (maximumValue == 0) return const SizedBox();
+
+                                                return Padding(
+                                                    padding: EdgeInsetsGeometry.symmetric(
+                                                        vertical: constraints.maxHeight * 0.15),
+                                                    child: Stack(
+                                                      children: [
+                                                        index < 3
+                                                            ? Row(
+                                                                children: [
+                                                                  Container(
+                                                                    height: double.infinity,
+                                                                    width: totalWidth * longdrink / maximumValue,
+                                                                    color: rustOrange,
+                                                                  ),
+                                                                  Container(
+                                                                    height: double.infinity,
+                                                                    width: totalWidth * beer / maximumValue,
+                                                                    color: cactusGreen,
+                                                                  ),
+                                                                  Container(
+                                                                    height: double.infinity,
+                                                                    width: totalWidth * shot / maximumValue,
+                                                                    color: desertSand,
+                                                                  ),
+                                                                  Container(
+                                                                    height: double.infinity,
+                                                                    width: totalWidth * lutz / maximumValue,
+                                                                    color: sunsetRed,
+                                                                  ),
+                                                                ],
+                                                              )
+                                                            : Row(children: [
+                                                                Container(
+                                                                  height: double.infinity,
+                                                                  width: totalWidth *
+                                                                      (longdrink + beer + shot + lutz) /
+                                                                      maximumValue,
+                                                                  color: Colors.grey,
+                                                                )
+                                                              ]),
+                                                        Container(
+                                                          height: double.infinity,
+                                                          width: frameLineWidth,
+                                                          color: defaultOnScroll,
+                                                        )
+                                                      ],
+                                                    ));
+                                              },
                                             ),
-                                          ),
+                                          )
                                         ],
                                       ),
-                                    ),
-                                    Expanded(
-                                      child: LayoutBuilder(
-                                        builder: (context, constraints) {
-                                          final totalWidth = constraints.maxWidth;
-                                          final longdrink = (data?.longdrink ?? 0).toDouble();
-                                          final beer = (data?.beer ?? 0).toDouble();
-                                          final shot = (data?.shot ?? 0).toDouble();
-                                          final lutz = (data?.lutz ?? 0).toDouble();
-                                          final maximumValue = (maxValue ?? 0) + emptyCountRightOfFirst;
-
-                                          // Avoid division by zero
-                                          if (maximumValue == 0) return const SizedBox();
-
-                                          return Padding(
-                                            padding:
-                                                EdgeInsetsGeometry.symmetric(vertical: constraints.maxHeight * 0.15),
-                                            child: index < 3
-                                                ? Row(
-                                                    children: [
-                                                      Container(
-                                                        height: double.infinity,
-                                                        width: totalWidth * longdrink / maximumValue,
-                                                        color: Theme.of(context).colorScheme.secondary,
-                                                      ),
-                                                      Container(
-                                                        height: double.infinity,
-                                                        width: totalWidth * beer / maximumValue,
-                                                        color: Theme.of(context).colorScheme.tertiary,
-                                                      ),
-                                                      Container(
-                                                        height: double.infinity,
-                                                        width: totalWidth * shot / maximumValue,
-                                                        color: cyanAccent,
-                                                      ),
-                                                      Container(
-                                                        height: double.infinity,
-                                                        width: totalWidth * lutz / maximumValue,
-                                                        color: redAccent,
-                                                      ),
-                                                    ],
-                                                  )
-                                                : Row(children: [
-                                                    Container(
-                                                      height: double.infinity,
-                                                      width:
-                                                          totalWidth * (longdrink + beer + shot + lutz) / maximumValue,
-                                                      color: Colors.grey,
-                                                    )
-                                                  ]),
-                                          );
-                                        },
-                                      ),
-                                    )
-                                  ],
+                                    );
+                                  },
                                 ),
-                              );
-                            },
-                          ),
-                        ),
-                      )
-                    ]);
-                  },
-                ),
-        ),
-      ]),
+                              ),
+                            )
+                          ]);
+                        },
+                      ),
+              ),
+            ),
+          ]),
+        )
+      ],
     );
   }
 }
@@ -461,7 +508,7 @@ class RacePopupWidget extends StatefulWidget {
   final String initialImageUrl;
   final String initialLeader;
   final String initialChaser;
-  final int initialDiff;
+  final int initialPointsOfLeader;
   final String headline;
   final String motivationalText;
 
@@ -469,7 +516,7 @@ class RacePopupWidget extends StatefulWidget {
     required this.initialImageUrl,
     required this.initialLeader,
     required this.initialChaser,
-    required this.initialDiff,
+    required this.initialPointsOfLeader,
     required this.headline,
     required this.motivationalText,
     super.key,
@@ -483,7 +530,7 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
   late String imageUrl;
   late String leader;
   late String chaser;
-  late int diff;
+  late int pointsOfLeader;
   late String headline;
   late String motivationalText;
 
@@ -493,18 +540,18 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
     imageUrl = widget.initialImageUrl;
     leader = widget.initialLeader;
     chaser = widget.initialChaser;
-    diff = widget.initialDiff;
+    pointsOfLeader = widget.initialPointsOfLeader;
     headline = widget.headline;
     motivationalText = widget.motivationalText;
   }
 
-  void updateData(String newImageUrl, String newLeader, String newChaser, int newDiff, String newHeadline,
+  void updateData(String newImageUrl, String newLeader, String newChaser, int newPointsOfLeader, String newHeadline,
       String newMotivationalText) {
     setState(() {
       imageUrl = newImageUrl;
       leader = newLeader;
       chaser = newChaser;
-      diff = newDiff;
+      pointsOfLeader = newPointsOfLeader;
       headline = newHeadline;
       motivationalText = newMotivationalText;
     });
@@ -512,20 +559,21 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
+    return /* AlertDialog(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       content: SizedBox(
-        height: MySize(context).h * 0.6,
-        width: MySize(context).w * 0.5,
+        height: MySize(context).h * 0.8,
+        width: MySize(context).w * 0.7,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(height: MySize(context).h * 0.02),
             Text(
               '🍻 $headline',
-              style:
-                  TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.tertiary),
+              style: GoogleFonts.rye(
+                textStyle: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: cactusGreen),
+              ),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: MySize(context).h * 0.02),
@@ -557,6 +605,139 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
           ],
         ),
       ),
+    ); */
+        AlertDialog(
+      backgroundColor: Colors.transparent, // make dialog itself transparent
+      contentPadding: EdgeInsets.zero, // remove default padding
+      content: Container(
+        height: MySize(context).h * 0.9,
+        width: MySize(context).w * 0.42,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/parchment.png'),
+            fit: BoxFit.cover, // cover entire container
+          ),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: MySize(context).w * 0.05,
+            vertical: MySize(context).h * 0.07,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'WANTED',
+                style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 80)),
+              ),
+              Divider(thickness: 2),
+              Text(
+                'DEAD OR ALIVE',
+                style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 25)),
+              ),
+              Divider(thickness: 2),
+              SizedBox(height: MySize(context).h * 0.03),
+              Container(
+                padding: EdgeInsets.only(top: MySize(context).w * 0.01, right: MySize(context).w * 0.01),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.brown.shade900,
+                    width: 4,
+                  ),
+                ),
+                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  Stack(
+                    children: [
+                      Image.asset('assets/cowboy_chasing.gif', fit: BoxFit.cover, width: MySize(context).w * 0.18),
+                      Positioned(
+                          top: MySize(context).h * 0.037,
+                          left: MySize(context).w * 0.065,
+                          child: Image.asset('assets/mock_logo.png', width: MySize(context).w * 0.03)),
+                    ],
+                  ),
+                  Image.asset('assets/mock_logo.png', width: MySize(context).w * 0.1),
+                ]),
+              ),
+              SizedBox(height: MySize(context).h * 0.02),
+              Text(
+                leader,
+                style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 60)),
+              ),
+              SizedBox(height: MySize(context).h * 0.01),
+
+              /* Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Mit ",
+                            style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
+                          ),
+                          Text(
+                            pointsOfLeader.toString(),
+                            style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 40)),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        " Punkten",
+                        style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Gejagt von ",
+                        style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
+                      ),
+                      Text(
+                        chaser,
+                        style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 40)),
+                      ),
+                    ],
+                  ),
+                ],
+              ) */
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Mit ",
+                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
+                  ),
+                  Text(
+                    pointsOfLeader.toString(),
+                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 40)),
+                  ),
+                  Text(
+                    " Punkten",
+                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Gejagt von ",
+                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
+                  ),
+                  Text(
+                    chaser,
+                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 40)),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -580,7 +761,7 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
         LinearProgressIndicator(
           value: progress,
           backgroundColor: Colors.white12,
-          valueColor: AlwaysStoppedAnimation<Color>(Colors.redAccent),
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.sunsetRed),
           minHeight: 10,
         ),
       ],
@@ -704,34 +885,34 @@ class _PageDiagramState extends State<PageDiagram> {
                 ? data.total
                 : (data.longdrink == null ? null : data.longdrink! * 2),
             name: 'Bargetränk',
-            color: Theme.of(context).colorScheme.secondary,
+            color: rustOrange,
             pointColorMapper: (data, index) =>
-                index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : Theme.of(context).colorScheme.secondary,
+                index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : rustOrange,
           ),
           StackedBarSeries<ChartData, String>(
             dataSource: visibleData,
             xValueMapper: (ChartData data, int index) => data.group,
             yValueMapper: (ChartData data, int index) => index < ((_chartData?.length ?? 0) - 3) ? 0 : data.beer,
             name: 'Bier',
-            color: Theme.of(context).colorScheme.tertiary,
+            color: cactusGreen,
             pointColorMapper: (data, index) =>
-                index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : Theme.of(context).colorScheme.tertiary,
+                index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : cactusGreen,
           ),
           StackedBarSeries<ChartData, String>(
             dataSource: visibleData,
             xValueMapper: (ChartData data, int index) => data.group,
             yValueMapper: (ChartData data, int index) => index < ((_chartData?.length ?? 0) - 3) ? 0 : data.shot,
             name: 'Shot',
-            color: cyanAccent,
-            pointColorMapper: (data, index) => index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : cyanAccent,
+            color: desertSand,
+            pointColorMapper: (data, index) => index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : desertSand,
           ),
           StackedBarSeries<ChartData, String>(
             dataSource: visibleData,
             xValueMapper: (ChartData data, int index) => data.group,
             yValueMapper: (ChartData data, int index) => index < ((_chartData?.length ?? 0) - 3) ? 0 : data.lutz,
             name: 'Lutz',
-            color: redAccent,
-            pointColorMapper: (data, index) => index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : redAccent,
+            color: sunsetRed,
+            pointColorMapper: (data, index) => index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : sunsetRed,
           ),
         ],
       ),

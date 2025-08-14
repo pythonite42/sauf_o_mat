@@ -63,39 +63,30 @@ class _PageTop3State extends State<PageTop3> {
           groupName1 = newDataMapList[0]["groupName"];
           groupLogo1 = newDataMapList[0]["groupLogo"];
           _chartData1 = [
-            PieChartData(
-                value: newDataMapList[0]["longdrink"],
-                color: Theme.of(context).colorScheme.secondary,
-                showAmountInsteadOfPoints: true),
-            PieChartData(value: newDataMapList[0]["beer"], color: Theme.of(context).colorScheme.tertiary),
-            PieChartData(value: newDataMapList[0]["shot"], color: cyanAccent),
-            PieChartData(value: newDataMapList[0]["lutz"], color: redAccent),
+            PieChartData(value: newDataMapList[0]["longdrink"], color: rustOrange, showAmountInsteadOfPoints: true),
+            PieChartData(value: newDataMapList[0]["beer"], color: cactusGreen),
+            PieChartData(value: newDataMapList[0]["shot"], color: desertSand),
+            PieChartData(value: newDataMapList[0]["lutz"], color: sunsetRed),
           ];
 
           groupName2 = newDataMapList[1]["groupName"];
           groupLogo2 = newDataMapList[1]["groupLogo"];
 
           _chartData2 = [
-            PieChartData(
-                value: newDataMapList[1]["longdrink"],
-                color: Theme.of(context).colorScheme.secondary,
-                showAmountInsteadOfPoints: true),
-            PieChartData(value: newDataMapList[1]["beer"], color: Theme.of(context).colorScheme.tertiary),
-            PieChartData(value: newDataMapList[1]["shot"], color: cyanAccent),
-            PieChartData(value: newDataMapList[1]["lutz"], color: redAccent),
+            PieChartData(value: newDataMapList[1]["longdrink"], color: rustOrange, showAmountInsteadOfPoints: true),
+            PieChartData(value: newDataMapList[1]["beer"], color: cactusGreen),
+            PieChartData(value: newDataMapList[1]["shot"], color: desertSand),
+            PieChartData(value: newDataMapList[1]["lutz"], color: sunsetRed),
           ];
 
           groupName3 = newDataMapList[2]["groupName"];
           groupLogo3 = newDataMapList[2]["groupLogo"];
 
           _chartData3 = [
-            PieChartData(
-                value: newDataMapList[2]["longdrink"],
-                color: Theme.of(context).colorScheme.secondary,
-                showAmountInsteadOfPoints: true),
-            PieChartData(value: newDataMapList[2]["beer"], color: Theme.of(context).colorScheme.tertiary),
-            PieChartData(value: newDataMapList[2]["shot"], color: cyanAccent),
-            PieChartData(value: newDataMapList[2]["lutz"], color: redAccent),
+            PieChartData(value: newDataMapList[2]["longdrink"], color: rustOrange, showAmountInsteadOfPoints: true),
+            PieChartData(value: newDataMapList[2]["beer"], color: cactusGreen),
+            PieChartData(value: newDataMapList[2]["shot"], color: desertSand),
+            PieChartData(value: newDataMapList[2]["lutz"], color: sunsetRed),
           ];
         });
       }
@@ -126,8 +117,7 @@ class _PageTop3State extends State<PageTop3> {
             children: [
               Row(
                 children: [
-                  Container(
-                      height: legendBoxSize, width: legendBoxSize, color: Theme.of(context).colorScheme.secondary),
+                  Container(height: legendBoxSize, width: legendBoxSize, color: rustOrange),
                   SizedBox(width: 15),
                   Text("Bargetränk", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold))
                 ],
@@ -135,7 +125,7 @@ class _PageTop3State extends State<PageTop3> {
               SizedBox(width: 50),
               Row(
                 children: [
-                  Container(height: legendBoxSize, width: legendBoxSize, color: Theme.of(context).colorScheme.tertiary),
+                  Container(height: legendBoxSize, width: legendBoxSize, color: cactusGreen),
                   SizedBox(width: 15),
                   Text("Bier", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold))
                 ],
@@ -151,7 +141,7 @@ class _PageTop3State extends State<PageTop3> {
             children: [
               Row(
                 children: [
-                  Container(height: legendBoxSize, width: legendBoxSize, color: cyanAccent),
+                  Container(height: legendBoxSize, width: legendBoxSize, color: desertSand),
                   SizedBox(width: 15),
                   Text("Shot", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold))
                 ],
@@ -159,7 +149,7 @@ class _PageTop3State extends State<PageTop3> {
               SizedBox(width: 50),
               Row(
                 children: [
-                  Container(height: legendBoxSize, width: legendBoxSize, color: redAccent),
+                  Container(height: legendBoxSize, width: legendBoxSize, color: sunsetRed),
                   SizedBox(width: 15),
                   Text("Lutz", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold))
                 ],

@@ -306,63 +306,64 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             const SizedBox(height: 10),
-            LayoutBuilder(
-              builder: (context, constraints) {
-                const double borderWidth = 1.0;
-                double totalInternalBorders = borderWidth * 3;
-                double buttonWidth = (constraints.maxWidth - totalInternalBorders) / 2;
+            if (_showCamera)
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  const double borderWidth = 1.0;
+                  double totalInternalBorders = borderWidth * 3;
+                  double buttonWidth = (constraints.maxWidth - totalInternalBorders) / 2;
 
-                return ToggleButtons(
-                  isSelected: selected,
-                  onPressed: (int index) {
-                    setState(() {
-                      for (int i = 0; i < selected.length; i++) {
-                        selected[i] = i == index;
-                      }
-                      selectedIndex = index;
-                    });
-                    channel?.sink.add(jsonEncode({"selectedCam": index}));
-                  },
-                  borderWidth: borderWidth,
-                  borderRadius: BorderRadius.circular(8),
-                  color: Colors.white,
-                  selectedColor: Colors.white,
-                  fillColor: darkAccent,
-                  splashColor: transparentWhite,
-                  highlightColor: transparentWhite,
-                  borderColor: transparentWhite,
-                  selectedBorderColor: transparentWhite,
-                  disabledColor: Colors.grey.shade600,
-                  disabledBorderColor: Colors.grey.shade800,
-                  children: [
-                    SizedBox(
-                      width: buttonWidth,
-                      child: Center(
-                        child: Text(
-                          "Ex-Cam",
-                          style: TextStyle(
-                            fontSize: selected.first ? 20 : 16,
-                            fontWeight: selected.first ? FontWeight.bold : FontWeight.normal,
+                  return ToggleButtons(
+                    isSelected: selected,
+                    onPressed: (int index) {
+                      setState(() {
+                        for (int i = 0; i < selected.length; i++) {
+                          selected[i] = i == index;
+                        }
+                        selectedIndex = index;
+                      });
+                      channel?.sink.add(jsonEncode({"selectedCam": index}));
+                    },
+                    borderWidth: borderWidth,
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.white,
+                    selectedColor: Colors.white,
+                    fillColor: darkAccent,
+                    splashColor: transparentWhite,
+                    highlightColor: transparentWhite,
+                    borderColor: transparentWhite,
+                    selectedBorderColor: transparentWhite,
+                    disabledColor: Colors.grey.shade600,
+                    disabledBorderColor: Colors.grey.shade800,
+                    children: [
+                      SizedBox(
+                        width: buttonWidth,
+                        child: Center(
+                          child: Text(
+                            "Ex-Cam",
+                            style: TextStyle(
+                              fontSize: selected.first ? 20 : 16,
+                              fontWeight: selected.first ? FontWeight.bold : FontWeight.normal,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      width: buttonWidth,
-                      child: Center(
-                        child: Text(
-                          "Kiss-Cam",
-                          style: TextStyle(
-                            fontSize: selected.last ? 20 : 16,
-                            fontWeight: selected.last ? FontWeight.bold : FontWeight.normal,
+                      SizedBox(
+                        width: buttonWidth,
+                        child: Center(
+                          child: Text(
+                            "Kiss-Cam",
+                            style: TextStyle(
+                              fontSize: selected.last ? 20 : 16,
+                              fontWeight: selected.last ? FontWeight.bold : FontWeight.normal,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                );
-              },
-            ),
+                    ],
+                  );
+                },
+              ),
             SizedBox(height: 10),
             Expanded(
               child: _showCamera

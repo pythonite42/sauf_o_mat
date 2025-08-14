@@ -43,3 +43,12 @@ app.*.map.json
 **/android/app/debug
 **/android/app/profile
 **/android/app/release
+
+# specific files
+shoutcounter_zieefaegge_display/assets/server.key
+shoutcounter_zieefaegge_display/.env
+shoutcounter_zieefaegge_display/linux/flutter/generated_plugin_registrant.cc
+shoutcounter_zieefaegge_display/linux/flutter/generated_plugins.cmake
+shoutcounter_zieefaegge_display/macos/Flutter/GeneratedPluginRegistrant.swift
+shoutcounter_zieefaegge_display/windows/flutter/generated_plugin_registrant.cc
+shoutcounter_zieefaegge_display/windows/flutter/generated_plugins.cmake

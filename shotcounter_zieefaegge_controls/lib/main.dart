@@ -229,6 +229,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
+    connectToServer();
     super.initState();
   }
 
@@ -279,14 +280,15 @@ class _MyHomePageState extends State<MyHomePage> {
                             final newIndex = pages.indexOf(newValue!);
                             setState(() {
                               currentNavigationIndex = newIndex;
+                              debugPrint("send event pageIndex with index $newIndex");
+                              channel?.sink.add(jsonEncode({"event": "pageIndex", "index": newIndex}));
                             });
 
                             if (newValue == "Livestream") {
-                              connectToServer();
                               localVideo.initialize();
                               initialization();
                             } else {
-                              await cleanupLivestream();
+                              //await cleanupLivestream();
                               setState(() {
                                 _showCamera = false;
                                 _isRecordingRunning = false;

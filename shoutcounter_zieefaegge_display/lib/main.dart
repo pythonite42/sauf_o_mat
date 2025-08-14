@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:shotcounter_zieefaegge/backend_mockdata.dart';
 import 'package:shotcounter_zieefaegge/colors.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
 import 'package:shotcounter_zieefaegge/page_diagram.dart';
@@ -31,6 +30,8 @@ void main() async {
     await windowManager.show();
     await windowManager.focus();
   });
+
+  // Connect to WebSocket before running app
   await ServerManager().connect("ws://192.168.2.49:8080");
 
   runApp(const MyApp());
@@ -63,32 +64,45 @@ class _MyScaffoldState extends State<MyScaffold> {
   late Timer _pageIndexReloadTimer;
 
   int pageIndex = 0;
+  bool overridePageIndex = false;
+
+  late final MessageHandler socketPageIndexListener;
 
   @override
   void initState() {
     super.initState();
 
-    _loadPageIndex();
-    _startAutoReloadPageIndex();
-  }
+    socketPageIndexListener = (data) {
+      debugPrint("socket event received: $data");
+      if (data['event'] == 'pageIndex' && data['index'] is int) {
+        int newIndex = data['index'];
+        if (newIndex != pageIndex) {
+          overridePageIndex = true;
+          _navigateToPage(newIndex);
+        }
+      }
+    };
 
-  void _startAutoReloadPageIndex() {
-    _pageIndexReloadTimer = Timer.periodic(Duration(seconds: 1), (_) {
-      _loadPageIndex();
+    ServerManager().addListener(socketPageIndexListener);
+
+    // Periodic auto page switch
+    _pageIndexReloadTimer = Timer.periodic(Duration(seconds: 10), (_) {
+      if (!overridePageIndex) {
+        int nextIndex = (pageIndex + 1) % 7; // Loop through 0–6
+        _navigateToPage(nextIndex);
+      } else {
+        overridePageIndex = false;
+      }
     });
   }
 
-  Future<void> _loadPageIndex() async {
-    try {
-      int index = await MockDataNavigation().getPageIndex();
-      if (index != pageIndex && _navigatorKey.currentContext != null) {
-        setState(() {
-          pageIndex = index;
-        });
-        _navigatorKey.currentState!.pushReplacementNamed('/page$index');
-      }
-    } catch (e) {
-      debugPrint('Error fetching page index: $e');
+  void _navigateToPage(int index) {
+    setState(() {
+      pageIndex = index;
+    });
+
+    if (_navigatorKey.currentContext != null) {
+      _navigatorKey.currentState!.pushReplacementNamed('/page$index');
     }
   }
 
@@ -126,8 +140,8 @@ class _MyScaffoldState extends State<MyScaffold> {
                           },
                           padding: EdgeInsets.all(0),
                           icon: Icon(
-                            color: Theme.of(context).colorScheme.primary,
                             Icons.open_in_full,
+                            color: Theme.of(context).colorScheme.primary,
                             size: fullscreenIconSize,
                           ),
                         )
@@ -170,7 +184,7 @@ class _MyScaffoldState extends State<MyScaffold> {
                     case '/page6':
                       return _createRoute(PageLivestream());
                     default:
-                      return MaterialPageRoute(builder: (_) => const Center(child: Text('Unknown')));
+                      return MaterialPageRoute(builder: (_) => const Center(child: Text('Unknown Page')));
                   }
                 },
               ),
@@ -186,7 +200,7 @@ class _MyScaffoldState extends State<MyScaffold> {
       transitionDuration: const Duration(milliseconds: 800),
       pageBuilder: (_, animation, __) => page,
       transitionsBuilder: (_, animation, __, child) {
-        const begin = Offset(1.0, 0.0); // right to left
+        const begin = Offset(1.0, 0.0); // slide in from right
         const end = Offset.zero;
         const curve = Curves.ease;
         var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));

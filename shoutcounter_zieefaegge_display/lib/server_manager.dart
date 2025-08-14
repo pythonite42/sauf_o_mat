@@ -25,6 +25,7 @@ class ServerManager {
         final decoded = jsonDecode(utf8.decode(message as Uint8List));
         for (var listener in _listeners) {
           listener(decoded);
+          debugPrint("listened to: $decoded");
         }
       } catch (e) {
         debugPrint("❌ Error decoding message: $e");

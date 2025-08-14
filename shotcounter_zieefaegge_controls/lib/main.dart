@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shotcounter_zieefaegge_controls/colors.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+import 'dart:convert';
+import 'dart:typed_data';
 
 void main() {
   runApp(const MyApp());
@@ -34,59 +37,206 @@ class _MyHomePageState extends State<MyHomePage> {
   int selectedIndex = 0;
   int currentNavigationIndex = 0;
   List<String> pages = ["Balkendiagramm", "Top 3", "Gewinn", "Ablaufplan", "Kommentare", "Werbung", "Livestream"];
-
-  final _localRenderer = RTCVideoRenderer();
-  MediaStream? _localStream;
-  bool _isRecordingRunning = false;
   bool _showCamera = false;
+  bool _isRecordingRunning = false;
+
+  RTCVideoRenderer localVideo = RTCVideoRenderer();
+  MediaStream? localStream;
+  WebSocketChannel? channel;
+  RTCPeerConnection? peerConnection;
+
+  void connectToServer() {
+    try {
+      channel = WebSocketChannel.connect(Uri.parse("ws://192.168.2.49:8080"));
+
+      // Listening to the socket event as a stream
+      channel?.stream.listen((message) async {
+        // Convert Uint8List to String
+        try {
+          final decodedMessage = utf8.decode(message as Uint8List);
+
+          // Now decode JSON
+          final Map<String, dynamic> decoded = jsonDecode(decodedMessage);
+
+          // If the client receive an offer
+          if (decoded["event"] == "offer") {
+            // Set the offer SDP to remote description
+            await peerConnection?.setRemoteDescription(
+              RTCSessionDescription(decoded["data"]["sdp"], decoded["data"]["type"]),
+            );
+
+            // Create an answer
+            RTCSessionDescription answer = await peerConnection!.createAnswer();
+
+            // Set the answer as an local description
+            await peerConnection!.setLocalDescription(answer);
+
+            // Send the answer to the other peer
+            channel?.sink.add(jsonEncode({"event": "answer", "data": answer.toMap()}));
+          }
+          // If client receive an Ice candidate from the peer
+          else if (decoded["event"] == "ice") {
+            // It add to the RTC peer connection
+            peerConnection?.addCandidate(
+              RTCIceCandidate(
+                decoded["data"]["candidate"],
+                decoded["data"]["sdpMid"],
+                decoded["data"]["sdpMLineIndex"],
+              ),
+            );
+          }
+          // If Client recive an reply of their offer as answer
+          else if (decoded["event"] == "answer") {
+            await peerConnection?.setRemoteDescription(
+              RTCSessionDescription(decoded["data"]["sdp"], decoded["data"]["type"]),
+            );
+          }
+          // If no condition fulfilled? printout the message
+          else {
+            print(decoded);
+          }
+        } catch (e) {
+          print("ERROR $e");
+        }
+      });
+    } catch (e) {
+      print("ERROR $e");
+    }
+  }
+
+  // STUN server configuration
+  Map<String, dynamic> configuration = {
+    'iceServers': [
+      {
+        'urls': ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'],
+      },
+    ],
+  };
+
+  // This must be done as soon as app loads
+  void initialization() async {
+    // Getting video feed from the user camera
+    localStream = await navigator.mediaDevices.getUserMedia({
+      'video': {'facingMode': 'environment'},
+      'audio': false,
+    });
+    localVideo = RTCVideoRenderer();
+    await localVideo.initialize();
+
+    // Set the local video to display
+    localVideo.srcObject = localStream;
+    // Initializing the peer connecion
+    peerConnection = await createPeerConnection(configuration);
+    setState(() {});
+    // Adding the local media to peer connection
+    // When connection establish, it send to the remote peer
+    localStream?.getTracks().forEach((track) {
+      peerConnection?.addTrack(track, localStream!);
+    });
+
+    print("initialization");
+    registerPeerConnectionListeners();
+    setState(() {
+      _showCamera = true;
+    });
+  }
+
+  void makeCall() async {
+    // Creating a offer for remote peer
+    RTCSessionDescription offer = await peerConnection!.createOffer();
+
+    // Setting own SDP as local description
+    await peerConnection?.setLocalDescription(offer);
+
+    // Sending the offer
+    channel?.sink.add(jsonEncode({"event": "offer", "data": offer.toMap()}));
+  }
+
+  // Help to debug our code
+  void registerPeerConnectionListeners() {
+    print("registerPeerConnectionListeners");
+    peerConnection?.onIceGatheringState = (RTCIceGatheringState state) {
+      print('ICE gathering state changed: $state');
+    };
+
+    peerConnection?.onIceCandidate = (RTCIceCandidate candidate) {
+      channel?.sink.add(jsonEncode({"event": "ice", "data": candidate.toMap()}));
+    };
+
+    peerConnection?.onConnectionState = (RTCPeerConnectionState state) {
+      print('Connection state change: $state');
+    };
+
+    peerConnection?.onSignalingState = (RTCSignalingState state) {
+      print('Signaling state change: $state');
+    };
+    peerConnection?.onTrack = (RTCTrackEvent event) {
+      print("⚠️ Track received, but no stream available");
+    };
+  }
+
+  Future<void> pauseCamera() async {
+    try {
+      if (localStream != null) {
+        for (var track in localStream!.getVideoTracks()) {
+          track.enabled = false; // Stop sending frames
+          channel?.sink.add(jsonEncode({"event": "paused"}));
+        }
+        print("📷 Camera paused");
+      }
+    } catch (e) {
+      print("❌ Error pausing camera: $e");
+    }
+  }
+
+  Future<void> resumeCamera() async {
+    try {
+      if (localStream != null) {
+        for (var track in localStream!.getVideoTracks()) {
+          track.enabled = true; // Resume sending frames
+          channel?.sink.add(jsonEncode({"event": "resumed"}));
+        }
+        print("📷 Camera resumed");
+      }
+    } catch (e) {
+      print("❌ Error resuming camera: $e");
+    }
+  }
+
+  Future<void> cleanupLivestream() async {
+    try {
+      // Close peer connection
+      await peerConnection?.close();
+      peerConnection = null;
+
+      // Stop and release local stream
+      if (localStream != null) {
+        for (var track in localStream!.getTracks()) {
+          track.stop();
+        }
+        await localStream!.dispose();
+        localStream = null;
+      }
+
+      // Dispose and re-create the renderer so it's fresh next time
+      await localVideo.dispose();
+      channel = null;
+      print("✅ Livestream cleaned up");
+    } catch (e) {
+      print("❌ Error cleaning up livestream: $e");
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    _localRenderer.initialize();
   }
 
   @override
   void dispose() {
-    _localStream?.dispose();
-    _localRenderer.dispose();
+    peerConnection?.close();
+    localVideo.dispose();
     super.dispose();
-  }
-
-  Future<void> _startCamera() async {
-    final Map<String, dynamic> mediaConstraints = {
-      'audio': false,
-      'video': {'facingMode': 'environment', 'width': 1280, 'height': 720, 'frameRate': 30},
-    };
-
-    try {
-      _localStream = await navigator.mediaDevices.getUserMedia(mediaConstraints);
-      _localRenderer.srcObject = _localStream;
-    } catch (e) {
-      print('Error getting user media: $e');
-    }
-  }
-
-  Future<void> _stopCamera() async {
-    try {
-      if (_localStream != null) {
-        // Stop all media tracks (both video and audio)
-        for (var track in _localStream!.getTracks()) {
-          track.stop();
-        }
-
-        // Release the stream
-        _localStream = null;
-      }
-
-      // Disconnect the stream from the renderer
-      _localRenderer.srcObject = null;
-
-      // Optionally trigger a rebuild if UI depends on camera state
-      setState(() {});
-    } catch (e) {
-      print('Error stopping camera: $e');
-    }
   }
 
   Future<int> getCurrentNavigationIndex() async {
@@ -132,15 +282,14 @@ class _MyHomePageState extends State<MyHomePage> {
                             });
 
                             if (newValue == "Livestream") {
-                              await _startCamera();
-                              setState(() {
-                                _showCamera = true;
-                              });
+                              connectToServer();
+                              localVideo.initialize();
+                              initialization();
                             } else {
-                              _localStream?.dispose();
-                              _localRenderer.srcObject = null;
+                              await cleanupLivestream();
                               setState(() {
                                 _showCamera = false;
+                                _isRecordingRunning = false;
                               });
                             }
                           },
@@ -172,6 +321,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       }
                       selectedIndex = index;
                     });
+                    channel?.sink.add(jsonEncode({"selectedCam": index}));
                   },
                   borderWidth: borderWidth,
                   borderRadius: BorderRadius.circular(8),
@@ -224,7 +374,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SizedBox(width: width, height: height, child: RTCVideoView(_localRenderer, mirror: false)),
+                            SizedBox(width: width, height: height, child: RTCVideoView(localVideo, mirror: false)),
                             Container(
                               width: width,
                               height: controlBarHeight,
@@ -232,11 +382,10 @@ class _MyHomePageState extends State<MyHomePage> {
                               child: IconButton(
                                 onPressed: () async {
                                   if (_isRecordingRunning) {
-                                    //stop sending data
-                                    //await _stopCamera();
+                                    await pauseCamera();
                                   } else {
-                                    //send data
-                                    //await _startCamera();
+                                    await resumeCamera();
+                                    makeCall();
                                   }
 
                                   setState(() {

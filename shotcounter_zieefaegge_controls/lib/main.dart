@@ -36,6 +36,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int selectedIndex = 0;
   int currentNavigationIndex = 0;
+  bool indexFrozen = false;
   List<String> pages = ["Balkendiagramm", "Top 3", "Gewinn", "Ablaufplan", "Kommentare", "Werbung", "Livestream"];
   bool _showCamera = false;
   bool _isRecordingRunning = false;
@@ -240,13 +241,13 @@ class _MyHomePageState extends State<MyHomePage> {
     super.dispose();
   }
 
-  Future<int> getCurrentNavigationIndex() async {
+  /* Future<int> getCurrentNavigationIndex() async {
     await Future.delayed(Duration(seconds: 2));
     setState(() {
       currentNavigationIndex = 0;
     });
     return currentNavigationIndex;
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
@@ -258,12 +259,13 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: const EdgeInsets.only(top: 50),
         child: Column(
           children: <Widget>[
-            FutureBuilder<int>(
-              future: getCurrentNavigationIndex(),
-              builder: (context, AsyncSnapshot<int> snapshot) {
-                if (snapshot.hasData) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text("Seite:", style: TextStyle(fontSize: 20)),
                       Container(
@@ -271,7 +273,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         decoration: BoxDecoration(color: darkAccent),
                         child: DropdownButtonFormField<String>(
-                          value: pages[snapshot.data!],
+                          value: pages[currentNavigationIndex],
                           icon: const Icon(Icons.expand_more),
                           decoration: const InputDecoration(
                             enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent)),
@@ -301,11 +303,27 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                     ],
-                  );
-                } else {
-                  return const CircularProgressIndicator();
-                }
-              },
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Angezeigte Seite einfrieren"),
+                      Switch(
+                        value: indexFrozen,
+                        activeColor: Colors.red,
+
+                        onChanged: (bool newFrozenValue) {
+                          setState(() {
+                            indexFrozen = newFrozenValue;
+                            debugPrint("freeze page: $newFrozenValue");
+                            channel?.sink.add(jsonEncode({"event": "freeze", "freeze": newFrozenValue}));
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 10),
             LayoutBuilder(

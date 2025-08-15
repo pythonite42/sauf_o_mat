@@ -69,9 +69,9 @@ class _MyScaffoldState extends State<MyScaffold> {
   late final MessageHandler socketPageIndexListener;
 
   void _startPageIndexTimer() {
-    _pageIndexReloadTimer = Timer.periodic(const Duration(seconds: 10), (_) {
+    _pageIndexReloadTimer = Timer.periodic(const Duration(seconds: 8), (_) {
       if (!overridePageIndex) {
-        int nextIndex = (pageIndex + 1) % 7;
+        int nextIndex = (pageIndex + 1) % 6;
         _navigateToPage(nextIndex);
       } else {
         overridePageIndex = false;
@@ -85,6 +85,13 @@ class _MyScaffoldState extends State<MyScaffold> {
 
     socketPageIndexListener = (data) {
       debugPrint("socket event received: $data");
+      if (data['event'] == 'freeze' && data["freeze"] == true) {
+        _pageIndexReloadTimer.cancel();
+      } else {
+        if (!_pageIndexReloadTimer.isActive) {
+          _startPageIndexTimer();
+        }
+      }
       if (data['event'] == 'pageIndex' && data['index'] is int) {
         int newIndex = data['index'];
         if (newIndex != pageIndex) {

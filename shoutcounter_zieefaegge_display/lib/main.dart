@@ -71,7 +71,7 @@ class _MyScaffoldState extends State<MyScaffold> {
   }
 
   void _startAutoReloadPageIndex() {
-    _pageIndexReloadTimer = Timer.periodic(Duration(seconds: 1), (_) {
+    _pageIndexReloadTimer = Timer.periodic(Duration(seconds: CustomDurations().checkIfNavigationIndexChanged), (_) {
       _loadPageIndex();
     });
   }
@@ -181,7 +181,7 @@ class _MyScaffoldState extends State<MyScaffold> {
 
   Route _createRoute(Widget page) {
     return PageRouteBuilder(
-      transitionDuration: const Duration(milliseconds: 800),
+      transitionDuration: Duration(milliseconds: CustomDurations().navigationTransition),
       pageBuilder: (_, animation, __) => page,
       transitionsBuilder: (_, animation, __, child) {
         const begin = Offset(1.0, 0.0); // right to left

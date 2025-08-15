@@ -157,43 +157,45 @@ class _PageDiagramState extends State<PageDiagram> {
 
   void buildPopup() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (showPopup && !_isPopupVisible) {
-        _isPopupVisible = true;
-        _popupKey = GlobalKey<_RacePopupWidgetState>();
+      try {
+        if (showPopup && !_isPopupVisible) {
+          _isPopupVisible = true;
+          _popupKey = GlobalKey<_RacePopupWidgetState>();
 
-        await showDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (popupCtx) {
-            _popupContext = popupCtx;
-            return RacePopupWidget(
-              key: _popupKey,
-              initialImageUrl: imageUrl,
-              initialLeader: leaderGroupName,
-              initialChaser: chaserGroupName,
-              initialPointsOfLeader: leaderPoints,
-              headline: headline,
-              motivationalText: motivationalText,
-            );
-          },
-        );
+          await showDialog(
+            context: context,
+            barrierDismissible: true,
+            builder: (popupCtx) {
+              _popupContext = popupCtx;
+              return RacePopupWidget(
+                key: _popupKey,
+                initialImageUrl: imageUrl,
+                initialLeader: leaderGroupName,
+                initialChaser: chaserGroupName,
+                initialPointsOfLeader: leaderPoints,
+                headline: headline,
+                motivationalText: motivationalText,
+              );
+            },
+          );
 
-        if (mounted) {
-          setState(() {
-            _isPopupVisible = false;
-            _popupContext = null;
-            _popupKey = null;
-          });
+          if (mounted) {
+            setState(() {
+              _isPopupVisible = false;
+              _popupContext = null;
+              _popupKey = null;
+            });
+          }
+        } else if (!showPopup && _isPopupVisible && _popupContext != null) {
+          Navigator.of(_popupContext!).pop();
+          _isPopupVisible = false;
+          _popupContext = null;
+          _popupKey = null;
+        } else if (_isPopupVisible && _popupKey?.currentState != null) {
+          _popupKey?.currentState!
+              .updateData(imageUrl, leaderGroupName, chaserGroupName, leaderPoints, headline, motivationalText);
         }
-      } else if (!showPopup && _isPopupVisible && _popupContext != null) {
-        Navigator.of(_popupContext!).pop();
-        _isPopupVisible = false;
-        _popupContext = null;
-        _popupKey = null;
-      } else if (_isPopupVisible && _popupKey?.currentState != null) {
-        _popupKey?.currentState!
-            .updateData(imageUrl, leaderGroupName, chaserGroupName, leaderPoints, headline, motivationalText);
-      }
+      } catch (_) {}
     });
   }
 
@@ -202,6 +204,9 @@ class _PageDiagramState extends State<PageDiagram> {
     _chartDataReloadTimer.cancel();
     _scrollTimer.cancel();
     _scrollController.dispose();
+    try {
+      Navigator.of(_popupContext!).pop();
+    } catch (_) {}
     super.dispose();
   }
 

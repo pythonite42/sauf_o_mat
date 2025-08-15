@@ -21,7 +21,7 @@ void main() async {
   await windowManager.ensureInitialized();
 
   WindowOptions windowOptions = WindowOptions(
-    size: Size(1000, 700),
+    size: Size(1400, 900),
     backgroundColor: Colors.transparent,
     skipTaskbar: false,
     titleBarStyle: TitleBarStyle.normal,
@@ -68,6 +68,17 @@ class _MyScaffoldState extends State<MyScaffold> {
 
   late final MessageHandler socketPageIndexListener;
 
+  void _startPageIndexTimer() {
+    _pageIndexReloadTimer = Timer.periodic(const Duration(seconds: 10), (_) {
+      if (!overridePageIndex) {
+        int nextIndex = (pageIndex + 1) % 7;
+        _navigateToPage(nextIndex);
+      } else {
+        overridePageIndex = false;
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -78,6 +89,14 @@ class _MyScaffoldState extends State<MyScaffold> {
         int newIndex = data['index'];
         if (newIndex != pageIndex) {
           overridePageIndex = true;
+          if (newIndex == 6) {
+            _pageIndexReloadTimer.cancel();
+          } else {
+            if (!_pageIndexReloadTimer.isActive) {
+              _startPageIndexTimer();
+            }
+          }
+
           _navigateToPage(newIndex);
         }
       }
@@ -85,15 +104,7 @@ class _MyScaffoldState extends State<MyScaffold> {
 
     ServerManager().addListener(socketPageIndexListener);
 
-    // Periodic auto page switch
-    _pageIndexReloadTimer = Timer.periodic(Duration(seconds: 10), (_) {
-      if (!overridePageIndex) {
-        int nextIndex = (pageIndex + 1) % 7; // Loop through 0–6
-        _navigateToPage(nextIndex);
-      } else {
-        overridePageIndex = false;
-      }
-    });
+    _startPageIndexTimer();
   }
 
   void _navigateToPage(int index) {
@@ -108,6 +119,7 @@ class _MyScaffoldState extends State<MyScaffold> {
 
   @override
   void dispose() {
+    ServerManager().removeListener(socketPageIndexListener);
     _pageIndexReloadTimer.cancel();
     super.dispose();
   }

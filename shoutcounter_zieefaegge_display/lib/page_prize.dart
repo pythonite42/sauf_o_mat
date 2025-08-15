@@ -27,7 +27,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
   double headlineSize = 35;
   double sublineSize = 20;
   double leadingSize = 18;
-  double groupNameSize = 25;
+  double groupNameSize = 20;
   double counterSize = 25;
 
   String groupName = "";
@@ -138,7 +138,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
           : Row(
               children: [
                 Expanded(
-                  flex: 5,
+                  flex: 4,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
                     child: Image.network(
@@ -162,7 +162,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(height: MySize(context).h * 0.05),
+                      SizedBox(height: MySize(context).h * 0.02),
                       Text(
                         headline,
                         style: TextStyle(fontSize: headlineSize, fontWeight: FontWeight.bold),
@@ -171,12 +171,13 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
                       Text(
                         subline,
                         style: TextStyle(fontSize: sublineSize),
+                        maxLines: 4,
                         textAlign: TextAlign.left,
                       ),
-                      SizedBox(height: MySize(context).h * 0.05),
+                      SizedBox(height: MySize(context).h * 0.03),
                       Container(
-                        height: MySize(context).h * 0.20,
-                        padding: const EdgeInsets.all(16),
+                        height: MySize(context).h * 0.23,
+                        padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
                           color: Colors.white10,
                           borderRadius: BorderRadius.circular(15),

@@ -158,7 +158,6 @@ class _PageDiagramState extends State<PageDiagram> {
   //TODO max Zeichenanzahl Name
   /*TODO Grafik/Emoji für jedes Legenden Item
     Farbkästchen größer machen, Symbol für Getränk in das Kästchen rein
-    Bier: gelb/orange, Bargetränk: grün, Shot: rot, Lutz: braun
   */
 
   void buildPopup() {
@@ -257,7 +256,7 @@ class _PageDiagramState extends State<PageDiagram> {
 
                 Row(
                   children: [
-                    Container(height: legendBoxSize, width: legendBoxSize, color: rustOrange),
+                    Container(height: legendBoxSize, width: legendBoxSize, color: sunsetRed),
                     SizedBox(width: MySize(context).w * 0.01),
                     Text("Bargetränk", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
                   ],
@@ -265,7 +264,7 @@ class _PageDiagramState extends State<PageDiagram> {
                 SizedBox(width: MySize(context).w * 0.05),
                 Row(
                   children: [
-                    Container(height: legendBoxSize, width: legendBoxSize, color: cactusGreen),
+                    Container(height: legendBoxSize, width: legendBoxSize, color: westernGold),
                     SizedBox(width: MySize(context).w * 0.01),
                     Text("Bier", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
                   ],
@@ -273,7 +272,7 @@ class _PageDiagramState extends State<PageDiagram> {
                 SizedBox(width: MySize(context).w * 0.2),
                 Row(
                   children: [
-                    Container(height: legendBoxSize, width: legendBoxSize, color: desertSand),
+                    Container(height: legendBoxSize, width: legendBoxSize, color: cactusGreen),
                     SizedBox(width: MySize(context).w * 0.01),
                     Text("Shot", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
                   ],
@@ -282,7 +281,7 @@ class _PageDiagramState extends State<PageDiagram> {
 
                 Row(
                   children: [
-                    Container(height: legendBoxSize, width: legendBoxSize, color: sunsetRed),
+                    Container(height: legendBoxSize, width: legendBoxSize, color: lightRusticBrown),
                     SizedBox(width: MySize(context).w * 0.01),
                     Text("Lutz", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
                   ],
@@ -457,22 +456,22 @@ class _PageDiagramState extends State<PageDiagram> {
                                                             Container(
                                                               height: double.infinity,
                                                               width: totalWidth * longdrink / maximumValue,
-                                                              color: rustOrange,
+                                                              color: sunsetRed,
                                                             ),
                                                             Container(
                                                               height: double.infinity,
                                                               width: totalWidth * beer / maximumValue,
-                                                              color: cactusGreen,
+                                                              color: westernGold,
                                                             ),
                                                             Container(
                                                               height: double.infinity,
                                                               width: totalWidth * shot / maximumValue,
-                                                              color: desertSand,
+                                                              color: cactusGreen,
                                                             ),
                                                             Container(
                                                               height: double.infinity,
                                                               width: totalWidth * lutz / maximumValue,
-                                                              color: sunsetRed,
+                                                              color: lightRusticBrown,
                                                             ),
                                                           ],
                                                         ),
@@ -753,190 +752,4 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
       ),
     );
   }
-
-  /*  Widget _buildProgressBar() {
-    double progress = (100 - diff) / 100; // Calculate the progress based on the difference
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset('assets/mock_logo.png', width: 40, height: 40), // Chaser logo
-            const SizedBox(width: 10),
-            Text(chaser, style: TextStyle(color: Colors.white70)),
-            const SizedBox(width: 10),
-            Image.asset('assets/mock_logo.png', width: 40, height: 40), // Leader logo
-          ],
-        ),
-        const SizedBox(height: 5),
-        LinearProgressIndicator(
-          value: progress,
-          backgroundColor: Colors.white12,
-          valueColor: AlwaysStoppedAnimation<Color>(Colors.sunsetRed),
-          minHeight: 10,
-        ),
-      ],
-    );
-  } */
 }
-
-//the following PageDiagram can "scroll" by updating the data but there is no visible scroll effect. Also the colors are not corrected for this version
-
-/* class PageDiagram extends StatefulWidget {
-  const PageDiagram({super.key});
-
-  @override
-  State<PageDiagram> createState() => _PageDiagramState();
-}
-
-class _PageDiagramState extends State<PageDiagram> {
-  _PageDiagramState();
-
-  List<ChartData>? _chartData;
-  int _startIndex = 0;
-  late Timer _scrollTimer;
-  final int visibleBarsCount = 5;
-
-  @override
-  void initState() {
-    super.initState();
-    _prepareData();
-    _startAutoScroll();
-  }
-
-  void _prepareData() {
-    _chartData = <ChartData>[
-      ChartData(group: 'Gruppe1', longdrink: 6, shot: 6, beer: 18, lutz: 12),
-      ChartData(group: 'Gruppe2', longdrink: 8, shot: 8, beer: 19, lutz: 15),
-      ChartData(group: 'Gruppe3', longdrink: 3, shot: 11, beer: 22, lutz: 20),
-      ChartData(group: 'Gruppe4', longdrink: 15, shot: 16, beer: 25, lutz: 40),
-      ChartData(group: 'Gruppe5', longdrink: 20, shot: 21, beer: 30, lutz: 13),
-      ChartData(group: 'Gruppe6', longdrink: 24, shot: 25, beer: 35, lutz: 11),
-      ChartData(group: 'Gruppe7', longdrink: 22, shot: 25, beer: 35, lutz: 11),
-      ChartData(group: 'Gruppe8', longdrink: 12, shot: 15, beer: 25, lutz: 16),
-    ];
-    _chartData?.sort((a, b) {
-      final aSum = (a.longdrink ?? 0) * 2 + (a.shot ?? 0) + (a.beer ?? 0) + (a.lutz ?? 0);
-      final bSum = (b.longdrink ?? 0) * 2 + (b.shot ?? 0) + (b.beer ?? 0) + (b.lutz ?? 0);
-      return aSum.compareTo(bSum);
-    });
-
-    final medals = ['🥇 ', '🥈 ', '🥉 '];
-    for (int i = 0; i < _chartData!.length; i++) {
-      final originalName = _chartData![i].group.toString().replaceAll(RegExp(r'[🥇🥈🥉]'), '');
-      if (i > _chartData!.length - 4) {
-        _chartData![i] = ChartData(
-          group: '${medals[_chartData!.length - 1 - i]}$originalName',
-          longdrink: _chartData![i].longdrink,
-          shot: _chartData![i].shot,
-          beer: _chartData![i].beer,
-          lutz: _chartData![i].lutz,
-        );
-      }
-    }
-  }
-
-  void _startAutoScroll() {
-    _scrollTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
-      if (!mounted) return;
-
-      setState(() {
-        final dataLength = _chartData!.length;
-        _startIndex += 1;
-        if (_startIndex + visibleBarsCount > dataLength) {
-          _startIndex = 0; // Wieder von vorne
-        }
-      });
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final visibleData = _chartData!.sublist(
-      _startIndex,
-      (_startIndex + visibleBarsCount).clamp(0, _chartData!.length),
-    );
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
-      child: SfCartesianChart(
-        zoomPanBehavior: ZoomPanBehavior(
-          enablePanning: true,
-          zoomMode: ZoomMode.x,
-        ),
-        plotAreaBorderWidth: 1,
-        plotAreaBorderColor: defaultOnPrimary,
-        //title: ChartTitle(text: 'Saufometer'),
-        legend: Legend(
-          isVisible: true,
-          position: LegendPosition.top,
-          textStyle: const TextStyle(fontSize: 30),
-          padding: 20,
-          itemPadding: 50,
-        ),
-        primaryXAxis: CategoryAxis(
-          initialVisibleMinimum: _startIndex.toDouble(),
-          initialVisibleMaximum: (_startIndex + visibleBarsCount).toDouble(),
-          labelStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          axisLine: const AxisLine(width: 0),
-          majorGridLines: const MajorGridLines(width: 0),
-        ),
-        primaryYAxis: NumericAxis(
-          axisLine: const AxisLine(width: 0),
-          labelFormat: '{value}',
-          majorTickLines: const MajorTickLines(size: 0),
-          majorGridLines: MajorGridLines(width: 1, color: defaultOnPrimary),
-          labelStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        series: <StackedBarSeries<ChartData, String>>[
-          StackedBarSeries<ChartData, String>(
-            dataSource: visibleData,
-            xValueMapper: (ChartData data, int index) => data.group,
-            yValueMapper: (ChartData data, int index) => index < ((_chartData?.length ?? 0) - 3)
-                ? data.total
-                : (data.longdrink == null ? null : data.longdrink! * 2),
-            name: 'Bargetränk',
-            color: rustOrange,
-            pointColorMapper: (data, index) =>
-                index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : rustOrange,
-          ),
-          StackedBarSeries<ChartData, String>(
-            dataSource: visibleData,
-            xValueMapper: (ChartData data, int index) => data.group,
-            yValueMapper: (ChartData data, int index) => index < ((_chartData?.length ?? 0) - 3) ? 0 : data.beer,
-            name: 'Bier',
-            color: cactusGreen,
-            pointColorMapper: (data, index) =>
-                index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : cactusGreen,
-          ),
-          StackedBarSeries<ChartData, String>(
-            dataSource: visibleData,
-            xValueMapper: (ChartData data, int index) => data.group,
-            yValueMapper: (ChartData data, int index) => index < ((_chartData?.length ?? 0) - 3) ? 0 : data.shot,
-            name: 'Shot',
-            color: desertSand,
-            pointColorMapper: (data, index) => index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : desertSand,
-          ),
-          StackedBarSeries<ChartData, String>(
-            dataSource: visibleData,
-            xValueMapper: (ChartData data, int index) => data.group,
-            yValueMapper: (ChartData data, int index) => index < ((_chartData?.length ?? 0) - 3) ? 0 : data.lutz,
-            name: 'Lutz',
-            color: sunsetRed,
-            pointColorMapper: (data, index) => index < ((_chartData?.length ?? 0) - 3) ? Colors.grey : sunsetRed,
-          ),
-        ],
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _chartData!.clear();
-    _scrollTimer.cancel();
-    super.dispose();
-  }
-}
- */

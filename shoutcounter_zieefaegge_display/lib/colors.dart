@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-final defaultOnPrimary = Color(0xFFC7C5D0);
-final defaultOnScroll = Color(0xFF8B4513);
-final desertSand = Color(0xFFE9C46A); //TODO besser erkennbare Farben
-final sunsetRed = Color(0xFFB22222);
-final rustOrange = Color(0xFFD2691E);
-final cactusGreen = Color(0xFF2E8B57);
-final redAccent = Color(0xFFFF5252);
-final greenAccent = Color(0xFF2EC91C);
-final transparentWhite = Color(0xC8FFFFFF);
-final backgroundColor = Color(0xFFCA7F36);
+Color defaultOnPrimary = Color(0xFFC7C5D0);
+Color defaultOnScroll = Color(0xFF8B4513);
+Color westernGold = Color(0xFFE9A94A);
+Color sunsetRed = Color(0xFFB22222);
+Color lightRusticBrown = Color(0xFFA86E4A);
+Color cactusGreen = Color(0xFF2E8B57);
+Color redAccent = Color(0xFFFF5252);
+Color greenAccent = Color(0xFF2EC91C);
+Color transparentWhite = Color(0xC8FFFFFF);
+Color backgroundColor = Color(0xFFCA7F36);
 final ThemeData appTheme = ThemeData(
   colorScheme: ColorScheme(
     brightness: Brightness.light,

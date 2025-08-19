@@ -21,15 +21,6 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
 
   bool dataLoaded = false;
 
-  int flashSpeed = 400;
-  int flashThreshold = 60;
-  int redThreshold = 300;
-  double headlineSize = 35;
-  double sublineSize = 20;
-  double leadingSize = 18;
-  double groupNameSize = 25;
-  double counterSize = 25;
-
   String groupName = "";
   String headline = "";
   String subline = "";
@@ -47,41 +38,24 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
 
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 300),
+      duration: Duration(milliseconds: CustomDurations().flashSpeed),
     )..repeat(reverse: true);
 
     _fadeAnimation = CurvedAnimation(parent: _animationController, curve: Curves.easeInOut);
   }
 
   void _startAutoReloadChartData() {
-    _dataReloadTimer = Timer.periodic(Duration(seconds: 3), (_) {
+    _dataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations().reloadDataPrize), (_) {
       _loadData();
     });
   }
 
   Future<void> _loadData() async {
     try {
-      Map settings = await MockDataPage2().getPrizePageSettings();
       Map data = await MockDataPage2().getPrizePageData();
 
       if (mounted) {
         setState(() {
-          final newDuration = Duration(milliseconds: settings["flashSpeed"]);
-          if (_animationController.duration != newDuration) {
-            _animationController.stop();
-            _animationController.duration = newDuration;
-            _animationController.repeat(reverse: true);
-            flashSpeed = settings["flashSpeed"];
-          }
-
-          flashThreshold = settings["flashThreshold"];
-          redThreshold = settings["redThreshold"];
-          headlineSize = settings["headlineSize"];
-          sublineSize = settings["sublineSize"];
-          leadingSize = settings["leadingSize"];
-          groupNameSize = settings["groupNameSize"];
-          counterSize = settings["counterSize"];
-
           groupName = data["groupName"];
           headline = data["headline"];
           subline = data["subline"];
@@ -165,12 +139,12 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
                       SizedBox(height: MySize(context).h * 0.05),
                       Text(
                         headline,
-                        style: TextStyle(fontSize: headlineSize, fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: MySize(context).h * 0.02),
                       Text(
                         subline,
-                        style: TextStyle(fontSize: sublineSize),
+                        style: TextStyle(fontSize: 20),
                         textAlign: TextAlign.left,
                       ),
                       SizedBox(height: MySize(context).h * 0.05),
@@ -211,11 +185,10 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Text('Aktuell führend',
-                                      style: TextStyle(fontSize: leadingSize, color: defaultOnPrimary)),
+                                  Text('Aktuell führend', style: TextStyle(fontSize: 18, color: defaultOnPrimary)),
                                   Text(
                                     groupName,
-                                    style: TextStyle(fontSize: groupNameSize, fontWeight: FontWeight.bold),
+                                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                                     textAlign: TextAlign.center,
                                   ),
                                 ],
@@ -230,13 +203,14 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
                         ),
                       ),
                       SizedBox(height: MySize(context).h * 0.05),
-                      (_remainingTime.inSeconds > redThreshold)
-                          ? _buildTimerBox(greenAccent, counterSize)
-                          : (_remainingTime.inSeconds > flashThreshold || _remainingTime.inSeconds == 0)
-                              ? _buildTimerBox(redAccent, counterSize)
+                      (_remainingTime.inSeconds > GlobalSettings().redThreshold)
+                          ? _buildTimerBox(greenAccent, 25)
+                          : (_remainingTime.inSeconds > GlobalSettings().flashThreshold ||
+                                  _remainingTime.inSeconds == 0)
+                              ? _buildTimerBox(redAccent, 25)
                               : FadeTransition(
                                   opacity: _fadeAnimation,
-                                  child: _buildTimerBox(redAccent, counterSize),
+                                  child: _buildTimerBox(redAccent, 25),
                                 ),
                     ],
                   ),

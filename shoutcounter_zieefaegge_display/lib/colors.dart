@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 final defaultOnPrimary = Color(0xFFC7C5D0);
 final defaultOnScroll = Color(0xFF8B4513);
-final desertSand = Color(0xFFE9C46A);
+final desertSand = Color(0xFFE9C46A); //TODO besser erkennbare Farben
 final sunsetRed = Color(0xFFB22222);
 final rustOrange = Color(0xFFD2691E);
 final cactusGreen = Color(0xFF2E8B57);

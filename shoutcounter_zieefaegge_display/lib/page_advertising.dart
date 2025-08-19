@@ -20,6 +20,10 @@ class _PageAdvertisingState extends State<PageAdvertising> {
   String text = "";
   String imageUrl = "";
 
+  //TODO im Stil einer alten Zeitung
+  //TODO "Newspaper" abgeschnitten oben angezeigt, Headline rechts, Text rechts
+  //TODO last modified, patch wurdeBereitsAngezeigt
+
   @override
   void initState() {
     super.initState();
@@ -28,6 +32,7 @@ class _PageAdvertisingState extends State<PageAdvertising> {
     _startAutoReloadImage();
   }
 
+//TODO reload braucht es nicht
   void _startAutoReloadImage() {
     _dataReloadTimer = Timer.periodic(Duration(seconds: 10), (_) {
       _loadImage();
@@ -46,7 +51,7 @@ class _PageAdvertisingState extends State<PageAdvertising> {
         });
       }
     } catch (e) {
-      debugPrint('Error fetching page 3 schedule image: $e');
+      debugPrint('Error fetching page 5 advertising image: $e');
     }
   }
 

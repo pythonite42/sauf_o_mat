@@ -6,8 +6,13 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
+
+//TODO automatisch freeze bei Livestream
+
+//TODO reload bei allen Seiten außer Livestream (index reloaden obwohl er gleich ist wie vorher)
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -36,6 +41,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int selectedIndex = 0;
   int currentNavigationIndex = 0;
+  bool indexFrozen = false;
   List<String> pages = ["Balkendiagramm", "Top 3", "Gewinn", "Ablaufplan", "Kommentare", "Werbung", "Livestream"];
   bool _showCamera = false;
   bool _isRecordingRunning = false;
@@ -93,14 +99,14 @@ class _MyHomePageState extends State<MyHomePage> {
           }
           // If no condition fulfilled? printout the message
           else {
-            print(decoded);
+            debugPrint(decoded.toString());
           }
         } catch (e) {
-          print("ERROR $e");
+          debugPrint("ERROR $e");
         }
       });
     } catch (e) {
-      print("ERROR $e");
+      debugPrint("ERROR $e");
     }
   }
 
@@ -134,7 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
       peerConnection?.addTrack(track, localStream!);
     });
 
-    print("initialization");
+    debugPrint("initialization");
     registerPeerConnectionListeners();
     setState(() {
       _showCamera = true;
@@ -154,9 +160,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Help to debug our code
   void registerPeerConnectionListeners() {
-    print("registerPeerConnectionListeners");
+    debugPrint("registerPeerConnectionListeners");
     peerConnection?.onIceGatheringState = (RTCIceGatheringState state) {
-      print('ICE gathering state changed: $state');
+      debugPrint('ICE gathering state changed: $state');
     };
 
     peerConnection?.onIceCandidate = (RTCIceCandidate candidate) {
@@ -164,14 +170,14 @@ class _MyHomePageState extends State<MyHomePage> {
     };
 
     peerConnection?.onConnectionState = (RTCPeerConnectionState state) {
-      print('Connection state change: $state');
+      debugPrint('Connection state change: $state');
     };
 
     peerConnection?.onSignalingState = (RTCSignalingState state) {
-      print('Signaling state change: $state');
+      debugPrint('Signaling state change: $state');
     };
     peerConnection?.onTrack = (RTCTrackEvent event) {
-      print("⚠️ Track received, but no stream available");
+      debugPrint("⚠️ Track received, but no stream available");
     };
   }
 
@@ -182,10 +188,10 @@ class _MyHomePageState extends State<MyHomePage> {
           track.enabled = false; // Stop sending frames
           channel?.sink.add(jsonEncode({"event": "paused"}));
         }
-        print("📷 Camera paused");
+        debugPrint("📷 Camera paused");
       }
     } catch (e) {
-      print("❌ Error pausing camera: $e");
+      debugPrint("❌ Error pausing camera: $e");
     }
   }
 
@@ -196,10 +202,10 @@ class _MyHomePageState extends State<MyHomePage> {
           track.enabled = true; // Resume sending frames
           channel?.sink.add(jsonEncode({"event": "resumed"}));
         }
-        print("📷 Camera resumed");
+        debugPrint("📷 Camera resumed");
       }
     } catch (e) {
-      print("❌ Error resuming camera: $e");
+      debugPrint("❌ Error resuming camera: $e");
     }
   }
 
@@ -221,14 +227,15 @@ class _MyHomePageState extends State<MyHomePage> {
       // Dispose and re-create the renderer so it's fresh next time
       await localVideo.dispose();
       channel = null;
-      print("✅ Livestream cleaned up");
+      debugPrint("✅ Livestream cleaned up");
     } catch (e) {
-      print("❌ Error cleaning up livestream: $e");
+      debugPrint("❌ Error cleaning up livestream: $e");
     }
   }
 
   @override
   void initState() {
+    connectToServer();
     super.initState();
   }
 
@@ -239,13 +246,13 @@ class _MyHomePageState extends State<MyHomePage> {
     super.dispose();
   }
 
-  Future<int> getCurrentNavigationIndex() async {
+  /* Future<int> getCurrentNavigationIndex() async {
     await Future.delayed(Duration(seconds: 2));
     setState(() {
       currentNavigationIndex = 0;
     });
     return currentNavigationIndex;
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
@@ -257,12 +264,13 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: const EdgeInsets.only(top: 50),
         child: Column(
           children: <Widget>[
-            FutureBuilder<int>(
-              future: getCurrentNavigationIndex(),
-              builder: (context, AsyncSnapshot<int> snapshot) {
-                if (snapshot.hasData) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text("Seite:", style: TextStyle(fontSize: 20)),
                       Container(
@@ -270,7 +278,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         decoration: BoxDecoration(color: darkAccent),
                         child: DropdownButtonFormField<String>(
-                          value: pages[snapshot.data!],
+                          value: pages[currentNavigationIndex],
                           icon: const Icon(Icons.expand_more),
                           decoration: const InputDecoration(
                             enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent)),
@@ -279,14 +287,15 @@ class _MyHomePageState extends State<MyHomePage> {
                             final newIndex = pages.indexOf(newValue!);
                             setState(() {
                               currentNavigationIndex = newIndex;
+                              debugPrint("send event pageIndex with index $newIndex");
+                              channel?.sink.add(jsonEncode({"event": "pageIndex", "index": newIndex}));
                             });
 
                             if (newValue == "Livestream") {
-                              connectToServer();
                               localVideo.initialize();
                               initialization();
                             } else {
-                              await cleanupLivestream();
+                              //await cleanupLivestream();
                               setState(() {
                                 _showCamera = false;
                                 _isRecordingRunning = false;
@@ -299,11 +308,27 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                     ],
-                  );
-                } else {
-                  return const CircularProgressIndicator();
-                }
-              },
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Angezeigte Seite einfrieren"),
+                      Switch(
+                        value: indexFrozen,
+                        activeColor: Colors.red,
+
+                        onChanged: (bool newFrozenValue) {
+                          setState(() {
+                            indexFrozen = newFrozenValue;
+                            debugPrint("freeze page: $newFrozenValue");
+                            channel?.sink.add(jsonEncode({"event": "freeze", "freeze": newFrozenValue}));
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 10),
             if (_showCamera)

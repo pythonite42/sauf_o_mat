@@ -155,45 +155,53 @@ class _PageDiagramState extends State<PageDiagram> {
     });
   }
 
+  //TODO max Zeichenanzahl Name
+  /*TODO Grafik/Emoji für jedes Legenden Item
+    Farbkästchen größer machen, Symbol für Getränk in das Kästchen rein
+    Bier: gelb/orange, Bargetränk: grün, Shot: rot, Lutz: braun
+  */
+
   void buildPopup() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (showPopup && !_isPopupVisible) {
-        _isPopupVisible = true;
-        _popupKey = GlobalKey<_RacePopupWidgetState>();
+      try {
+        if (showPopup && !_isPopupVisible) {
+          _isPopupVisible = true;
+          _popupKey = GlobalKey<_RacePopupWidgetState>();
 
-        await showDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (popupCtx) {
-            _popupContext = popupCtx;
-            return RacePopupWidget(
-              key: _popupKey,
-              initialImageUrl: imageUrl,
-              initialLeader: leaderGroupName,
-              initialChaser: chaserGroupName,
-              initialPointsOfLeader: leaderPoints,
-              headline: headline,
-              motivationalText: motivationalText,
-            );
-          },
-        );
+          await showDialog(
+            context: context,
+            barrierDismissible: true,
+            builder: (popupCtx) {
+              _popupContext = popupCtx;
+              return RacePopupWidget(
+                key: _popupKey,
+                initialImageUrl: imageUrl,
+                initialLeader: leaderGroupName,
+                initialChaser: chaserGroupName,
+                initialPointsOfLeader: leaderPoints,
+                headline: headline,
+                motivationalText: motivationalText,
+              );
+            },
+          );
 
-        if (mounted) {
-          setState(() {
-            _isPopupVisible = false;
-            _popupContext = null;
-            _popupKey = null;
-          });
+          if (mounted) {
+            setState(() {
+              _isPopupVisible = false;
+              _popupContext = null;
+              _popupKey = null;
+            });
+          }
+        } else if (!showPopup && _isPopupVisible && _popupContext != null) {
+          Navigator.of(_popupContext!).pop();
+          _isPopupVisible = false;
+          _popupContext = null;
+          _popupKey = null;
+        } else if (_isPopupVisible && _popupKey?.currentState != null) {
+          _popupKey?.currentState!
+              .updateData(imageUrl, leaderGroupName, chaserGroupName, leaderPoints, headline, motivationalText);
         }
-      } else if (!showPopup && _isPopupVisible && _popupContext != null) {
-        Navigator.of(_popupContext!).pop();
-        _isPopupVisible = false;
-        _popupContext = null;
-        _popupKey = null;
-      } else if (_isPopupVisible && _popupKey?.currentState != null) {
-        _popupKey?.currentState!
-            .updateData(imageUrl, leaderGroupName, chaserGroupName, leaderPoints, headline, motivationalText);
-      }
+      } catch (_) {}
     });
   }
 
@@ -202,6 +210,9 @@ class _PageDiagramState extends State<PageDiagram> {
     _chartDataReloadTimer.cancel();
     _scrollTimer.cancel();
     _scrollController.dispose();
+    try {
+      Navigator.of(_popupContext!).pop();
+    } catch (_) {}
     super.dispose();
   }
 
@@ -441,32 +452,31 @@ class _PageDiagramState extends State<PageDiagram> {
                                                         vertical: constraints.maxHeight * 0.15),
                                                     child: Stack(
                                                       children: [
-                                                        index < 3
-                                                            ? Row(
-                                                                children: [
-                                                                  Container(
-                                                                    height: double.infinity,
-                                                                    width: totalWidth * longdrink / maximumValue,
-                                                                    color: rustOrange,
-                                                                  ),
-                                                                  Container(
-                                                                    height: double.infinity,
-                                                                    width: totalWidth * beer / maximumValue,
-                                                                    color: cactusGreen,
-                                                                  ),
-                                                                  Container(
-                                                                    height: double.infinity,
-                                                                    width: totalWidth * shot / maximumValue,
-                                                                    color: desertSand,
-                                                                  ),
-                                                                  Container(
-                                                                    height: double.infinity,
-                                                                    width: totalWidth * lutz / maximumValue,
-                                                                    color: sunsetRed,
-                                                                  ),
-                                                                ],
-                                                              )
-                                                            : Row(children: [
+                                                        Row(
+                                                          children: [
+                                                            Container(
+                                                              height: double.infinity,
+                                                              width: totalWidth * longdrink / maximumValue,
+                                                              color: rustOrange,
+                                                            ),
+                                                            Container(
+                                                              height: double.infinity,
+                                                              width: totalWidth * beer / maximumValue,
+                                                              color: cactusGreen,
+                                                            ),
+                                                            Container(
+                                                              height: double.infinity,
+                                                              width: totalWidth * shot / maximumValue,
+                                                              color: desertSand,
+                                                            ),
+                                                            Container(
+                                                              height: double.infinity,
+                                                              width: totalWidth * lutz / maximumValue,
+                                                              color: sunsetRed,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        /* : Row(children: [
                                                                 Container(
                                                                   height: double.infinity,
                                                                   width: totalWidth *
@@ -474,7 +484,7 @@ class _PageDiagramState extends State<PageDiagram> {
                                                                       maximumValue,
                                                                   color: Colors.grey,
                                                                 )
-                                                              ]),
+                                                              ]), */
                                                         Container(
                                                           height: double.infinity,
                                                           width: frameLineWidth,
@@ -614,14 +624,14 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
         width: MySize(context).w * 0.42,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/parchment.png'),
+            image: AssetImage('assets/parchment.png'), //TODO nicht ganz so gelb
             fit: BoxFit.cover, // cover entire container
           ),
         ),
         child: Padding(
           padding: EdgeInsets.symmetric(
             horizontal: MySize(context).w * 0.05,
-            vertical: MySize(context).h * 0.07,
+            vertical: MySize(context).h * 0.03,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -649,21 +659,24 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
                   Stack(
                     children: [
                       Image.asset('assets/cowboy_chasing.gif', fit: BoxFit.cover, width: MySize(context).w * 0.18),
-                      Positioned(
-                          top: MySize(context).h * 0.037,
-                          left: MySize(context).w * 0.065,
-                          child: Image.asset('assets/mock_logo.png', width: MySize(context).w * 0.03)),
+                      /* Positioned(
+                        top: MySize(context).h * 0.037,
+                        left: MySize(context).w * 0.065,
+                        child: Image.asset('assets/mock_logo.png', width: MySize(context).w * 0.03),
+                      ), */
                     ],
                   ),
-                  Image.asset('assets/mock_logo.png', width: MySize(context).w * 0.1),
+                  Image.asset('assets/mock_logo.png',
+                      width: MySize(context).w * 0.1), //TODO image so groß wie möglich (höhe ausfüllen)
                 ]),
               ),
-              SizedBox(height: MySize(context).h * 0.02),
+              SizedBox(height: MySize(context).h * 0.007),
               Text(
+                //TODO Einschusslöcher um den Namen (3 Stück) als GIF das nicht looped
                 leader,
                 style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 60)),
               ),
-              SizedBox(height: MySize(context).h * 0.01),
+              SizedBox(height: MySize(context).h * 0.005),
 
               /* Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

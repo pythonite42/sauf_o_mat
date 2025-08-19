@@ -11,9 +11,17 @@ class PagePrize extends StatefulWidget {
   State<PagePrize> createState() => _PagePrizeState();
 }
 
+//TODO kurz vor Gewinn leader öfter abfragen, vorher 10 Sekunden und ab 20 sekunden vorher sekündlich
+
+//TODO überschrift größer,
+//TODO Infos ins Bild: uhrzeit vom Gewinn, was es zu gewinnen gibt
+//TODO der Text sind die Regeln (wie viele Punkte pro Getränk, wie kauf ich für meine Gruppe)
+//TODO Zettel als Hintergrund für rechte Seite
+
 class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMixin {
   late Timer _timer;
-  Duration _remainingTime = Duration(hours: 0, minutes: 0, seconds: 0);
+  Duration _remainingTime =
+      Duration(hours: 0, minutes: 0, seconds: 0); //TODO wenn <60 Minuten dann stunden nicht anzeigen
 
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -112,7 +120,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
           : Row(
               children: [
                 Expanded(
-                  flex: 5,
+                  flex: 4,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
                     child: Image.network(
@@ -136,7 +144,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(height: MySize(context).h * 0.05),
+                      SizedBox(height: MySize(context).h * 0.02),
                       Text(
                         headline,
                         style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
@@ -145,12 +153,13 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
                       Text(
                         subline,
                         style: TextStyle(fontSize: 20),
+                        maxLines: 4,
                         textAlign: TextAlign.left,
                       ),
-                      SizedBox(height: MySize(context).h * 0.05),
+                      SizedBox(height: MySize(context).h * 0.03),
                       Container(
-                        height: MySize(context).h * 0.20,
-                        padding: const EdgeInsets.all(16),
+                        height: MySize(context).h * 0.23,
+                        padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
                           color: Colors.white10,
                           borderRadius: BorderRadius.circular(15),
@@ -160,6 +169,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             SizedBox(width: MySize(context).w * 0.01),
+                            //TODO Name weg machen, nur Bild mit "aktuell führend" als column
                             CircleAvatar(
                               radius: MySize(context).h * 0.07,
                               child: ClipOval(

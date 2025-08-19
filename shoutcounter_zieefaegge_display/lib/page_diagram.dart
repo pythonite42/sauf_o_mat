@@ -73,7 +73,7 @@ class _PageDiagramState extends State<PageDiagram> {
   }
 
   void _startAutoReloadChartData() {
-    _chartDataReloadTimer = Timer.periodic(Duration(seconds: 7), (_) {
+    _chartDataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations().reloadDataDiagram), (_) {
       _loadChartData();
     });
   }
@@ -138,7 +138,7 @@ class _PageDiagramState extends State<PageDiagram> {
   }
 
   void _startAutoScroll() {
-    const duration = Duration(seconds: 8);
+    var duration = Duration(seconds: CustomDurations().chartAutoScroll);
 
     _scrollTimer = Timer.periodic(duration, (timer) {
       if (!_scrollController.hasClients) return;
@@ -149,7 +149,7 @@ class _PageDiagramState extends State<PageDiagram> {
 
       _scrollController.animateTo(
         next >= (maxScroll + barHeight / 2) ? 0 : next,
-        duration: const Duration(milliseconds: 500),
+        duration: Duration(milliseconds: CustomDurations().speedChartScroll),
         curve: Curves.easeInOut,
       );
     });

@@ -69,7 +69,7 @@ class _MyScaffoldState extends State<MyScaffold> {
   late final MessageHandler socketPageIndexListener;
 
   void _startPageIndexTimer() {
-    _pageIndexReloadTimer = Timer.periodic(const Duration(seconds: 8), (_) {
+    _pageIndexReloadTimer = Timer.periodic(Duration(seconds: CustomDurations().checkIfNavigationIndexChanged), (_) {
       if (!overridePageIndex) {
         int nextIndex = (pageIndex + 1) % 6;
         _navigateToPage(nextIndex);
@@ -216,7 +216,7 @@ class _MyScaffoldState extends State<MyScaffold> {
 
   Route _createRoute(Widget page) {
     return PageRouteBuilder(
-      transitionDuration: const Duration(milliseconds: 800),
+      transitionDuration: Duration(milliseconds: CustomDurations().navigationTransition),
       pageBuilder: (_, animation, __) => page,
       transitionsBuilder: (_, animation, __, child) {
         const begin = Offset(1.0, 0.0); // slide in from right

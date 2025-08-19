@@ -34,7 +34,7 @@ class _PageAdvertisingState extends State<PageAdvertising> {
 
 //TODO reload braucht es nicht
   void _startAutoReloadImage() {
-    _dataReloadTimer = Timer.periodic(Duration(seconds: 10), (_) {
+    _dataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations().reloadDataAdvertising), (_) {
       _loadImage();
     });
   }

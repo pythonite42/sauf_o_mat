@@ -27,8 +27,8 @@ class CustomDurations {
   int chartAutoScroll = 8; //every x seconds the chart scrolls one bar down
   int speedChartScroll = 500;
 
-  //page advertising
-  int reloadDataAdvertising = 10;
+  //page top3
+  int reloadDataTop3 = 7;
 
   //page prize
   int flashSpeed = 400;
@@ -38,6 +38,9 @@ class CustomDurations {
   int reloadDataQuote = 10;
   int switchQuote = 4;
   int fadeTransistion = 800;
+
+  //page advertising
+  int reloadDataAdvertising = 10;
 
   // ##### salesforce ######################
 

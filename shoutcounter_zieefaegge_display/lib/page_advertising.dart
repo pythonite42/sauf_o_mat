@@ -20,9 +20,9 @@ class _PageAdvertisingState extends State<PageAdvertising> {
   String text = "";
   String imageUrl = "";
 
-  //TODO im Stil einer alten Zeitung
-  //TODO "Newspaper" abgeschnitten oben angezeigt, Headline rechts, Text rechts
-  //TODO last modified, patch wurdeBereitsAngezeigt
+  //TODO 2 im Stil einer alten Zeitung
+  //TODO 2 "Newspaper" abgeschnitten oben angezeigt, Headline rechts, Text rechts
+  //TODO 1 last modified, patch wurdeBereitsAngezeigt
 
   @override
   void initState() {
@@ -32,7 +32,7 @@ class _PageAdvertisingState extends State<PageAdvertising> {
     _startAutoReloadImage();
   }
 
-//TODO reload braucht es nicht
+//TODO 2 reload braucht es nicht
   void _startAutoReloadImage() {
     _dataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations().reloadDataAdvertising), (_) {
       _loadImage();

@@ -10,9 +10,9 @@ void main() {
   runApp(const MyApp());
 }
 
-//TODO automatisch freeze bei Livestream
+//TODO 1 automatisch freeze bei Livestream
 
-//TODO reload bei allen Seiten außer Livestream (index reloaden obwohl er gleich ist wie vorher)
+//TODO 1 reload bei allen Seiten außer Livestream (index reloaden obwohl er gleich ist wie vorher)
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

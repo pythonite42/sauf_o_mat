@@ -155,8 +155,8 @@ class _PageDiagramState extends State<PageDiagram> {
     });
   }
 
-  //TODO max Zeichenanzahl Name
-  /*TODO Grafik/Emoji für jedes Legenden Item
+  //TODO 1 max Zeichenanzahl Name
+  /*TODO 3 Grafik/Emoji für jedes Legenden Item
     Farbkästchen größer machen, Symbol für Getränk in das Kästchen rein
   */
 
@@ -623,7 +623,7 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
         width: MySize(context).w * 0.42,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/parchment.png'), //TODO nicht ganz so gelb
+            image: AssetImage('assets/parchment.png'), //TODO 3 nicht ganz so gelb
             fit: BoxFit.cover, // cover entire container
           ),
         ),
@@ -666,12 +666,12 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
                     ],
                   ),
                   Image.asset('assets/mock_logo.png',
-                      width: MySize(context).w * 0.1), //TODO image so groß wie möglich (höhe ausfüllen)
+                      width: MySize(context).w * 0.1), //TODO 2 image so groß wie möglich (höhe ausfüllen)
                 ]),
               ),
               SizedBox(height: MySize(context).h * 0.007),
               Text(
-                //TODO Einschusslöcher um den Namen (3 Stück) als GIF das nicht looped
+                //TODO 3 Einschusslöcher um den Namen (3 Stück) als GIF das nicht looped
                 leader,
                 style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 60)),
               ),

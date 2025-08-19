@@ -12,9 +12,9 @@ import 'package:shotcounter_zieefaegge/page_advertising.dart';
 import 'package:shotcounter_zieefaegge/server_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
-//TODO alle durations checken
-//TODO backend durations checken: statusDisplay
-//TODO alle imageUrls checken ob die Bilder gut aussehen
+//TODO 1 alle durations checken
+//TODO 1 backend durations checken: statusDisplay
+//TODO 1 alle imageUrls checken ob die Bilder gut aussehen
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -69,7 +69,7 @@ class _MyScaffoldState extends State<MyScaffold> {
   late final MessageHandler socketPageIndexListener;
 
   void _startPageIndexTimer() {
-    _pageIndexReloadTimer = Timer.periodic(Duration(seconds: CustomDurations().checkIfNavigationIndexChanged), (_) {
+    _pageIndexReloadTimer = Timer.periodic(Duration(seconds: CustomDurations().indexNavigationChange), (_) {
       if (!overridePageIndex) {
         int nextIndex = (pageIndex + 1) % 6;
         _navigateToPage(nextIndex);

@@ -11,17 +11,17 @@ class PagePrize extends StatefulWidget {
   State<PagePrize> createState() => _PagePrizeState();
 }
 
-//TODO kurz vor Gewinn leader öfter abfragen, vorher 10 Sekunden und ab 20 sekunden vorher sekündlich
+//TODO 1 kurz vor Gewinn leader öfter abfragen, vorher 10 Sekunden und ab 20 sekunden vorher sekündlich
 
-//TODO überschrift größer,
-//TODO Infos ins Bild: uhrzeit vom Gewinn, was es zu gewinnen gibt
-//TODO der Text sind die Regeln (wie viele Punkte pro Getränk, wie kauf ich für meine Gruppe)
-//TODO Zettel als Hintergrund für rechte Seite
+//TODO 2 überschrift größer,
+//TODO 1 Infos ins Bild: uhrzeit vom Gewinn, was es zu gewinnen gibt
+//TODO 1 der Text sind die Regeln (wie viele Punkte pro Getränk, wie kauf ich für meine Gruppe)
+//TODO 2 Zettel als Hintergrund für rechte Seite
 
 class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMixin {
   late Timer _timer;
   Duration _remainingTime =
-      Duration(hours: 0, minutes: 0, seconds: 0); //TODO wenn <60 Minuten dann stunden nicht anzeigen
+      Duration(hours: 0, minutes: 0, seconds: 0); //TODO 2 wenn <60 Minuten dann stunden nicht anzeigen
 
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -169,7 +169,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             SizedBox(width: MySize(context).w * 0.01),
-                            //TODO Name weg machen, nur Bild mit "aktuell führend" als column
+                            //TODO 2 Name weg machen, nur Bild mit "aktuell führend" als column
                             CircleAvatar(
                               radius: MySize(context).h * 0.07,
                               child: ClipOval(

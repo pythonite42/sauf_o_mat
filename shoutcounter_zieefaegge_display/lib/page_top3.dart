@@ -23,6 +23,12 @@ class PageTop3 extends StatefulWidget {
   State<PageTop3> createState() => _PageTop3State();
 }
 
+/* TODO Wanted poster 
+ Staatsfeind Nr. 1/2/3
+ Gesucht für 166 Punkte 
+  20 Bargetränke, 10 Bier usw.
+*/
+
 class _PageTop3State extends State<PageTop3> {
   List<PieChartData> _chartData1 = [];
   List<PieChartData> _chartData2 = [];

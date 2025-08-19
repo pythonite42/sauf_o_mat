@@ -6,8 +6,13 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
+
+//TODO automatisch freeze bei Livestream
+
+//TODO reload bei allen Seiten außer Livestream (index reloaden obwohl er gleich ist wie vorher)
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

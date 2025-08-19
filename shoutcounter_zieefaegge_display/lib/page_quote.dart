@@ -12,6 +12,9 @@ class PageQuote extends StatefulWidget {
   State<PageQuote> createState() => _PageQuoteState();
 }
 
+//TODO reihenfolge: immer das zuletzt bearbeitete
+//TODO wenn kein Bild dann Platzhalter
+
 class _PageQuoteState extends State<PageQuote> {
   bool dataLoaded = false;
 
@@ -95,6 +98,7 @@ class _PageQuoteState extends State<PageQuote> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(height: MySize(context).h * 0.1),
+                            //TODO zusätzlich noch Name (doppelt so groß wie username) wie bei twitter
                             Text(
                               "@$username",
                               style: const TextStyle(

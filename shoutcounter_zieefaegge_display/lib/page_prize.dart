@@ -17,15 +17,14 @@ class PagePrize extends StatefulWidget {
 //TODO 1 Infos ins Bild: uhrzeit vom Gewinn, was es zu gewinnen gibt
 //TODO 1 der Text sind die Regeln (wie viele Punkte pro Getränk, wie kauf ich für meine Gruppe)
 //TODO 2 Zettel als Hintergrund für rechte Seite
+//TODO 2 wenn timer <60 Minuten dann stunden nicht anzeigen
 
 class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMixin {
   late Timer _timer;
-  Duration _remainingTime =
-      Duration(hours: 0, minutes: 0, seconds: 0); //TODO 2 wenn <60 Minuten dann stunden nicht anzeigen
-
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Timer _dataReloadTimer;
+  Duration? _remainingTime;
 
   bool dataLoaded = false;
 
@@ -70,10 +69,6 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
           imagePrize = data["imagePrize"];
           groupLogo = data["groupLogo"];
 
-          int newRemainingSeconds = data["remainingTimeSeconds"];
-          if ((_remainingTime.inSeconds - newRemainingSeconds).abs() > 2) {
-            _remainingTime = Duration(seconds: newRemainingSeconds);
-          }
           dataLoaded = true;
         });
       }
@@ -83,10 +78,15 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
   }
 
   void _startCountdown() {
+    if (_remainingTime == null) {
+      setState(() {
+        _remainingTime = GlobalSettings().timeFirstPrize.difference(DateTime.now());
+      });
+    }
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       setState(() {
-        if (_remainingTime.inSeconds > 0) {
-          _remainingTime -= const Duration(seconds: 1);
+        if (_remainingTime!.inSeconds > 0) {
+          _remainingTime = GlobalSettings().timeFirstPrize.difference(DateTime.now()); // is this the correct seconds?
         } else if (dataLoaded) {
           _timer.cancel();
         }
@@ -213,15 +213,16 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
                         ),
                       ),
                       SizedBox(height: MySize(context).h * 0.05),
-                      (_remainingTime.inSeconds > GlobalSettings().redThreshold)
-                          ? _buildTimerBox(greenAccent, 25)
-                          : (_remainingTime.inSeconds > GlobalSettings().flashThreshold ||
-                                  _remainingTime.inSeconds == 0)
-                              ? _buildTimerBox(redAccent, 25)
-                              : FadeTransition(
-                                  opacity: _fadeAnimation,
-                                  child: _buildTimerBox(redAccent, 25),
-                                ),
+                      if (_remainingTime != null)
+                        (_remainingTime!.inSeconds > GlobalSettings().redThreshold)
+                            ? _buildTimerBox(greenAccent, 25)
+                            : (_remainingTime!.inSeconds > GlobalSettings().flashThreshold ||
+                                    _remainingTime!.inSeconds == 0)
+                                ? _buildTimerBox(redAccent, 25)
+                                : FadeTransition(
+                                    opacity: _fadeAnimation,
+                                    child: _buildTimerBox(redAccent, 25),
+                                  ),
                     ],
                   ),
                 ),
@@ -247,10 +248,11 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
             size: MySize(context).h * 0.05,
           ),
           const SizedBox(width: 10),
-          Text(
-            'Noch ${_formatDuration(_remainingTime)}',
-            style: TextStyle(fontSize: fontsize, fontWeight: FontWeight.bold),
-          ),
+          if (_remainingTime != null)
+            Text(
+              'Noch ${_formatDuration(_remainingTime!)}',
+              style: TextStyle(fontSize: fontsize, fontWeight: FontWeight.bold),
+            ),
         ],
       ),
     );

@@ -34,6 +34,11 @@ class CustomDurations {
   int flashSpeed = 400;
   int reloadDataPrize = 3;
 
+  //page quote
+  int reloadDataQuote = 10;
+  int switchQuote = 4;
+  int fadeTransistion = 800;
+
   // ##### salesforce ######################
 
   int catchUpValidUntil = 60; //how long is a catchUp eligible for visualisation

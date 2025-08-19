@@ -30,7 +30,7 @@ class _PageQuoteState extends State<PageQuote> {
   }
 
   void _startAutoReloadImage() {
-    _dataReloadTimer = Timer.periodic(Duration(seconds: 10), (_) {
+    _dataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations().reloadDataQuote), (_) {
       _loadImage();
     });
   }
@@ -168,6 +168,7 @@ class _PageQuoteState extends State<PageQuote> {
   }
 }
 
+/*
 class QuoteCarousel extends StatefulWidget {
   final List<String> quotes;
   final Duration switchDuration;
@@ -230,17 +231,14 @@ class _QuoteCarouselState extends State<QuoteCarousel> {
     );
   }
 }
+*/
 
 class FadingQuoteCarousel extends StatefulWidget {
   final List<String> quotes;
-  final Duration switchDuration;
-  final Duration fadeDuration;
 
   const FadingQuoteCarousel({
     super.key,
     required this.quotes,
-    this.switchDuration = const Duration(seconds: 4),
-    this.fadeDuration = const Duration(milliseconds: 800),
   });
 
   @override
@@ -254,7 +252,7 @@ class _FadingQuoteCarouselState extends State<FadingQuoteCarousel> {
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(widget.switchDuration, (_) {
+    _timer = Timer.periodic(Duration(seconds: CustomDurations().switchQuote), (_) {
       setState(() {
         _currentIndex = (_currentIndex + 1) % widget.quotes.length;
       });
@@ -270,7 +268,7 @@ class _FadingQuoteCarouselState extends State<FadingQuoteCarousel> {
   @override
   Widget build(BuildContext context) {
     return AnimatedSwitcher(
-      duration: widget.fadeDuration,
+      duration: Duration(milliseconds: CustomDurations().fadeTransistion),
       transitionBuilder: (Widget child, Animation<double> animation) {
         return FadeTransition(opacity: animation, child: child);
       },

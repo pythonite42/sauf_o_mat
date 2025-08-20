@@ -40,13 +40,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
   void initState() {
     super.initState();
 
-    List<DateTime> prizeTimes = [
-      GlobalSettings().timeFirstPrize,
-      GlobalSettings().timeSecondPrize,
-      GlobalSettings().timeThirdPrize
-    ];
-
-    for (DateTime prizeTime in prizeTimes) {
+    for (DateTime prizeTime in GlobalSettings().prizeTimes) {
       if (prizeTime.isAfter(DateTime.now())) {
         setState(() {
           nextPrize = prizeTime;

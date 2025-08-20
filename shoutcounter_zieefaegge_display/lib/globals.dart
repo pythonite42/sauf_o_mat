@@ -52,7 +52,9 @@ class GlobalSettings {
   // page prize
   int flashThreshold = 60;
   int redThreshold = 300;
-  DateTime timeFirstPrize = DateTime(2025, 08, 20, 10, 07);
-  DateTime timeSecondPrize = DateTime(2025, 08, 20, 10, 24);
-  DateTime timeThirdPrize = DateTime(2025, 08, 20, 10, 25);
+  List<DateTime> prizeTimes = [
+    DateTime(2025, 08, 20, 10, 07),
+    DateTime(2025, 08, 20, 10, 08),
+    DateTime(2025, 08, 20, 10, 40)
+  ];
 }

@@ -72,6 +72,9 @@ class _MyScaffoldState extends State<MyScaffold> {
     _pageIndexReloadTimer = Timer.periodic(Duration(seconds: CustomDurations().indexNavigationChange), (_) {
       if (!overridePageIndex) {
         int nextIndex = (pageIndex + 1) % 6;
+        if (nextIndex == 2 && DateTime.now().isAfter(GlobalSettings().prizeTimes.last)) {
+          nextIndex++;
+        }
         _navigateToPage(nextIndex);
       } else {
         overridePageIndex = false;

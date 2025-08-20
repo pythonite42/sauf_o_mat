@@ -11,12 +11,6 @@ class PagePrize extends StatefulWidget {
   State<PagePrize> createState() => _PagePrizeState();
 }
 
-//TODO 2 überschrift größer,
-//TODO 1 Infos ins Bild: uhrzeit vom Gewinn, was es zu gewinnen gibt
-//TODO 1 der Text sind die Regeln (wie viele Punkte pro Getränk, wie kauf ich für meine Gruppe)
-//TODO 2 Zettel als Hintergrund für rechte Seite
-//TODO 2 wenn timer <60 Minuten dann stunden nicht anzeigen
-
 class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMixin {
   late Timer _timer;
   late AnimationController _animationController;
@@ -187,7 +181,6 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             SizedBox(width: MySize(context).w * 0.01),
-                            //TODO 2 Name weg machen, nur Bild mit "aktuell führend" als column
                             CircleAvatar(
                               radius: MySize(context).h * 0.07,
                               child: ClipOval(

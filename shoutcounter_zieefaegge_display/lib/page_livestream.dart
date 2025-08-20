@@ -11,10 +11,6 @@ class PageLivestream extends StatefulWidget {
   State<PageLivestream> createState() => _PageLivestreamState();
 }
 
-//TODO 2 herz größer, unten links "Kiss" unten rechts "Cam"
-//TODO 3 bei Herz Hintergrund Rosen ans Brett
-//TODO 2 Bier bisschen nach rechts versetzen und links daneben den Text: Ex-Cam Howdie Cowboy du wurdest zum Abschuss freigegeben
-
 class _PageLivestreamState extends State<PageLivestream> {
   final RTCVideoRenderer remoteVideo = RTCVideoRenderer();
   MediaStream? remoteStream;

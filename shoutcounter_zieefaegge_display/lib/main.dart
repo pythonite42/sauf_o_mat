@@ -12,10 +12,6 @@ import 'package:shotcounter_zieefaegge/page_advertising.dart';
 import 'package:shotcounter_zieefaegge/server_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
-//TODO 1 alle durations checken
-//TODO 1 backend durations checken: statusDisplay
-//TODO 1 alle imageUrls checken ob die Bilder gut aussehen
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();

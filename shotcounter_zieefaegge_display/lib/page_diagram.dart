@@ -656,11 +656,13 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
                       /* Positioned(
                         top: MySize(context).h * 0.037,
                         left: MySize(context).w * 0.065,
-                        child: Image.asset('assets/mock_logo.png', width: MySize(context).w * 0.03),
+                        child: Image.asset('assets/placeholder_group.png', width: MySize(context).w * 0.03),
                       ), */
                     ],
                   ),
-                  Image.asset('assets/mock_logo.png', width: MySize(context).w * 0.1),
+                  imageUrl != ""
+                      ? Image.network(imageUrl, width: MySize(context).w * 0.1)
+                      : Image.asset('assets/placeholder_group.png', width: MySize(context).w * 0.1),
                 ]),
               ),
               SizedBox(height: MySize(context).h * 0.007),

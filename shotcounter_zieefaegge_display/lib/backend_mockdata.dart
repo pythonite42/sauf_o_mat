@@ -78,7 +78,7 @@ class MockDataPage0 {
       "imageUrl": "",
       "chaserGroupName": "Gruppe 1",
       "leaderGroupName": "Gruppe 2",
-      "difference": 5,
+      "leaderPoints": 87,
       "headline": "Die Aufholjagd beginnt",
       "motivationalText": "Fast geschafft - Trinken, trinken, trinken!"
     };
@@ -155,25 +155,10 @@ class MockDataPage1 {
 */
 
 class MockDataPage2 {
-  Future<Map> getPrizePageSettings() async {
-    await Future.delayed(Duration(seconds: 2));
-    return {
-      "flashSpeed": 400,
-      "flashThreshold": 60,
-      "redThreshold": 300,
-      "headlineSize": 40.0,
-      "sublineSize": 20.0,
-      "leadingSize": 25.0,
-      "groupNameSize": 30.0,
-      "counterSize": 35.0
-    };
-  }
-
   Future<Map> getPrizePageData() async {
     await Future.delayed(Duration(seconds: 2));
     return {
       "groupName": "Wollbacher Stachelbieschter",
-      "remainingTimeSeconds": 304, //selbst berechnen, vorher festgelegte Uhrzeiten
       "headline": 'Gewinne zwei Biersäulen!',
       "subline":
           'Sauft Sauft Sauft, zwei Säulen gehen auf unsSauft Sauft Sauft, zwei Säulen gehen auf unsSauft Sauft Sauft, zwei Säulen gehen auf unsSauft Sauft Sauft, zwei Säulen gehen auf unsSauft Sauft Sauft, zwei Säulen gehen auf uns',

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
 import 'dart:ui' as ui;
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shotcounter_zieefaegge/server_manager.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 class PageLivestream extends StatefulWidget {
   const PageLivestream({super.key});
@@ -11,144 +14,233 @@ class PageLivestream extends StatefulWidget {
 }
 
 class _PageLivestreamState extends State<PageLivestream> {
+  final RTCVideoRenderer remoteVideo = RTCVideoRenderer();
+  MediaStream? remoteStream;
+  RTCPeerConnection? peerConnection;
+
+  bool videoIsRunning = false;
+  bool isKiss = false;
+
+  // STUN server configuration
+  Map<String, dynamic> configuration = {
+    'iceServers': [
+      {
+        'urls': ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302']
+      }
+    ]
+  };
+
+  // This must be done as soon as app loads
+  void initialization() async {
+    // Initializing the peer connecion
+    peerConnection = await createPeerConnection(configuration);
+    setState(() {});
+
+    registerPeerConnectionListeners();
+  }
+
+  // Help to debug our code
+  void registerPeerConnectionListeners() {
+    peerConnection?.onIceGatheringState = (RTCIceGatheringState state) {
+      debugPrint('ICE gathering state changed: $state');
+    };
+
+    peerConnection?.onIceCandidate = (RTCIceCandidate candidate) {
+      ServerManager().send(
+        {"event": "ice", "data": candidate.toMap()},
+      );
+    };
+
+    peerConnection?.onConnectionState = (RTCPeerConnectionState state) {
+      debugPrint('Connection state change: $state');
+    };
+
+    peerConnection?.onSignalingState = (RTCSignalingState state) {
+      debugPrint('Signaling state change: $state');
+    };
+
+    peerConnection?.onTrack = ((tracks) {
+      tracks.streams[0].getTracks().forEach((track) {
+        remoteStream?.addTrack(track);
+      });
+    });
+
+    // When stream is added from the remote peer
+    peerConnection?.onAddStream = (MediaStream stream) {
+      remoteVideo.srcObject = stream;
+      setState(() {});
+    };
+  }
+
+  void handleSocketMessage(Map<String, dynamic> decoded) async {
+    if (decoded["event"] == "offer") {
+      await peerConnection?.setRemoteDescription(
+        RTCSessionDescription(decoded["data"]["sdp"], decoded["data"]["type"]),
+      );
+      RTCSessionDescription answer = await peerConnection!.createAnswer();
+      await peerConnection!.setLocalDescription(answer);
+      ServerManager().send({"event": "answer", "data": answer.toMap()});
+    } else if (decoded["event"] == "ice") {
+      peerConnection?.addCandidate(RTCIceCandidate(
+        decoded["data"]["candidate"],
+        decoded["data"]["sdpMid"],
+        decoded["data"]["sdpMLineIndex"],
+      ));
+    } else if (decoded["event"] == "paused") {
+      setState(() => videoIsRunning = false);
+    } else if (decoded["event"] == "resumed") {
+      setState(() => videoIsRunning = true);
+    } else if (decoded["selectedCam"] == 0) {
+      setState(() => isKiss = false);
+    } else if (decoded["selectedCam"] == 1) {
+      setState(() => isKiss = true);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    remoteVideo.initialize();
+    initialization();
+    ServerManager().addListener(handleSocketMessage);
+  }
+
+  @override
+  void dispose() {
+    ServerManager().removeListener(handleSocketMessage);
+    peerConnection?.close();
+    remoteVideo.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    bool isKiss = false;
     return LayoutBuilder(
       builder: (context, constraints) {
         double size = constraints.biggest.shortestSide;
         return Center(
-          child: isKiss
-              ? ClipPath(
-                  clipper: HeartClipper(),
-                  child: Container(
-                    width: size,
-                    height: size,
-                    color: Colors.greenAccent,
-                  ),
-                )
-              : Container(
-                  width: size,
-                  height: size,
-                  padding: EdgeInsets.symmetric(vertical: MySize(context).h * 0.05),
-                  child: BeerGlassImageStack(size: size),
-                ),
+
+          child: videoIsRunning
+              ? isKiss
+                  ? ClipPath(
+                      clipper: HeartClipper(),
+                      child: SizedBox(
+                        width: size,
+                        height: size,
+                        child: RTCVideoView(
+                          remoteVideo,
+                          mirror: false,
+                          objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+                        ),
+                      ),
+                    )
+                  : Container(
+                      width: size,
+                      height: size,
+                      padding: EdgeInsets.symmetric(vertical: MySize(context).h * 0.05),
+                      child: BeerGlassStack(
+                        size: size,
+                        videoRenderer: remoteVideo,
+                      ),
+                    )
+              : isKiss
+                  ? ClipPath(
+                      clipper: HeartClipper(),
+                      child: Container(
+                        width: size,
+                        height: size,
+                        color: Color.fromARGB(172, 255, 255, 255),
+                        child: Center(
+                          child: SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 8,
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : Container(
+                      width: size,
+                      height: size,
+                      padding: EdgeInsets.symmetric(vertical: MySize(context).h * 0.05),
+                      child: BeerGlassStack(size: size, videoRenderer: null),
+                    ),
         );
       },
     );
   }
 }
 
-class BeerGlassImageStack extends StatefulWidget {
-  const BeerGlassImageStack({super.key, required this.size});
+class BeerGlassStack extends StatelessWidget {
   final double size;
+  final RTCVideoRenderer? videoRenderer;
 
-  @override
-  State<BeerGlassImageStack> createState() => _BeerGlassImageStackState();
-}
-
-class _BeerGlassImageStackState extends State<BeerGlassImageStack> {
-  ui.Image? backgroundImage;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadImage('assets/mock_logo.png');
-  }
-
-  Future<void> _loadImage(String assetPath) async {
-    final data = await DefaultAssetBundle.of(context).load(assetPath);
-    final codec = await ui.instantiateImageCodec(data.buffer.asUint8List());
-    final frame = await codec.getNextFrame();
-    setState(() {
-      backgroundImage = frame.image;
-    });
-  }
+  const BeerGlassStack({
+    super.key,
+    required this.size,
+    required this.videoRenderer,
+  });
 
   @override
   Widget build(BuildContext context) {
-    double beerGlassWidth = widget.size * 0.6;
-    return backgroundImage == null
-        ? CircularProgressIndicator()
-        : Stack(alignment: Alignment.topCenter, children: [
-            // Beer glass body (custom painter)
-            Positioned(
-              top: widget.size * 0.11, // Adjust to fit under foam
-              child: CustomPaint(
-                painter: BeerGlassBorderPainter(image: backgroundImage!),
-                child: Container(
-                  width: beerGlassWidth,
-                  height: widget.size * 0.78,
-                  alignment: Alignment.center,
+    double beerGlassWidth = size * 0.6;
+
+    return Stack(
+      alignment: Alignment.topCenter,
+      children: [
+        // Glass border and clipping
+        if (videoRenderer != null)
+          Positioned(
+            top: size * 0.11, // adjust to match foam position
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20), // match your inner glass radius
+              child: SizedBox(
+                width: beerGlassWidth,
+                height: size * 0.78,
+                child: RTCVideoView(
+                  videoRenderer!,
+                  objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
                 ),
               ),
             ),
-            Positioned(
-              top: -widget.size * 0.24,
-              child: SvgPicture.asset('assets/beer_foam.svg', width: beerGlassWidth * 1.2),
-            )
-          ]);
-  }
-}
+          ),
+        if (videoRenderer == null)
+          Positioned(
+            top: size * 0.45,
+            child: CircularProgressIndicator(
+              color: Color.fromARGB(172, 255, 255, 255),
+              strokeWidth: 8,
+            ),
+          ),
 
-class BeerGlassPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final glassPaint = Paint()
-      ..color = Colors.amber.shade200
-      ..style = PaintingStyle.fill;
+        // Beer glass border overlay
+        Positioned(
+          top: size * 0.11,
+          child: CustomPaint(
+            painter: BeerGlassBorderPainter(), // adjust painter to only paint border
+            child: SizedBox(
+              width: beerGlassWidth,
+              height: size * 0.78,
+            ),
+          ),
+        ),
 
-    final borderPaint = Paint()
-      ..color = Colors.brown
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 4;
-
-    final path = Path();
-
-    // Main beer glass (rectangle with rounded corners)
-    path.addRRect(RRect.fromRectAndRadius(
-      Rect.fromLTWH(20, 20, size.width - 60, size.height - 40),
-      Radius.circular(16),
-    ));
-
-    // Handle path (semi-oval curve on the right)
-    final handlePath = Path();
-    final handleLeft = size.width - 40;
-    final handleTop = size.height * 0.25;
-    final handleBottom = size.height * 0.75;
-
-    handlePath.moveTo(handleLeft, handleTop);
-    handlePath.cubicTo(
-      size.width, handleTop, //
-      size.width, handleBottom, //
-      handleLeft, handleBottom,
+        // Foam on top
+        Positioned(
+          top: -size * 0.24,
+          child: SvgPicture.asset(
+            'assets/beer_foam.svg',
+            width: beerGlassWidth * 1.2,
+          ),
+        ),
+      ],
     );
-
-    handlePath.cubicTo(
-      size.width - 10,
-      handleBottom - 10,
-      size.width - 10,
-      handleTop + 10,
-      handleLeft,
-      handleTop,
-    );
-
-    path.addPath(handlePath, Offset.zero);
-
-    // Draw
-    canvas.drawPath(path, glassPaint);
-    canvas.drawPath(path, borderPaint);
   }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 class BeerGlassBorderPainter extends CustomPainter {
-  final ui.Image image;
-
-  BeerGlassBorderPainter({required this.image});
-
   @override
   void paint(Canvas canvas, Size size) {
     double strokeWidth = 6;
@@ -246,30 +338,6 @@ class BeerGlassBorderPainter extends CustomPainter {
       innerPath,
     );
     canvas.drawPath(borderPath, borderFillPaint);
-
-    // 🖼️ Draw image inside the inner glass
-    final imagePadding = strokeWidth / 2;
-    final imageRect = Rect.fromLTWH(
-      innerRRect.left + imagePadding,
-      innerRRect.top + imagePadding,
-      innerRRect.width - imagePadding * 2,
-      innerRRect.height - imagePadding * 2,
-    );
-    final imageRRect = RRect.fromRectAndRadius(
-      imageRect,
-      Radius.circular(cornerRadius - strokeWidth * 2),
-    );
-
-    canvas.save();
-    canvas.clipRRect(imageRRect);
-    canvas.drawImageRect(
-      image,
-      Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble()),
-      imageRect,
-      Paint(),
-    );
-    canvas.restore();
-
     // 🧱 Draw outer borders (glass + handle)
     canvas.drawPath(outerPath, outerPaint);
     canvas.drawRRect(innerRRect, innerPaint);
@@ -277,7 +345,7 @@ class BeerGlassBorderPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant BeerGlassBorderPainter oldDelegate) {
-    return oldDelegate.image != image;
+    return false;
   }
 }
 

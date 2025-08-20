@@ -20,6 +20,9 @@ dependencies:
   http: ^1.4.0
   jose: ^0.3.4
   flutter_dotenv: ^5.2.1
+  flutter_webrtc: ^0.14.2
+  web_socket_channel: ^3.0.3
+  google_fonts: ^6.3.0
 
 dev_dependencies:
   flutter_test:
@@ -37,8 +40,12 @@ flutter:
     - assets/mock_logo.png
     - assets/bierpokal.jpg
     - assets/aufholjagd.png
+    - assets/billboard.png
+    - assets/scroll.png
+    - assets/parchment.png
     - assets/arrow_up.svg
     - assets/beer_foam.svg
+    - assets/cowboy_chasing.gif
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

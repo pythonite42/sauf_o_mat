@@ -16,20 +16,11 @@ class _PageScheduleState extends State<PageSchedule> {
   bool imageLoaded = false;
   String imageUrl = "";
 
-  late Timer _dataReloadTimer;
-
   @override
   void initState() {
     super.initState();
 
     _loadImage();
-    _startAutoReloadImage();
-  }
-
-  void _startAutoReloadImage() {
-    _dataReloadTimer = Timer.periodic(Duration(seconds: 10), (_) {
-      _loadImage();
-    });
   }
 
   Future<void> _loadImage() async {
@@ -45,12 +36,6 @@ class _PageScheduleState extends State<PageSchedule> {
     } catch (e) {
       debugPrint('Error fetching page 3 schedule image: $e');
     }
-  }
-
-  @override
-  void dispose() {
-    _dataReloadTimer.cancel();
-    super.dispose();
   }
 
   @override

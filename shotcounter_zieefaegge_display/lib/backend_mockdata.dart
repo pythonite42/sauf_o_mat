@@ -137,7 +137,7 @@ class MockDataPage1 {
       var lutz = Random().nextInt(60);
       result.add({
         "groupName": "Gruppe ${i + 1}",
-        "groupLogo": "https://randomuser.me/api/portraits/men/1.jpg",
+        "groupLogo": "", //"https://randomuser.me/api/portraits/men/1.jpg",
         "longdrink": longdrink,
         "beer": beer,
         "shot": shot,

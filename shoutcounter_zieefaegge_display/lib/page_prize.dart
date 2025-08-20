@@ -28,6 +28,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
 
   bool dataLoaded = false;
   bool _dataReloadTimerIsFast = false;
+  DateTime? nextPrize;
 
   String groupName = "";
   String headline = "";
@@ -38,6 +39,21 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
   @override
   void initState() {
     super.initState();
+
+    List<DateTime> prizeTimes = [
+      GlobalSettings().timeFirstPrize,
+      GlobalSettings().timeSecondPrize,
+      GlobalSettings().timeThirdPrize
+    ];
+
+    for (DateTime prizeTime in prizeTimes) {
+      if (prizeTime.isAfter(DateTime.now())) {
+        setState(() {
+          nextPrize = prizeTime;
+        });
+        break;
+      }
+    }
 
     _loadData();
     _startAutoReloadChartData();
@@ -82,13 +98,13 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
   void _startCountdown() {
     if (_remainingTime == null) {
       setState(() {
-        _remainingTime = GlobalSettings().timeFirstPrize.difference(DateTime.now());
+        _remainingTime = nextPrize?.difference(DateTime.now()) ?? Duration();
       });
     }
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       setState(() {
         if (_remainingTime!.inSeconds > 0) {
-          _remainingTime = GlobalSettings().timeFirstPrize.difference(DateTime.now());
+          _remainingTime = nextPrize?.difference(DateTime.now()) ?? Duration();
           if (_remainingTime!.inSeconds < 20 && !_dataReloadTimerIsFast) {
             _dataReloadTimer.cancel();
             _dataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations().reloadDataPrizeUnder20sec), (_) {

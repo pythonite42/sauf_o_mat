@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:math';
 import 'package:google_fonts/google_fonts.dart';
 
+class ChartData {
   ChartData({
     this.group,
     this.longdrink,
@@ -75,7 +76,11 @@ class _PageDiagramState extends State<PageDiagram> {
     _chartDataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations().reloadDataDiagram), (_) {
       _loadChartData();
     });
+  }
+
+  Future<void> _loadChartData() async {
     try {
+      Map generalSettings = await MockDataPage0().getChartSettings();
       //List<Map> newDataMapList = await MockDataPage0().getRandomChartData();
       List<Map> newDataMapList = await SalesforceService().fetchSalesforceDataPageDiagram();
 
@@ -136,7 +141,10 @@ class _PageDiagramState extends State<PageDiagram> {
 
   void _startAutoScroll() {
     var duration = Duration(seconds: CustomDurations().chartAutoScroll);
+
+    _scrollTimer = Timer.periodic(duration, (timer) {
       if (!_scrollController.hasClients) return;
+
       final maxScroll = _scrollController.position.maxScrollExtent;
       final current = _scrollController.offset;
       final next = current + barHeight;

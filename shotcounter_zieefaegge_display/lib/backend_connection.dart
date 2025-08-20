@@ -13,9 +13,9 @@ class SalesforceService {
   String? _cachedToken;
   DateTime? _tokenExpiry;
 
-  final String? consumerKey = dotenv.env['SALESFORCE_CONSUMER_KEY'];
-  final String? username = dotenv.env['SALESFORCE_USERNAME'];
-  final String? loginUrl = dotenv.env['SALESFORCE_LOGIN_URL'];
+  final String? consumerKey = dotenv.env['SF_CONSUMER_KEY'];
+  final String? username = dotenv.env['SF_USERNAME'];
+  final String? loginUrl = dotenv.env['SF_LOGIN_URL'];
   final String privateKeyPath = 'assets/server.key';
 
   /// Returns a valid access token, caching it until it expires

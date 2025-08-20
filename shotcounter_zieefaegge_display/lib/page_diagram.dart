@@ -660,9 +660,12 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
                       ), */
                     ],
                   ),
-                  imageUrl != ""
-                      ? Image.network(imageUrl, width: MySize(context).w * 0.1)
-                      : Image.asset('assets/placeholder_group.png', width: MySize(context).w * 0.1),
+                  Image.network(
+                    imageUrl,
+                    width: MySize(context).w * 0.1,
+                    errorBuilder: (context, _, __) =>
+                        Image.asset('assets/placeholder_group.png', width: MySize(context).w * 0.1),
+                  )
                 ]),
               ),
               SizedBox(height: MySize(context).h * 0.007),

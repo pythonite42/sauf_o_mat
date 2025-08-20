@@ -30,9 +30,9 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 **/build/
-**/shoutcounter_zieefaegge_display/build/
+**/shotcounter_zieefaegge_display/build/
 **/.env
-**/shoutcounter_zieefaegge_display/assets/server.key
+**/shotcounter_zieefaegge_display/assets/server.key
 
 
 # Symbolication related

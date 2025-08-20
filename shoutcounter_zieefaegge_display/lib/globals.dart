@@ -32,7 +32,8 @@ class CustomDurations {
 
   //page prize
   int flashSpeed = 400;
-  int reloadDataPrize = 3;
+  int reloadDataPrize = 10;
+  int reloadDataPrizeUnder20sec = 1;
 
   //page quote
   int reloadDataQuote = 10;
@@ -51,5 +52,5 @@ class GlobalSettings {
   // page prize
   int flashThreshold = 60;
   int redThreshold = 300;
-  DateTime timeFirstPrize = DateTime(2025, 08, 19, 18, 35);
+  DateTime timeFirstPrize = DateTime(2025, 08, 20, 10, 07);
 }

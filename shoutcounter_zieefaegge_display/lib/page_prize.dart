@@ -27,6 +27,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
   Duration? _remainingTime;
 
   bool dataLoaded = false;
+  bool _dataReloadTimerIsFast = false;
 
   String groupName = "";
   String headline = "";
@@ -52,6 +53,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
   }
 
   void _startAutoReloadChartData() {
+    _dataReloadTimerIsFast = false;
     _dataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations().reloadDataPrize), (_) {
       _loadData();
     });
@@ -86,8 +88,16 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       setState(() {
         if (_remainingTime!.inSeconds > 0) {
-          _remainingTime = GlobalSettings().timeFirstPrize.difference(DateTime.now()); // is this the correct seconds?
+          _remainingTime = GlobalSettings().timeFirstPrize.difference(DateTime.now());
+          if (_remainingTime!.inSeconds < 20 && !_dataReloadTimerIsFast) {
+            _dataReloadTimer.cancel();
+            _dataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations().reloadDataPrizeUnder20sec), (_) {
+              _loadData();
+            });
+            _dataReloadTimerIsFast = true;
+          }
         } else if (dataLoaded) {
+          _dataReloadTimer.cancel();
           _timer.cancel();
         }
       });
@@ -96,8 +106,8 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
 
   @override
   void dispose() {
-    _timer.cancel();
     _dataReloadTimer.cancel();
+    _timer.cancel();
     _animationController.dispose();
     super.dispose();
   }

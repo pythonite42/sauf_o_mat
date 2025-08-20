@@ -31,6 +31,7 @@ migrate_working_dir/
 .pub/
 **/build/
 **/shotcounter_zieefaegge_display/build/
+**/shotcounter_zieefaegge_display/build/
 
 
 # Symbolication related
@@ -52,5 +53,13 @@ shotcounter_zieefaegge_display/linux/flutter/generated_plugins.cmake
 shotcounter_zieefaegge_display/macos/Flutter/GeneratedPluginRegistrant.swift
 shotcounter_zieefaegge_display/windows/flutter/generated_plugin_registrant.cc
 shotcounter_zieefaegge_display/windows/flutter/generated_plugins.cmake
-shotcounter_zieefaegge_display/windows/flutter/generated_plugin_registrant.h
 shotcounter_zieefaegge_display/linux/flutter/generated_plugin_registrant.h
+shotcounter_zieefaegge_display/windows/flutter/generated_plugin_registrant.h
+
+shotcounter_zieefaegge_controls/linux/flutter/generated_plugin_registrant.cc
+shotcounter_zieefaegge_controls/linux/flutter/generated_plugin_registrant.h
+shotcounter_zieefaegge_controls/linux/flutter/generated_plugins.cmake
+shotcounter_zieefaegge_controls/macos/Flutter/GeneratedPluginRegistrant.swift
+shotcounter_zieefaegge_controls/windows/flutter/generated_plugin_registrant.cc
+shotcounter_zieefaegge_controls/windows/flutter/generated_plugin_registrant.h
+shotcounter_zieefaegge_controls/windows/flutter/generated_plugins.cmake

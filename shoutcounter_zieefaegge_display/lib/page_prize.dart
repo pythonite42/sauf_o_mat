@@ -11,8 +11,6 @@ class PagePrize extends StatefulWidget {
   State<PagePrize> createState() => _PagePrizeState();
 }
 
-//TODO 1 kurz vor Gewinn leader öfter abfragen, vorher 10 Sekunden und ab 20 sekunden vorher sekündlich
-
 //TODO 2 überschrift größer,
 //TODO 1 Infos ins Bild: uhrzeit vom Gewinn, was es zu gewinnen gibt
 //TODO 1 der Text sind die Regeln (wie viele Punkte pro Getränk, wie kauf ich für meine Gruppe)

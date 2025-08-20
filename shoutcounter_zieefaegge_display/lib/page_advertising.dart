@@ -29,7 +29,7 @@ class _PageAdvertisingState extends State<PageAdvertising> {
   }
 
   void _startAutoReloadImage() {
-    _dataReloadTimer = Timer.periodic(Duration(seconds: 10), (_) {
+    _dataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations().reloadDataAdvertising), (_) {
       _loadImage();
     });
   }
@@ -46,7 +46,7 @@ class _PageAdvertisingState extends State<PageAdvertising> {
         });
       }
     } catch (e) {
-      debugPrint('Error fetching page 3 schedule image: $e');
+      debugPrint('Error fetching page 5 advertising image: $e');
     }
   }
 

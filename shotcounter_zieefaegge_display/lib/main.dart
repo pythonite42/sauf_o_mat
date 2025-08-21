@@ -12,7 +12,6 @@ import 'package:shotcounter_zieefaegge/page_advertising.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shotcounter_zieefaegge/server_manager.dart';
-import 'package:window_manager/window_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

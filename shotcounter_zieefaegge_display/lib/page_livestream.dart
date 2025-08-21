@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
-import 'dart:ui' as ui;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shotcounter_zieefaegge/server_manager.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 class PageLivestream extends StatefulWidget {
@@ -119,7 +117,6 @@ class _PageLivestreamState extends State<PageLivestream> {
       builder: (context, constraints) {
         double size = constraints.biggest.shortestSide;
         return Center(
-
           child: videoIsRunning
               ? isKiss
                   ? ClipPath(

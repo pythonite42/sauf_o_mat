@@ -74,7 +74,7 @@ class MockDataPage0 {
   Future<Map> getPopup() async {
     await Future.delayed(Duration(seconds: 2));
     return {
-      "showPopup": false, //hier müssen wir kontrollieren ob das klappt, True vs. true macht einen Unterschied
+      "showPopup": true, //hier müssen wir kontrollieren ob das klappt, True vs. true macht einen Unterschied
       "imageUrl": "",
       "chaserGroupName": "Gruppe 1",
       "leaderGroupName": "Gruppe 2",
@@ -162,7 +162,6 @@ class MockDataPage2 {
       "headline": 'Gewinne zwei Biersäulen!',
       "subline":
           'Sauft Sauft Sauft, zwei Säulen gehen auf unsSauft Sauft Sauft, zwei Säulen gehen auf unsSauft Sauft Sauft, zwei Säulen gehen auf unsSauft Sauft Sauft, zwei Säulen gehen auf unsSauft Sauft Sauft, zwei Säulen gehen auf uns',
-      "imagePrize": "https://picsum.photos/300/200",
       "groupLogo": "https://randomuser.me/api/portraits/men/1.jpg",
     };
   }

@@ -42,9 +42,9 @@ flutter:
     - assets/placeholder_group.png
     - assets/placeholder_single.png
     - assets/placeholder_timetable.png
-    - assets/price_0.png
-    - assets/price_1.png
-    - assets/price_2.png
+    - assets/prize_0.png
+    - assets/prize_1.png
+    - assets/prize_2.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

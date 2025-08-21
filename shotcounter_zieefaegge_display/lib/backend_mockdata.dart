@@ -159,9 +159,6 @@ class MockDataPage2 {
     await Future.delayed(Duration(seconds: 2));
     return {
       "groupName": "Wollbacher Stachelbieschter",
-      "headline": 'Gewinne zwei Biersäulen!',
-      "subline":
-          'Sauft Sauft Sauft, zwei Säulen gehen auf unsSauft Sauft Sauft, zwei Säulen gehen auf unsSauft Sauft Sauft, zwei Säulen gehen auf unsSauft Sauft Sauft, zwei Säulen gehen auf unsSauft Sauft Sauft, zwei Säulen gehen auf uns',
       "groupLogo": "https://randomuser.me/api/portraits/men/1.jpg",
     };
   }

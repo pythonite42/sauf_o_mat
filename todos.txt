@@ -17,7 +17,7 @@ TODOs Prio 1
     - mockdataBackend ablösen:
         - getChartSettings löschen
         - getPopUp
-        - prizePage: 3 images statisch, immer gleiche statische headline, immer gleiche statische subline, groupName fällt weg, groupLogo: SELECT Logo__c FROM Team__c WHERE Rang__c = 1 
+(d)     - prizePage: 3 images statisch, immer gleiche statische headline, immer gleiche statische subline, groupName fällt weg, groupLogo: SELECT Logo__c FROM Team__c WHERE Rang__c = 1 
         - MockDataPage3.getImage löschen weil statisch
         - MockDataPage4.getData, zuletzt bearbeitete ohne schon benutzt, wenn alle schon benutzt dann wieder von vorne
         - MockDataPage5.getData
@@ -28,8 +28,8 @@ TODOs Prio 1
 
     - max Zeichenanzahl integrieren 
     - Prize Bilder generieren: Infos ins Bild: uhrzeit vom Gewinn, was es zu gewinnen gibt
-    - Prize Text erstellen: der Text sind die Regeln (wie viele Punkte pro Getränk, wie kauf ich für meine Gruppe)
-    - Platzhalter erstellen: Einzelperson(SocialMedia Comment), Gruppe
+    - Prize Text und überschrift erstellen: der Text sind die Regeln (wie viele Punkte pro Getränk, wie kauf ich für meine Gruppe)
+(d) - Platzhalter erstellen: Einzelperson(SocialMedia Comment), Gruppe
     - Image required: 
         - timetable: nicht über URL sondern statisch
         - werbung: imageUrl

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:shotcounter_zieefaegge/backend_mockdata.dart';
+import 'package:shotcounter_zieefaegge/backend_connection.dart';
 import 'package:shotcounter_zieefaegge/colors.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
 
@@ -64,12 +64,11 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
 
   Future<void> _loadData() async {
     try {
-      Map data = await MockDataPage2().getPrizePageData();
+      String logoUrl = await SalesforceService().getSalesforceDataPagePrize();
 
       if (mounted) {
         setState(() {
-          groupName = data["groupName"];
-          groupLogo = data["groupLogo"];
+          groupLogo = logoUrl;
           dataLoaded = true;
         });
       }
@@ -171,20 +170,8 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
                             CircleAvatar(
                               radius: MySize(context).h * 0.07,
                               child: ClipOval(
-                                child: Image.network(
-                                  groupLogo,
-                                  errorBuilder: (context, _, __) => AspectRatio(
-                                    aspectRatio: 1,
-                                    child: Container(
-                                      color: Colors.grey[300],
-                                      child: Icon(
-                                        Icons.person,
-                                        size: MySize(context).h * 0.08,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                child: Image.network(groupLogo,
+                                    errorBuilder: (context, _, __) => Image.asset("assets/placeholder_group.png")),
                               ),
                             ),
                             const SizedBox(width: 16),
@@ -194,11 +181,6 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text('Aktuell führend', style: TextStyle(fontSize: 18, color: defaultOnPrimary)),
-                                  Text(
-                                    groupName,
-                                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                                    textAlign: TextAlign.center,
-                                  ),
                                 ],
                               ),
                             ),

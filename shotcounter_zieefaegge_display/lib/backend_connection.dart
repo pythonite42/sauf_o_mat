@@ -137,7 +137,7 @@ class SalesforceService {
     return jsonDecode(response.body);
   }
 
-  Future<List<Map>> fetchSalesforceDataPageDiagram() async {
+  Future<List<Map>> getSalesforceDataPageDiagram() async {
     try {
       final data = await getRequest(
           'SELECT Anzahl_Bargetr_nke__c , Anzahl_Bier_Wein_Schorle__c , Anzahl_Kaffee_Lutz__c , AnzahlShots__c , NAME, StatusDisplay__c FROM Team__c');
@@ -160,7 +160,7 @@ class SalesforceService {
     }
   }
 
-  Future<List<Map>> fetchSalesforceDataPageTop3() async {
+  Future<List<Map>> getSalesforceDataPageTop3() async {
     try {
       final data = await getRequest(
           'SELECT Anzahl_Bargetr_nke__c , Anzahl_Bier_Wein_Schorle__c , Anzahl_Kaffee_Lutz__c , AnzahlShots__c , NAME, Logo__c FROM Team__c WHERE Rang__c < 4');
@@ -190,6 +190,16 @@ class SalesforceService {
     } catch (e) {
       print('Error: $e');
       return false;
+    }
+  }
+
+  Future<String> getSalesforceDataPagePrize() async {
+    try {
+      final data = await getRequest('SELECT Logo__c FROM Team__c WHERE Rang__c = 1');
+      return data["records"][0]["Logo__c"] ?? "";
+    } catch (e) {
+      print('Error: $e');
+      return "";
     }
   }
 }

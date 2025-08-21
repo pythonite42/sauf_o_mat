@@ -82,7 +82,7 @@ class _PageDiagramState extends State<PageDiagram> {
     try {
       Map generalSettings = await MockDataPage0().getChartSettings();
       //List<Map> newDataMapList = await MockDataPage0().getRandomChartData();
-      List<Map> newDataMapList = await SalesforceService().fetchSalesforceDataPageDiagram();
+      List<Map> newDataMapList = await SalesforceService().getSalesforceDataPageDiagram();
 
       Map popupData = await MockDataPage0().getPopup();
 
@@ -219,7 +219,6 @@ class _PageDiagramState extends State<PageDiagram> {
 
   @override
   Widget build(BuildContext context) {
-
     final legendBoxSize = MySize(context).h * 0.045;
     final fontSizeLegend = 30.0;
 

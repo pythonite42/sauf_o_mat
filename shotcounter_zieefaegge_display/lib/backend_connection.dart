@@ -160,6 +160,31 @@ class SalesforceService {
     }
   }
 
+  Future<Map> getSalesforceDataPageDiagramPopUp() async {
+    try {
+      final data = await getRequest(
+          //'SELECT Id, VisualizedAt__c, ChasingTeam__r.Name, WantedTeam__r.Name, WantedTeam__r.Logo__c, WantedTeam__r.Punktzahl__c FROM CatchUp__c WHERE VisualizedAt__c = null AND RankDeltaIsOne__c = true AND IsLessThan1Minute__c = true ORDER BY LastModifiedDate DESC LIMIT 1');
+          'SELECT Id, VisualizedAt__c, ChasingTeam__r.Name, WantedTeam__r.Name, WantedTeam__r.Logo__c, WantedTeam__r.Punktzahl__c FROM CatchUp__c WHERE VisualizedAt__c = null AND RankDeltaIsOne__c = true ORDER BY LastModifiedDate DESC LIMIT 1');
+      var record = data["records"][0];
+      return {
+        "showPopup": true,
+        "imageUrl": record["WantedTeam__r"]["Logo__c"] ?? "",
+        "chaserGroupName": record["ChasingTeam__r"]["Name"],
+        "leaderGroupName": record["WantedTeam__r"]["Name"],
+        "leaderPoints": (record["WantedTeam__r"]["Punktzahl__c"]).toInt(),
+      };
+    } catch (e) {
+      print('Error getSalesforceDataPageDiagramPopUp: $e');
+      return {
+        "showPopup": false,
+        "imageUrl": "",
+        "chaserGroupName": "",
+        "leaderGroupName": "",
+        "leaderPoints": 0,
+      };
+    }
+  }
+
   Future<List<Map>> getSalesforceDataPageTop3() async {
     try {
       final data = await getRequest(

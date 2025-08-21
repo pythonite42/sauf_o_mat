@@ -55,8 +55,6 @@ class _PageDiagramState extends State<PageDiagram> {
   String chaserGroupName = "";
   String leaderGroupName = "";
   int leaderPoints = 0;
-  String headline = "";
-  String motivationalText = "";
 
   Color fontColor = defaultOnScroll;
 
@@ -84,7 +82,7 @@ class _PageDiagramState extends State<PageDiagram> {
       //List<Map> newDataMapList = await MockDataPage0().getRandomChartData();
       List<Map> newDataMapList = await SalesforceService().getSalesforceDataPageDiagram();
 
-      Map popupData = await MockDataPage0().getPopup();
+      Map popupData = await SalesforceService().getSalesforceDataPageDiagramPopUp();
 
       List<ChartData> newData = [];
       for (var newDataMap in newDataMapList) {
@@ -109,8 +107,6 @@ class _PageDiagramState extends State<PageDiagram> {
           chaserGroupName = popupData["chaserGroupName"];
           leaderGroupName = popupData["leaderGroupName"];
           leaderPoints = popupData["leaderPoints"];
-          headline = popupData["headline"];
-          motivationalText = popupData["motivationalText"];
 
           _chartData = newData;
           _chartData?.sort((a, b) {
@@ -175,8 +171,6 @@ class _PageDiagramState extends State<PageDiagram> {
                 initialLeader: leaderGroupName,
                 initialChaser: chaserGroupName,
                 initialPointsOfLeader: leaderPoints,
-                headline: headline,
-                motivationalText: motivationalText,
               );
             },
           );
@@ -194,8 +188,7 @@ class _PageDiagramState extends State<PageDiagram> {
           _popupContext = null;
           _popupKey = null;
         } else if (_isPopupVisible && _popupKey?.currentState != null) {
-          _popupKey?.currentState!
-              .updateData(imageUrl, leaderGroupName, chaserGroupName, leaderPoints, headline, motivationalText);
+          _popupKey?.currentState!.updateData(imageUrl, leaderGroupName, chaserGroupName, leaderPoints);
         }
       } catch (_) {}
     });
@@ -516,16 +509,12 @@ class RacePopupWidget extends StatefulWidget {
   final String initialLeader;
   final String initialChaser;
   final int initialPointsOfLeader;
-  final String headline;
-  final String motivationalText;
 
   const RacePopupWidget({
     required this.initialImageUrl,
     required this.initialLeader,
     required this.initialChaser,
     required this.initialPointsOfLeader,
-    required this.headline,
-    required this.motivationalText,
     super.key,
   });
 
@@ -538,8 +527,6 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
   late String leader;
   late String chaser;
   late int pointsOfLeader;
-  late String headline;
-  late String motivationalText;
 
   @override
   void initState() {
@@ -548,19 +535,14 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
     leader = widget.initialLeader;
     chaser = widget.initialChaser;
     pointsOfLeader = widget.initialPointsOfLeader;
-    headline = widget.headline;
-    motivationalText = widget.motivationalText;
   }
 
-  void updateData(String newImageUrl, String newLeader, String newChaser, int newPointsOfLeader, String newHeadline,
-      String newMotivationalText) {
+  void updateData(String newImageUrl, String newLeader, String newChaser, int newPointsOfLeader) {
     setState(() {
       imageUrl = newImageUrl;
       leader = newLeader;
       chaser = newChaser;
       pointsOfLeader = newPointsOfLeader;
-      headline = newHeadline;
-      motivationalText = newMotivationalText;
     });
   }
 
@@ -668,51 +650,17 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
                 ]),
               ),
               SizedBox(height: MySize(context).h * 0.007),
-              Text(
-                leader,
-                style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 60)),
+              SizedBox(
+                height: MySize(context).h * 0.1,
+                child: Center(
+                  child: Text(
+                    leader,
+                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               ),
               SizedBox(height: MySize(context).h * 0.005),
-
-              /* Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Mit ",
-                            style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
-                          ),
-                          Text(
-                            pointsOfLeader.toString(),
-                            style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 40)),
-                          ),
-                        ],
-                      ),
-                      Text(
-                        " Punkten",
-                        style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Gejagt von ",
-                        style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
-                      ),
-                      Text(
-                        chaser,
-                        style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 40)),
-                      ),
-                    ],
-                  ),
-                ],
-              ) */
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -722,7 +670,7 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
                   ),
                   Text(
                     pointsOfLeader.toString(),
-                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 40)),
+                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
                   ),
                   Text(
                     " Punkten",
@@ -730,18 +678,21 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
                   ),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Gejagt von ",
-                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
-                  ),
-                  Text(
+              Divider(thickness: 2),
+              Text(
+                "Gejagt von ",
+                style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
+              ),
+              SizedBox(height: MySize(context).h * 0.005),
+              SizedBox(
+                height: MySize(context).h * 0.1,
+                child: Center(
+                  child: Text(
                     chaser,
-                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 40)),
+                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
+                    textAlign: TextAlign.center,
                   ),
-                ],
+                ),
               ),
             ],
           ),

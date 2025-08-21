@@ -79,8 +79,6 @@ class MockDataPage0 {
       "chaserGroupName": "Gruppe 1",
       "leaderGroupName": "Gruppe 2",
       "leaderPoints": 87,
-      "headline": "Die Aufholjagd beginnt",
-      "motivationalText": "Fast geschafft - Trinken, trinken, trinken!"
     };
   }
 }

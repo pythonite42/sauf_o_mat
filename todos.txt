@@ -7,7 +7,7 @@ TODOs Prio 1
     - page_diagram.dart: wenn popUp angezeigt wurde patch mit timestamp
     - page_diagram.dart: jedes popUp nach 10 Sekunden schließen
     - page_diagram.dart: 20 sekunden warten zwischen popUps
-    - page_diagram.dart: popUp daten mit timestamp nich anzeigen (in SOQL lösen)
+(d) - page_diagram.dart: popUp daten mit timestamp nich anzeigen (in SOQL lösen)
     - alle Strings die aus dem Backend kommen: maximale Zeichenanzahl
     - wenn keine BildURL dann Platzhalter (statisch) nehmen: 
 (d)     - page_diagram PopUp Gruppenplatzhalter
@@ -16,7 +16,7 @@ TODOs Prio 1
         - page_prize: Gruppenplatzhalter
     - mockdataBackend ablösen:
         - getChartSettings löschen
-        - getPopUp
+(d)     - getPopUp
 (d)     - prizePage: 3 images statisch, immer gleiche statische headline, immer gleiche statische subline, groupName fällt weg, groupLogo: SELECT Logo__c FROM Team__c WHERE Rang__c = 1 
 (d)     - MockDataPage3.getImage löschen weil statisch
         - MockDataPage4.getData, zuletzt bearbeitete ohne schon benutzt, wenn alle schon benutzt dann wieder von vorne
@@ -35,8 +35,8 @@ TODOs Prio 1
         - werbung: imageUrl
         - prize (3 statische Bilder)
     - SOQLs:
-        - catchUp
-        - prizePage
+(d)     - catchUp
+(d)     - advertising
         
 
     - page_quote.dart: SOQL reihenfolge immer das zuletzt bearbeitete
@@ -68,4 +68,5 @@ TODOs am Ende
 
     - alle durations checken
     - backend durations checken: CatchUp__c.isLessThanOneMinute__c 
+    - backend_connection.dart: line 167: anpassung SOQL page_diagram pop up: IsLessThanOneMinute__c = true noch mit einbauen
     - alle imageUrls checken ob die Bilder gut aussehen

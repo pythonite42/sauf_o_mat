@@ -263,16 +263,11 @@ class PieChartWithImage extends StatelessWidget {
                       width: centerSize,
                       height: centerSize,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, _, __) => AspectRatio(
-                        aspectRatio: 1,
-                        child: Container(
-                          color: Colors.grey[300],
-                          child: Icon(
-                            Icons.person,
-                            size: MySize(context).h * 0.1,
-                            color: Colors.white,
-                          ),
-                        ),
+                      errorBuilder: (context, _, __) => Image.asset(
+                        'assets/placeholder_group.png',
+                        width: centerSize,
+                        height: centerSize,
+                        fit: BoxFit.cover,
                       ),
                     ),
                     CustomPaint(

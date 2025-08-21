@@ -53,8 +53,8 @@ class GlobalSettings {
   int flashThreshold = 60;
   int redThreshold = 300;
   List<DateTime> prizeTimes = [
-    DateTime(2025, 08, 20, 10, 07),
-    DateTime(2025, 08, 20, 10, 08),
-    DateTime(2025, 08, 20, 10, 40)
+    DateTime(2025, 08, 21, 16, 30),
+    DateTime(2025, 08, 21, 16, 40),
+    DateTime(2025, 08, 21, 17, 22)
   ];
 }

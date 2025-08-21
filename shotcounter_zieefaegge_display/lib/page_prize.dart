@@ -23,19 +23,20 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
   DateTime? nextPrize;
 
   String groupName = "";
-  String headline = "";
-  String subline = "";
-  String imagePrize = "";
   String groupLogo = "";
+
+  String imagePrize = "assets/prize_0.png";
 
   @override
   void initState() {
     super.initState();
 
-    for (DateTime prizeTime in GlobalSettings().prizeTimes) {
+    for (var i = 0; i < GlobalSettings().prizeTimes.length; i++) {
+      var prizeTime = GlobalSettings().prizeTimes[i];
       if (prizeTime.isAfter(DateTime.now())) {
         setState(() {
           nextPrize = prizeTime;
+          imagePrize = "assets/prize_$i.png";
         });
         break;
       }
@@ -68,11 +69,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
       if (mounted) {
         setState(() {
           groupName = data["groupName"];
-          headline = data["headline"];
-          subline = data["subline"];
-          imagePrize = data["imagePrize"];
           groupLogo = data["groupLogo"];
-
           dataLoaded = true;
         });
       }
@@ -135,17 +132,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
                   flex: 4,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
-                    child: Image.network(
-                      imagePrize,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, _, __) => AspectRatio(
-                        aspectRatio: 1,
-                        child: Container(
-                          color: Colors.grey[300],
-                          child: Icon(Icons.image, size: MySize(context).h * 0.5),
-                        ),
-                      ),
-                    ),
+                    child: Image.asset(imagePrize, fit: BoxFit.cover),
                   ),
                 ),
                 SizedBox(width: MySize(context).w * 0.05), // spacing between image and content
@@ -158,12 +145,12 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
                     children: [
                       SizedBox(height: MySize(context).h * 0.02),
                       Text(
-                        headline,
+                        "Headline",
                         style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: MySize(context).h * 0.02),
                       Text(
-                        subline,
+                        "subline sublinesublinesubline subline subline subline subline subline  sublinesublinesubline subline v sublinsublinesubline subline  sublinesubline subline",
                         style: TextStyle(fontSize: 20),
                         maxLines: 4,
                         textAlign: TextAlign.left,

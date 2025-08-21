@@ -31,6 +31,8 @@ migrate_working_dir/
 .pub/
 **/build/
 **/shotcounter_zieefaegge_display/build/
+**/.env
+**/shotcounter_zieefaegge_display/assets/server.key
 **/shotcounter_zieefaegge_display/build/
 
 

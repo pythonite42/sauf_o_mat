@@ -9,6 +9,8 @@ import 'package:shotcounter_zieefaegge/page_quote.dart';
 import 'package:shotcounter_zieefaegge/page_schedule.dart';
 import 'package:shotcounter_zieefaegge/page_top3.dart';
 import 'package:shotcounter_zieefaegge/page_advertising.dart';
+import 'package:window_manager/window_manager.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shotcounter_zieefaegge/server_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -26,6 +28,7 @@ void main() async {
     await windowManager.show();
     await windowManager.focus();
   });
+  await dotenv.load(fileName: ".env");
 
   // Connect to WebSocket before running app
   await ServerManager().connect("ws://192.168.2.49:8080");
@@ -60,6 +63,7 @@ class _MyScaffoldState extends State<MyScaffold> {
   late Timer _pageIndexReloadTimer;
 
   int pageIndex = 0;
+
   bool overridePageIndex = false;
 
   late final MessageHandler socketPageIndexListener;

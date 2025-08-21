@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shotcounter_zieefaegge/backend_mockdata.dart';
+import 'package:shotcounter_zieefaegge/backend_connection.dart';
 import 'package:shotcounter_zieefaegge/colors.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:math';
 import 'package:google_fonts/google_fonts.dart';
-//import 'package:syncfusion_flutter_charts/charts.dart';
 
 class ChartData {
   ChartData({
@@ -81,7 +81,9 @@ class _PageDiagramState extends State<PageDiagram> {
   Future<void> _loadChartData() async {
     try {
       Map generalSettings = await MockDataPage0().getChartSettings();
-      List<Map> newDataMapList = await MockDataPage0().getRandomChartData();
+      //List<Map> newDataMapList = await MockDataPage0().getRandomChartData();
+      List<Map> newDataMapList = await SalesforceService().fetchSalesforceDataPageDiagram();
+
       Map popupData = await MockDataPage0().getPopup();
 
       List<ChartData> newData = [];
@@ -204,6 +206,7 @@ class _PageDiagramState extends State<PageDiagram> {
     _chartDataReloadTimer.cancel();
     _scrollTimer.cancel();
     _scrollController.dispose();
+
     try {
       Navigator.of(_popupContext!).pop();
     } catch (_) {}
@@ -216,6 +219,7 @@ class _PageDiagramState extends State<PageDiagram> {
 
   @override
   Widget build(BuildContext context) {
+
     final legendBoxSize = MySize(context).h * 0.045;
     final fontSizeLegend = 30.0;
 
@@ -575,18 +579,14 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
             SizedBox(height: MySize(context).h * 0.02),
             Text(
               '🍻 $headline',
+
               style: GoogleFonts.rye(
                 textStyle: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: cactusGreen),
               ),
               textAlign: TextAlign.center,
-            ),
-            SizedBox(height: MySize(context).h * 0.02),
-            Text(
-              '$chaser ist nur noch $diff Getränke von $leader entfernt!',
               style: TextStyle(color: Colors.white, fontSize: 20),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: MySize(context).h * 0.03),
             Expanded(
               flex: 3,
               child: Image.network(

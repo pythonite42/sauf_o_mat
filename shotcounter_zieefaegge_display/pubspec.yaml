@@ -23,6 +23,7 @@ dependencies:
   flutter_webrtc: ^0.14.2
   web_socket_channel: ^3.0.3
   google_fonts: ^6.3.0
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:

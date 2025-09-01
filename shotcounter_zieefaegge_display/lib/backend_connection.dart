@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:jose/jose.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:intl/intl.dart';
 
 /// Singleton service to handle Salesforce JWT integration
 class SalesforceService {
@@ -89,7 +90,7 @@ class SalesforceService {
   /// Generic PATCH request to Salesforce API
   Future<void> patchRequest(String id, String table, Map body) async {
     final token = await getAccessToken();
-    final uri = Uri.parse('$loginUrl/services/data/v61.0/sobject/$table/$id');
+    final uri = Uri.parse('$loginUrl/services/data/v61.0/sobjects/$table/$id');
     final response = await http.patch(
       uri,
       headers: {
@@ -113,13 +114,13 @@ class SalesforceService {
       );
 
       if (retryResponse.statusCode < 200 || retryResponse.statusCode >= 300) {
-        throw Exception('Salesforce PATCH Error: ${retryResponse.body}');
+        throw Exception('Salesforce PATCH Error: ${response.statusCode}, ${response.body}');
       }
       return;
     }
 
     if (response.statusCode < 200 || response.statusCode >= 300) {
-      throw Exception('Salesforce PATCH Error: ${response.body}');
+      throw Exception('Salesforce PATCH Error: ${response.statusCode}, ${response.body}');
     }
   }
 
@@ -168,6 +169,7 @@ class SalesforceService {
       var record = data["records"][0];
       return {
         "showPopup": true,
+        "popupDataId": record["Id"],
         "imageUrl": record["WantedTeam__r"]["Logo__c"] ?? "",
         "chaserGroupName": record["ChasingTeam__r"]["Name"],
         "leaderGroupName": record["WantedTeam__r"]["Name"],
@@ -177,11 +179,23 @@ class SalesforceService {
       print('Error getSalesforceDataPageDiagramPopUp: $e');
       return {
         "showPopup": false,
+        "popupDataId": "",
         "imageUrl": "",
         "chaserGroupName": "",
         "leaderGroupName": "",
         "leaderPoints": 0,
       };
+    }
+  }
+
+  Future<bool> setSalesforceDataPageDiagramVisualizedAt(String id, DateTime visualisedAt) async {
+    try {
+      String formattedDate = DateFormat('yyyy-MM-ddTHH:mm:ss.SSSZ').format(visualisedAt.toUtc());
+      patchRequest(id, "CatchUp__c", {"VisualizedAt__c": formattedDate});
+      return true;
+    } catch (e) {
+      print('Error: $e');
+      return false;
     }
   }
 

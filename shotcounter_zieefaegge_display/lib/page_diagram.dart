@@ -52,6 +52,7 @@ class _PageDiagramState extends State<PageDiagram> {
   double groupNameSpaceFactor = 0.15; //Anteilig an ganzer Breite
 
   bool showPopup = false;
+  String popupDataId = "";
   String imageUrl = "";
   String chaserGroupName = "";
   String leaderGroupName = "";
@@ -104,6 +105,7 @@ class _PageDiagramState extends State<PageDiagram> {
           groupNameSpaceFactor = generalSettings["groupNameSpaceFactor"];
 
           showPopup = popupData["showPopup"];
+          popupDataId = popupData["popupDataId"];
           imageUrl = popupData["imageUrl"];
           chaserGroupName = popupData["chaserGroupName"];
           leaderGroupName = popupData["leaderGroupName"];
@@ -175,6 +177,7 @@ class _PageDiagramState extends State<PageDiagram> {
         );
       },
     );
+    SalesforceService().setSalesforceDataPageDiagramVisualizedAt(popupDataId, DateTime.now());
 
     Future.delayed(Duration(seconds: CustomDurations().showPopup), () {
       try {

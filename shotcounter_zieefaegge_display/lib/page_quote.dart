@@ -82,9 +82,9 @@ class _PageQuoteState extends State<PageQuote> {
                           child: Image.network(
                             imageUrl,
                             fit: BoxFit.cover,
-                            errorBuilder: (context, _, __) => Container(
-                              color: Colors.grey[300],
-                              child: Icon(Icons.person, size: MySize(context).h * 0.4),
+                            errorBuilder: (context, _, __) => Image.asset(
+                              'assets/placeholder_single.png',
+                              fit: BoxFit.cover,
                             ),
                           ),
                         ),

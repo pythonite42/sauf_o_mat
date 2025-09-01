@@ -9,11 +9,11 @@ TODOs Prio 1
 (d) - page_diagram.dart: 20 sekunden warten zwischen popUps
 (d) - page_diagram.dart: popUp daten mit timestamp nicht anzeigen (in SOQL lösen)
     - alle Strings die aus dem Backend kommen: maximale Zeichenanzahl
-    - wenn keine BildURL dann Platzhalter (statisch) nehmen: 
+(d) - wenn keine BildURL dann Platzhalter (statisch) nehmen: 
 (d)     - page_diagram PopUp Gruppenplatzhalter
-        - page_top3 Gruppenplatzhalter
-        - page_quote: EinzelpersonPlatzhalter
-        - page_prize: Gruppenplatzhalter
+(d)     - page_top3 Gruppenplatzhalter
+(d)     - page_quote: EinzelpersonPlatzhalter
+(d)     - page_prize: Gruppenplatzhalter
     - mockdataBackend ablösen:
         - getChartSettings löschen
 (d)     - getPopUp

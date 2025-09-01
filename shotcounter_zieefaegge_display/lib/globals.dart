@@ -26,6 +26,8 @@ class CustomDurations {
   int reloadDataDiagram = 7;
   int chartAutoScroll = 8; //every x seconds the chart scrolls one bar down
   int speedChartScroll = 500;
+  int showPopup = 10;
+  int popUpCooldown = 20; //after a popup was shown, wait x seconds until another popup can be shown
 
   //page top3
   int reloadDataTop3 = 7;

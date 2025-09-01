@@ -45,6 +45,7 @@ class _PageDiagramState extends State<PageDiagram> {
   BuildContext? _popupContext;
   bool _isPopupVisible = false;
   GlobalKey<_RacePopupWidgetState>? _popupKey;
+  bool _popupCooldown = false;
 
   int totalBarsVisible = 5;
   int totalGridLinesVisible = 5;
@@ -154,43 +155,43 @@ class _PageDiagramState extends State<PageDiagram> {
   }
 
   void buildPopup() {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
+    if (_popupCooldown || _isPopupVisible || !showPopup) return;
+
+    _popupCooldown = true;
+    _isPopupVisible = true;
+    _popupKey = GlobalKey<_RacePopupWidgetState>();
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (popupCtx) {
+        _popupContext = popupCtx;
+        return RacePopupWidget(
+          key: _popupKey,
+          initialImageUrl: imageUrl,
+          initialLeader: leaderGroupName,
+          initialChaser: chaserGroupName,
+          initialPointsOfLeader: leaderPoints,
+        );
+      },
+    );
+
+    Future.delayed(Duration(seconds: CustomDurations().showPopup), () {
       try {
-        if (showPopup && !_isPopupVisible) {
-          _isPopupVisible = true;
-          _popupKey = GlobalKey<_RacePopupWidgetState>();
+        Navigator.of(_popupContext!).pop();
+      } catch (_) {}
 
-          await showDialog(
-            context: context,
-            barrierDismissible: true,
-            builder: (popupCtx) {
-              _popupContext = popupCtx;
-              return RacePopupWidget(
-                key: _popupKey,
-                initialImageUrl: imageUrl,
-                initialLeader: leaderGroupName,
-                initialChaser: chaserGroupName,
-                initialPointsOfLeader: leaderPoints,
-              );
-            },
-          );
-
-          if (mounted) {
-            setState(() {
-              _isPopupVisible = false;
-              _popupContext = null;
-              _popupKey = null;
-            });
-          }
-        } else if (!showPopup && _isPopupVisible && _popupContext != null) {
-          Navigator.of(_popupContext!).pop();
+      if (mounted) {
+        setState(() {
           _isPopupVisible = false;
           _popupContext = null;
           _popupKey = null;
-        } else if (_isPopupVisible && _popupKey?.currentState != null) {
-          _popupKey?.currentState!.updateData(imageUrl, leaderGroupName, chaserGroupName, leaderPoints);
-        }
-      } catch (_) {}
+        });
+      }
+
+      Future.delayed(Duration(seconds: CustomDurations().popUpCooldown), () {
+        _popupCooldown = false;
+      });
     });
   }
 
@@ -548,50 +549,7 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return /* AlertDialog(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      content: SizedBox(
-        height: MySize(context).h * 0.8,
-        width: MySize(context).w * 0.7,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(height: MySize(context).h * 0.02),
-            Text(
-              '🍻 $headline',
-
-              style: GoogleFonts.rye(
-                textStyle: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: cactusGreen),
-              ),
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white, fontSize: 20),
-              textAlign: TextAlign.center,
-            ),
-            Expanded(
-              flex: 3,
-              child: Image.network(
-                imageUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (context, _, __) => AspectRatio(
-                  aspectRatio: 1,
-                  child: Container(
-                    color: Colors.grey[300],
-                    child: Icon(Icons.image, size: MySize(context).h * 0.2),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: MySize(context).h * 0.02),
-            Text(
-              motivationalText,
-              style: TextStyle(color: defaultOnPrimary, fontStyle: FontStyle.italic, fontSize: 18),
-            ),
-          ],
-        ),
-      ),
-    ); */
-        AlertDialog(
+    return AlertDialog(
       backgroundColor: Colors.transparent, // make dialog itself transparent
       contentPadding: EdgeInsets.zero, // remove default padding
       content: Container(

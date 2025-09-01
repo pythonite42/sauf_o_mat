@@ -5,9 +5,9 @@ TODOs Prio 1
     - controls/main.dart: unfreeze bei page wechsel entfernen (also freeze soll bleiben)
     - page_advertising.dart: last modified, patch wurdeBereitsAngezeigt
     - page_diagram.dart: wenn popUp angezeigt wurde patch mit timestamp
-    - page_diagram.dart: jedes popUp nach 10 Sekunden schließen
-    - page_diagram.dart: 20 sekunden warten zwischen popUps
-(d) - page_diagram.dart: popUp daten mit timestamp nich anzeigen (in SOQL lösen)
+(d) - page_diagram.dart: jedes popUp nach 10 Sekunden schließen
+(d) - page_diagram.dart: 20 sekunden warten zwischen popUps
+(d) - page_diagram.dart: popUp daten mit timestamp nicht anzeigen (in SOQL lösen)
     - alle Strings die aus dem Backend kommen: maximale Zeichenanzahl
     - wenn keine BildURL dann Platzhalter (statisch) nehmen: 
 (d)     - page_diagram PopUp Gruppenplatzhalter

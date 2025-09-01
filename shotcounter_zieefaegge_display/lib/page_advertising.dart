@@ -29,7 +29,7 @@ class _PageAdvertisingState extends State<PageAdvertising> {
   }
 
   void _startAutoReloadImage() {
-    _dataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations().reloadDataAdvertising), (_) {
+    _dataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations.reloadDataAdvertising), (_) {
       _loadImage();
     });
   }

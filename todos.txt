@@ -15,7 +15,7 @@ TODOs Prio 1
 (d)     - page_quote: EinzelpersonPlatzhalter
 (d)     - page_prize: Gruppenplatzhalter
     - mockdataBackend ablösen:
-        - getChartSettings löschen
+(d)     - getChartSettings löschen
 (d)     - getPopUp
 (d)     - prizePage: 3 images statisch, immer gleiche statische headline, immer gleiche statische subline, groupName fällt weg, groupLogo: SELECT Logo__c FROM Team__c WHERE Rang__c = 1 
 (d)     - MockDataPage3.getImage löschen weil statisch

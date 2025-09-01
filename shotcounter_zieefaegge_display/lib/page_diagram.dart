@@ -47,10 +47,6 @@ class _PageDiagramState extends State<PageDiagram> {
   GlobalKey<_RacePopupWidgetState>? _popupKey;
   bool _popupCooldown = false;
 
-  int totalBarsVisible = 5;
-  int totalGridLinesVisible = 5;
-  double groupNameSpaceFactor = 0.15; //Anteilig an ganzer Breite
-
   bool showPopup = false;
   String popupDataId = "";
   String imageUrl = "";
@@ -73,14 +69,13 @@ class _PageDiagramState extends State<PageDiagram> {
   }
 
   void _startAutoReloadChartData() {
-    _chartDataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations().reloadDataDiagram), (_) {
+    _chartDataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations.reloadDataDiagram), (_) {
       _loadChartData();
     });
   }
 
   Future<void> _loadChartData() async {
     try {
-      Map generalSettings = await MockDataPage0().getChartSettings();
       //List<Map> newDataMapList = await MockDataPage0().getRandomChartData();
       List<Map> newDataMapList = await SalesforceService().getPageDiagram();
 
@@ -101,9 +96,6 @@ class _PageDiagramState extends State<PageDiagram> {
       }
       if (mounted) {
         setState(() {
-          totalBarsVisible = generalSettings["totalBarsVisible"];
-          groupNameSpaceFactor = generalSettings["groupNameSpaceFactor"];
-
           showPopup = popupData["showPopup"];
           popupDataId = popupData["popupDataId"];
           imageUrl = popupData["imageUrl"];
@@ -139,7 +131,7 @@ class _PageDiagramState extends State<PageDiagram> {
   }
 
   void _startAutoScroll() {
-    var duration = Duration(seconds: CustomDurations().chartAutoScroll);
+    var duration = Duration(seconds: CustomDurations.chartAutoScroll);
 
     _scrollTimer = Timer.periodic(duration, (timer) {
       if (!_scrollController.hasClients) return;
@@ -150,7 +142,7 @@ class _PageDiagramState extends State<PageDiagram> {
 
       _scrollController.animateTo(
         next >= (maxScroll + barHeight / 2) ? 0 : next,
-        duration: Duration(milliseconds: CustomDurations().speedChartScroll),
+        duration: Duration(milliseconds: CustomDurations.speedChartScroll),
         curve: Curves.easeInOut,
       );
     });
@@ -179,7 +171,7 @@ class _PageDiagramState extends State<PageDiagram> {
     );
     SalesforceService().setPageDiagramVisualizedAt(popupDataId, DateTime.now());
 
-    Future.delayed(Duration(seconds: CustomDurations().showPopup), () {
+    Future.delayed(Duration(seconds: CustomDurations.showPopup), () {
       try {
         Navigator.of(_popupContext!).pop();
       } catch (_) {}
@@ -192,7 +184,7 @@ class _PageDiagramState extends State<PageDiagram> {
         });
       }
 
-      Future.delayed(Duration(seconds: CustomDurations().popUpCooldown), () {
+      Future.delayed(Duration(seconds: CustomDurations.popUpCooldown), () {
         _popupCooldown = false;
       });
     });
@@ -305,10 +297,10 @@ class _PageDiagramState extends State<PageDiagram> {
                           final Size size = (textPainter..layout()).size;
 
                           final availableHeight = constraints.maxHeight - size.height;
-                          barHeight = (availableHeight / totalBarsVisible);
+                          barHeight = (availableHeight / GlobalSettings.totalBarsVisible);
                           double frameLineWidth = 4;
                           var gridLine = Container(width: 1, height: availableHeight, color: defaultOnScroll);
-                          var groupNameWidth = constraints.maxWidth * groupNameSpaceFactor;
+                          var groupNameWidth = constraints.maxWidth * GlobalSettings.groupNameSpaceFactor;
                           var chartWidth = constraints.maxWidth - groupNameWidth;
 
                           int gridIntervalsDividableBy = 10;
@@ -321,14 +313,15 @@ class _PageDiagramState extends State<PageDiagram> {
                           int chartMaxValue = maxValue ?? 1 + emptyCountRightOfFirst;
 
                           while (true) {
-                            if ((chartMaxValue / totalGridLinesVisible) % gridIntervalsDividableBy == 0) {
+                            if ((chartMaxValue / GlobalSettings.totalGridLinesVisible) % gridIntervalsDividableBy ==
+                                0) {
                               break;
                             } else {
                               chartMaxValue++;
                             }
                           }
 
-                          var gridInterval = chartMaxValue / totalGridLinesVisible;
+                          var gridInterval = chartMaxValue / GlobalSettings.totalGridLinesVisible;
 
                           return Stack(children: <Widget>[
                             Positioned(
@@ -347,14 +340,15 @@ class _PageDiagramState extends State<PageDiagram> {
                                 top: availableHeight - frameLineWidth,
                                 child: Container(width: chartWidth, height: frameLineWidth, color: defaultOnScroll)),
                             ...List.generate(
-                                (totalGridLinesVisible + 1).floor(),
+                                (GlobalSettings.totalGridLinesVisible + 1).floor(),
                                 (index) => Positioned(
-                                    left: groupNameWidth + index * (chartWidth / totalGridLinesVisible),
+                                    left: groupNameWidth + index * (chartWidth / GlobalSettings.totalGridLinesVisible),
                                     child: gridLine)),
                             ...List.generate(
-                              (totalGridLinesVisible).floor(),
+                              (GlobalSettings.totalGridLinesVisible).floor(),
                               (index) => Positioned(
-                                left: groupNameWidth + (index + 1) * (chartWidth / totalGridLinesVisible),
+                                left:
+                                    groupNameWidth + (index + 1) * (chartWidth / GlobalSettings.totalGridLinesVisible),
                                 top: availableHeight,
                                 child: Text(
                                   ((index + 1) * gridInterval).toInt().toString(),

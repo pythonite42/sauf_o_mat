@@ -68,10 +68,10 @@ class _MyScaffoldState extends State<MyScaffold> {
   late final MessageHandler socketPageIndexListener;
 
   void _startPageIndexTimer() {
-    _pageIndexReloadTimer = Timer.periodic(Duration(seconds: CustomDurations().indexNavigationChange), (_) {
+    _pageIndexReloadTimer = Timer.periodic(Duration(seconds: CustomDurations.indexNavigationChange), (_) {
       if (!overridePageIndex) {
         int nextIndex = (pageIndex + 1) % 6;
-        if (nextIndex == 2 && DateTime.now().isAfter(GlobalSettings().prizeTimes.last)) {
+        if (nextIndex == 2 && DateTime.now().isAfter(GlobalSettings.prizeTimes.last)) {
           nextIndex++;
         }
         _navigateToPage(nextIndex);
@@ -146,7 +146,7 @@ class _MyScaffoldState extends State<MyScaffold> {
         child: Column(
           children: [
             SizedBox(
-              height: fullscreenIconSize,
+              height: GlobalSettings.fullscreenIconSize,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -163,7 +163,7 @@ class _MyScaffoldState extends State<MyScaffold> {
                           icon: Icon(
                             Icons.open_in_full,
                             color: Theme.of(context).colorScheme.primary,
-                            size: fullscreenIconSize,
+                            size: GlobalSettings.fullscreenIconSize,
                           ),
                         )
                       : IconButton(
@@ -178,7 +178,7 @@ class _MyScaffoldState extends State<MyScaffold> {
                           icon: Icon(
                             Icons.close_fullscreen,
                             color: Theme.of(context).colorScheme.secondary,
-                            size: fullscreenIconSize,
+                            size: GlobalSettings.fullscreenIconSize,
                           ),
                         ),
                 ],
@@ -218,7 +218,7 @@ class _MyScaffoldState extends State<MyScaffold> {
 
   Route _createRoute(Widget page) {
     return PageRouteBuilder(
-      transitionDuration: Duration(milliseconds: CustomDurations().navigationTransition),
+      transitionDuration: Duration(milliseconds: CustomDurations.navigationTransition),
       pageBuilder: (_, animation, __) => page,
       transitionsBuilder: (_, animation, __, child) {
         const begin = Offset(1.0, 0.0); // slide in from right

@@ -30,7 +30,7 @@ class _PageQuoteState extends State<PageQuote> {
   }
 
   void _startAutoReloadImage() {
-    _dataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations().reloadDataQuote), (_) {
+    _dataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations.reloadDataQuote), (_) {
       _loadImage();
     });
   }
@@ -252,7 +252,7 @@ class _FadingQuoteCarouselState extends State<FadingQuoteCarousel> {
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(Duration(seconds: CustomDurations().switchQuote), (_) {
+    _timer = Timer.periodic(Duration(seconds: CustomDurations.switchQuote), (_) {
       setState(() {
         _currentIndex = (_currentIndex + 1) % widget.quotes.length;
       });
@@ -268,7 +268,7 @@ class _FadingQuoteCarouselState extends State<FadingQuoteCarousel> {
   @override
   Widget build(BuildContext context) {
     return AnimatedSwitcher(
-      duration: Duration(milliseconds: CustomDurations().fadeTransistion),
+      duration: Duration(milliseconds: CustomDurations.fadeTransistion),
       transitionBuilder: (Widget child, Animation<double> animation) {
         return FadeTransition(opacity: animation, child: child);
       },

@@ -43,7 +43,7 @@ class _PageTop3State extends State<PageTop3> {
   }
 
   void _startAutoReloadChartData() {
-    _chartDataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations().reloadDataTop3), (_) {
+    _chartDataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations.reloadDataTop3), (_) {
       _loadChartData();
     });
   }

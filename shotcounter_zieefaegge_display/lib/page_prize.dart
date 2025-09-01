@@ -31,8 +31,8 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
   void initState() {
     super.initState();
 
-    for (var i = 0; i < GlobalSettings().prizeTimes.length; i++) {
-      var prizeTime = GlobalSettings().prizeTimes[i];
+    for (var i = 0; i < GlobalSettings.prizeTimes.length; i++) {
+      var prizeTime = GlobalSettings.prizeTimes[i];
       if (prizeTime.isAfter(DateTime.now())) {
         setState(() {
           nextPrize = prizeTime;
@@ -49,7 +49,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
 
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: CustomDurations().flashSpeed),
+      duration: Duration(milliseconds: CustomDurations.flashSpeed),
     )..repeat(reverse: true);
 
     _fadeAnimation = CurvedAnimation(parent: _animationController, curve: Curves.easeInOut);
@@ -57,7 +57,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
 
   void _startAutoReloadChartData() {
     _dataReloadTimerIsFast = false;
-    _dataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations().reloadDataPrize), (_) {
+    _dataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations.reloadDataPrize), (_) {
       _loadData();
     });
   }
@@ -89,7 +89,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
           _remainingTime = nextPrize?.difference(DateTime.now()) ?? Duration();
           if (_remainingTime!.inSeconds < 20 && !_dataReloadTimerIsFast) {
             _dataReloadTimer.cancel();
-            _dataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations().reloadDataPrizeUnder20sec), (_) {
+            _dataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations.reloadDataPrizeUnder20sec), (_) {
               _loadData();
             });
             _dataReloadTimerIsFast = true;
@@ -194,9 +194,9 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
                       ),
                       SizedBox(height: MySize(context).h * 0.05),
                       if (_remainingTime != null)
-                        (_remainingTime!.inSeconds > GlobalSettings().redThreshold)
+                        (_remainingTime!.inSeconds > GlobalSettings.redThreshold)
                             ? _buildTimerBox(greenAccent, 25)
-                            : (_remainingTime!.inSeconds > GlobalSettings().flashThreshold ||
+                            : (_remainingTime!.inSeconds > GlobalSettings.flashThreshold ||
                                     _remainingTime!.inSeconds == 0)
                                 ? _buildTimerBox(redAccent, 25)
                                 : FadeTransition(

@@ -138,7 +138,7 @@ class SalesforceService {
     return jsonDecode(response.body);
   }
 
-  Future<List<Map>> getSalesforceDataPageDiagram() async {
+  Future<List<Map>> getPageDiagram() async {
     try {
       final data = await getRequest(
           'SELECT Anzahl_Bargetr_nke__c , Anzahl_Bier_Wein_Schorle__c , Anzahl_Kaffee_Lutz__c , AnzahlShots__c , NAME, StatusDisplay__c FROM Team__c');
@@ -161,7 +161,7 @@ class SalesforceService {
     }
   }
 
-  Future<Map> getSalesforceDataPageDiagramPopUp() async {
+  Future<Map> getPageDiagramPopUp() async {
     try {
       final data = await getRequest(
           //'SELECT Id, VisualizedAt__c, ChasingTeam__r.Name, WantedTeam__r.Name, WantedTeam__r.Logo__c, WantedTeam__r.Punktzahl__c FROM CatchUp__c WHERE VisualizedAt__c = null AND RankDeltaIsOne__c = true AND IsLessThan1Minute__c = true ORDER BY LastModifiedDate DESC LIMIT 1');
@@ -176,7 +176,7 @@ class SalesforceService {
         "leaderPoints": (record["WantedTeam__r"]["Punktzahl__c"]).toInt(),
       };
     } catch (e) {
-      print('Error getSalesforceDataPageDiagramPopUp: $e');
+      print('Salesforce Error getPageDiagramPopUp: $e');
       return {
         "showPopup": false,
         "popupDataId": "",
@@ -188,7 +188,7 @@ class SalesforceService {
     }
   }
 
-  Future<bool> setSalesforceDataPageDiagramVisualizedAt(String id, DateTime visualisedAt) async {
+  Future<bool> setPageDiagramVisualizedAt(String id, DateTime visualisedAt) async {
     try {
       String formattedDate = DateFormat('yyyy-MM-ddTHH:mm:ss.SSSZ').format(visualisedAt.toUtc());
       patchRequest(id, "CatchUp__c", {"VisualizedAt__c": formattedDate});
@@ -199,7 +199,7 @@ class SalesforceService {
     }
   }
 
-  Future<List<Map>> getSalesforceDataPageTop3() async {
+  Future<List<Map>> getPageTop3() async {
     try {
       final data = await getRequest(
           'SELECT Anzahl_Bargetr_nke__c , Anzahl_Bier_Wein_Schorle__c , Anzahl_Kaffee_Lutz__c , AnzahlShots__c , NAME, Logo__c FROM Team__c WHERE Rang__c < 4');
@@ -222,7 +222,7 @@ class SalesforceService {
     }
   }
 
-  Future<bool> setSalesforceDataPageQueryUsed(String id, bool wasUsed) async {
+  Future<bool> setPageQueryUsed(String id, bool wasUsed) async {
     try {
       patchRequest(id, "SocialMediaComment__c", {"WasUsed__c": wasUsed});
       return true;
@@ -232,7 +232,7 @@ class SalesforceService {
     }
   }
 
-  Future<String> getSalesforceDataPagePrize() async {
+  Future<String> getPagePrize() async {
     try {
       final data = await getRequest('SELECT Logo__c FROM Team__c WHERE Rang__c = 1');
       return data["records"][0]["Logo__c"] ?? "";

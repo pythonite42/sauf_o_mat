@@ -82,9 +82,9 @@ class _PageDiagramState extends State<PageDiagram> {
     try {
       Map generalSettings = await MockDataPage0().getChartSettings();
       //List<Map> newDataMapList = await MockDataPage0().getRandomChartData();
-      List<Map> newDataMapList = await SalesforceService().getSalesforceDataPageDiagram();
+      List<Map> newDataMapList = await SalesforceService().getPageDiagram();
 
-      Map popupData = await SalesforceService().getSalesforceDataPageDiagramPopUp();
+      Map popupData = await SalesforceService().getPageDiagramPopUp();
 
       List<ChartData> newData = [];
       for (var newDataMap in newDataMapList) {
@@ -177,7 +177,7 @@ class _PageDiagramState extends State<PageDiagram> {
         );
       },
     );
-    SalesforceService().setSalesforceDataPageDiagramVisualizedAt(popupDataId, DateTime.now());
+    SalesforceService().setPageDiagramVisualizedAt(popupDataId, DateTime.now());
 
     Future.delayed(Duration(seconds: CustomDurations().showPopup), () {
       try {

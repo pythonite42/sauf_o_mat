@@ -64,7 +64,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
 
   Future<void> _loadData() async {
     try {
-      String logoUrl = await SalesforceService().getSalesforceDataPagePrize();
+      String logoUrl = await SalesforceService().getPagePrize();
 
       if (mounted) {
         setState(() {

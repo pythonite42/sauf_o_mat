@@ -1,6 +1,6 @@
 TODOs Prio 1
 
-    - controls/main.dart: automatisch freeze bei Livestream
+(d) - controls/main.dart: automatisch freeze bei Livestream
     - controls/main.dart: reload bei allen Seiten außer Livestream (index reloaden obwohl er gleich ist wie vorher)
 (d) - controls/main.dart: unfreeze bei page wechsel entfernen (also freeze soll bleiben)
     - page_advertising.dart: last modified, patch wurdeBereitsAngezeigt

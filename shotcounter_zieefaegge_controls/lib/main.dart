@@ -242,14 +242,6 @@ class _MyHomePageState extends State<MyHomePage> {
     super.dispose();
   }
 
-  /* Future<int> getCurrentNavigationIndex() async {
-    await Future.delayed(Duration(seconds: 2));
-    setState(() {
-      currentNavigationIndex = 0;
-    });
-    return currentNavigationIndex;
-  } */
-
   @override
   Widget build(BuildContext context) {
     final List<bool> selected = [false, false];
@@ -285,6 +277,9 @@ class _MyHomePageState extends State<MyHomePage> {
                               currentNavigationIndex = newIndex;
                               debugPrint("send event pageIndex with index $newIndex");
                               channel?.sink.add(jsonEncode({"event": "pageIndex", "index": newIndex}));
+                              if (indexFrozen) {
+                                channel?.sink.add(jsonEncode({"event": "freeze", "freeze": true}));
+                              }
                             });
 
                             if (newValue == "Livestream") {

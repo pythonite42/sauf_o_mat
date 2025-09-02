@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:shotcounter_zieefaegge/backend_connection.dart';
 import 'package:shotcounter_zieefaegge/backend_mockdata.dart';
 import 'package:shotcounter_zieefaegge/colors.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
@@ -36,7 +37,8 @@ class _PageAdvertisingState extends State<PageAdvertising> {
 
   Future<void> _loadImage() async {
     try {
-      Map data = await MockDataPage5().getData();
+      //Map data = await MockDataPage5().getData();
+      Map data = await SalesforceService().getPageAdvertising();
 
       if (mounted) {
         setState(() {

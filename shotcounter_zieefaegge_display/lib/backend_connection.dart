@@ -222,7 +222,16 @@ class SalesforceService {
     }
   }
 
-  Future<bool> setPageQueryUsed(String id, bool wasUsed) async {
+  Future<String> getPagePrize() async {
+    try {
+      final data = await getRequest('SELECT Logo__c FROM Team__c WHERE Rang__c = 1');
+      return data["records"][0]["Logo__c"] ?? "";
+    } catch (e) {
+      print('Error: $e');
+      return "";
+    }
+  }
+  Future<bool> setPageQuoteQueryUsed(String id, bool wasUsed) async {
     try {
       patchRequest(id, "SocialMediaComment__c", {"WasUsed__c": wasUsed});
       return true;
@@ -232,13 +241,37 @@ class SalesforceService {
     }
   }
 
-  Future<String> getPagePrize() async {
+  Future<Map> getPageAdvertising() async {
     try {
-      final data = await getRequest('SELECT Logo__c FROM Team__c WHERE Rang__c = 1');
-      return data["records"][0]["Logo__c"] ?? "";
+      final data = await getRequest(
+          'SELECT Id, Subject__c, Description__c FROM Advertisement__c WHERE VisualizedAt__c = null ORDER BY LastModifiedDate DESC LIMIT 1');
+      print(data["records"]);
+      return /* data["records"].isNotEmpty
+          ? {
+              "id": data["records"][0]["Id"],
+              "text": data["records"][0]["Subject__c"] ?? "",
+              "image": data["records"][0]["Description__c"] ?? "",
+            }
+          : {
+              "id": "",
+              "text": "",
+              "image": "",
+            }; */
+          {};
     } catch (e) {
       print('Error: $e');
-      return "";
+      return {};
+    }
+  }
+
+  Future<bool> setPageAdvertisingVisualizedAt(String id, DateTime visualisedAt) async {
+    try {
+      String formattedDate = DateFormat('yyyy-MM-ddTHH:mm:ss.SSSZ').format(visualisedAt.toUtc());
+      patchRequest(id, "Advertisement__c", {"VisualizedAt__c": formattedDate});
+      return true;
+    } catch (e) {
+      print('Error: $e');
+      return false;
     }
   }
 }

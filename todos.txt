@@ -1,7 +1,7 @@
 TODOs Prio 1
 
 (d) - controls/main.dart: automatisch freeze bei Livestream
-    - controls/main.dart: reload bei allen Seiten außer Livestream (index reloaden obwohl er gleich ist wie vorher)
+(d) - controls/main.dart: reload bei allen Seiten außer Livestream (index reloaden obwohl er gleich ist wie vorher)
 (d) - controls/main.dart: unfreeze bei page wechsel entfernen (also freeze soll bleiben)
     - page_advertising.dart: last modified, patch wurdeBereitsAngezeigt
 (d) - page_diagram.dart: wenn popUp angezeigt wurde patch mit timestamp
@@ -55,6 +55,7 @@ TODOs Prio 2
     - page_prize.dart: line 183 Name leader entfernen, nur Logo anzeigen mit "aktuell führend" als Column
     - page_quote.dart: line: 97 zusätzlich noch Name (doppelt so groß wie username) wie bei twitter
     - page_top3.dart: Wanted poster, Staatsfeind Nr. 1/2/3, Gesucht für 166 Punkte, 20 Bargetränke, 10 Bier usw.
+    - main.dart: Transition nicht so überlappend
 
 TODOs Prio 3
 

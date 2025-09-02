@@ -62,7 +62,7 @@ class _MyScaffoldState extends State<MyScaffold> {
   late Timer _pageIndexReloadTimer;
 
   int pageIndex = 0;
-
+  bool animateNavigation = true;
   bool overridePageIndex = false;
 
   late final MessageHandler socketPageIndexListener;
@@ -74,6 +74,7 @@ class _MyScaffoldState extends State<MyScaffold> {
         if (nextIndex == 2 && DateTime.now().isAfter(GlobalSettings.prizeTimes.last)) {
           nextIndex++;
         }
+        animateNavigation = true;
         _navigateToPage(nextIndex);
       } else {
         overridePageIndex = false;
@@ -94,7 +95,8 @@ class _MyScaffoldState extends State<MyScaffold> {
       }
       if (data['event'] == 'pageIndex' && data['index'] is int) {
         int newIndex = data['index'];
-        if (newIndex != pageIndex) {
+        if (newIndex != pageIndex || data['reset'] == true) {
+          animateNavigation = !(data['reset'] == true);
           overridePageIndex = true;
           _navigateToPage(newIndex);
         }
@@ -207,16 +209,21 @@ class _MyScaffoldState extends State<MyScaffold> {
   }
 
   Route _createRoute(Widget page) {
+    if (animateNavigation) {
+      return PageRouteBuilder(
+        transitionDuration: Duration(milliseconds: CustomDurations.navigationTransition),
+        pageBuilder: (_, animation, __) => page,
+        transitionsBuilder: (_, animation, __, child) {
+          const begin = Offset(1.0, 0.0); // slide in from right
+          const end = Offset.zero;
+          const curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          return SlideTransition(position: animation.drive(tween), child: child);
+        },
+      );
+    }
     return PageRouteBuilder(
-      transitionDuration: Duration(milliseconds: CustomDurations.navigationTransition),
-      pageBuilder: (_, animation, __) => page,
-      transitionsBuilder: (_, animation, __, child) {
-        const begin = Offset(1.0, 0.0); // slide in from right
-        const end = Offset.zero;
-        const curve = Curves.ease;
-        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-        return SlideTransition(position: animation.drive(tween), child: child);
-      },
+      pageBuilder: (_, __, ___) => page,
     );
   }
 }

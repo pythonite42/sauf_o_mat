@@ -302,22 +302,50 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Angezeigte Seite einfrieren"),
-                      Switch(
-                        value: indexFrozen,
-                        activeColor: Colors.red,
+                      Row(
+                        children: [
+                          Text("Page freeze: "),
+                          Switch(
+                            value: indexFrozen,
+                            activeThumbColor: Colors.green,
 
-                        onChanged: (bool newFrozenValue) {
-                          setState(() {
-                            indexFrozen = newFrozenValue;
-                            debugPrint("freeze page: $newFrozenValue");
-                            channel?.sink.add(jsonEncode({"event": "freeze", "freeze": newFrozenValue}));
-                          });
-                        },
+                            onChanged: (bool newFrozenValue) {
+                              setState(() {
+                                indexFrozen = newFrozenValue;
+                                debugPrint("freeze page: $newFrozenValue");
+                                channel?.sink.add(jsonEncode({"event": "freeze", "freeze": newFrozenValue}));
+                              });
+                            },
+                          ),
+                        ],
                       ),
+                      currentNavigationIndex == 6
+                          ? ElevatedButton(
+                              onPressed: () async {
+                                channel?.sink.add(
+                                  jsonEncode({"event": "pageIndex", "index": currentNavigationIndex, "reset": true}),
+                                );
+                                await pauseCamera();
+
+                                setState(() {
+                                  _isRecordingRunning = !_isRecordingRunning;
+                                });
+                              },
+                              child: const Text("Kamera neu starten"),
+                            )
+                          : ElevatedButton(
+                              onPressed: () {
+                                debugPrint("send event reset");
+                                channel?.sink.add(
+                                  jsonEncode({"event": "pageIndex", "index": currentNavigationIndex, "reset": true}),
+                                );
+                              },
+                              child: const Text("Seiten-Daten neu laden"),
+                            ),
                     ],
                   ),
                 ],

@@ -89,23 +89,13 @@ class _MyScaffoldState extends State<MyScaffold> {
       debugPrint("socket event received: $data");
       if (data['event'] == 'freeze' && data["freeze"] == true) {
         _pageIndexReloadTimer.cancel();
-      } else {
-        if (!_pageIndexReloadTimer.isActive) {
-          _startPageIndexTimer();
-        }
+      } else if (data['event'] == 'freeze' && data["freeze"] == false && !_pageIndexReloadTimer.isActive) {
+        _startPageIndexTimer();
       }
       if (data['event'] == 'pageIndex' && data['index'] is int) {
         int newIndex = data['index'];
         if (newIndex != pageIndex) {
           overridePageIndex = true;
-          if (newIndex == 6) {
-            _pageIndexReloadTimer.cancel();
-          } else {
-            if (!_pageIndexReloadTimer.isActive) {
-              _startPageIndexTimer();
-            }
-          }
-
           _navigateToPage(newIndex);
         }
       }

@@ -277,9 +277,11 @@ class _MyHomePageState extends State<MyHomePage> {
                               currentNavigationIndex = newIndex;
                               debugPrint("send event pageIndex with index $newIndex");
                               channel?.sink.add(jsonEncode({"event": "pageIndex", "index": newIndex}));
-                              if (indexFrozen) {
+                              if (indexFrozen || newValue == "Livestream") {
                                 channel?.sink.add(jsonEncode({"event": "freeze", "freeze": true}));
+                                indexFrozen = true;
                               }
+                              //TODO soll ich den freeze lösen wenn von Livestream weggeschaltet wird?
                             });
 
                             if (newValue == "Livestream") {

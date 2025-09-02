@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shotcounter_zieefaegge/backend_mockdata.dart';
 import 'package:shotcounter_zieefaegge/colors.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
+import 'package:shotcounter_zieefaegge/backend_connection.dart';
 
 class PageQuote extends StatefulWidget {
   const PageQuote({super.key});
@@ -18,37 +19,43 @@ class _PageQuoteState extends State<PageQuote> {
   late Timer _dataReloadTimer;
 
   String username = "";
-  String quote = "";
+  List<String> quotes = [];
   String imageUrl = "";
+  String recordId = "";
 
   @override
   void initState() {
     super.initState();
 
-    _loadImage();
-    _startAutoReloadImage();
+    _loadData();
+    _startAutoReloadData();
   }
 
-  void _startAutoReloadImage() {
+  void _startAutoReloadData() {
     _dataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations.reloadDataQuote), (_) {
-      _loadImage();
+      _loadData();
     });
   }
 
-  Future<void> _loadImage() async {
+  Future<void> _loadData() async {
     try {
-      Map data = await MockDataPage4().getData();
+      //Map data = await MockDataPage4().getData();
+      Map data = await SalesforceService().getPageQuote();
 
       if (mounted) {
         setState(() {
+          recordId = data["recordId"];
           username = data["name"];
-          quote = data["quote"];
+          quotes = data["quotes"] as List<String>;
           imageUrl = data["image"];
           dataLoaded = true;
         });
+        if (recordId.isNotEmpty) {
+          await SalesforceService().setPageQuoteQueryUsed(recordId, DateTime.now());
+        }
       }
     } catch (e) {
-      debugPrint('Error fetching page 3 schedule image: $e');
+      debugPrint('Error fetching page 4 quote: $e');
     }
   }
 
@@ -149,12 +156,7 @@ class _PageQuoteState extends State<PageQuote> {
 
                             // Fade Transition:
                             FadingQuoteCarousel(
-                              quotes: [
-                                "The best way to predict the future is to invent it.",
-                                "Flutter lets you build beautiful apps fast.",
-                                "Don’t watch the clock; do what it does — keep going.",
-                                "Creativity is intelligence having fun.",
-                              ],
+                              quotes: quotes,
                             ),
                           ],
                         ),

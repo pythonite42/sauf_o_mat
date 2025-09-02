@@ -190,8 +190,7 @@ class SalesforceService {
 
   Future<bool> setPageDiagramVisualizedAt(String id, DateTime visualisedAt) async {
     try {
-      String formattedDate = DateFormat('yyyy-MM-ddTHH:mm:ss.SSSZ').format(visualisedAt.toUtc());
-      patchRequest(id, "CatchUp__c", {"VisualizedAt__c": formattedDate});
+      patchRequest(id, "CatchUp__c", {"VisualizedAt__c": formatDateTime(visualisedAt)});
       return true;
     } catch (e) {
       print('Error: $e');
@@ -231,9 +230,37 @@ class SalesforceService {
       return "";
     }
   }
-  Future<bool> setPageQuoteQueryUsed(String id, bool wasUsed) async {
+
+  Future<Map> getPageQuote() async {
     try {
-      patchRequest(id, "SocialMediaComment__c", {"WasUsed__c": wasUsed});
+      Map data = await getRequest(
+          'SELECT Id, Comment1__c, Comment2__c, Comment3__c, Commentator__c, ImageURL__c FROM SocialMediaComment__c WHERE VisualizedAt__c = null ORDER BY LastModifiedDate DESC LIMIT 1');
+      print(data["records"]);
+      if (data["records"].isEmpty) {
+        data = await getRequest(
+            'SELECT Id, Comment1__c, Comment2__c, Comment3__c, Commentator__c, ImageURL__c FROM SocialMediaComment__c ORDER BY VisualizedAt__c ASC LIMIT 1'); //TODO is this correct?
+      }
+      print(data["records"]);
+
+      var record = data["records"][0];
+      List<String> quotes = [record["Comment1__c"] ?? "", record["Comment2__c"] ?? "", record["Comment3__c"] ?? ""];
+      return {
+        "recordId": record["Id"],
+        "name": record["Commentator__c"] ?? "",
+        "quotes": quotes,
+        "image": record["ImageURL__c"] ?? "",
+      };
+    } catch (e) {
+      print('Error: $e');
+      return {};
+    }
+  }
+
+  Future<bool> setPageQuoteQueryUsed(String id, DateTime visualisedAt) async {
+    try {
+      patchRequest(id, "SocialMediaComment__c", {
+        "VisualizedAt__c": formatDateTime(visualisedAt)
+      }); //TODO before it was wasUsed, I changed it to VisualizedAt__c, is that correct?
       return true;
     } catch (e) {
       print('Error: $e');
@@ -266,12 +293,15 @@ class SalesforceService {
 
   Future<bool> setPageAdvertisingVisualizedAt(String id, DateTime visualisedAt) async {
     try {
-      String formattedDate = DateFormat('yyyy-MM-ddTHH:mm:ss.SSSZ').format(visualisedAt.toUtc());
-      patchRequest(id, "Advertisement__c", {"VisualizedAt__c": formattedDate});
+      patchRequest(id, "Advertisement__c", {"VisualizedAt__c": formatDateTime(visualisedAt)});
       return true;
     } catch (e) {
       print('Error: $e');
       return false;
     }
+  }
+
+  String formatDateTime(DateTime dateTime) {
+    return DateFormat('yyyy-MM-ddTHH:mm:ss.SSSZ').format(dateTime.toUtc());
   }
 }

@@ -236,12 +236,12 @@ class SalesforceService {
     try {
       Map data = await getRequest(
           'SELECT Id, Comment1__c, Comment2__c, Comment3__c, Commentator__c, ImageURL__c FROM SocialMediaComment__c WHERE VisualizedAt__c = null ORDER BY LastModifiedDate DESC LIMIT 1');
-      debugPrint(data["records"]);
+      debugPrint(data["records"].toString());
       if (data["records"].isEmpty) {
         data = await getRequest(
             'SELECT Id, Comment1__c, Comment2__c, Comment3__c, Commentator__c, ImageURL__c FROM SocialMediaComment__c ORDER BY VisualizedAt__c ASC LIMIT 1'); //TODO is this correct?
       }
-      debugPrint(data["records"]);
+      debugPrint(data["records"].toString());
 
       var record = data["records"][0];
       List<String> quotes = [record["Comment1__c"] ?? "", record["Comment2__c"] ?? "", record["Comment3__c"] ?? ""];
@@ -277,7 +277,7 @@ class SalesforceService {
         data = await getRequest(
             'SELECT Id, ImageURL__c, Subject__c, Description__c FROM Advertisement__c ORDER BY VisualizedAt__c ASC LIMIT 1'); //TODO is this correct?
       }
-      debugPrint(data["records"]);
+      debugPrint(data["records"].toString());
       return {
         "id": data["records"][0]["Id"],
         "headline": data["records"][0]["Subject__c"] ?? "",

@@ -4,6 +4,7 @@ import 'package:jose/jose.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
 
 /// Singleton service to handle Salesforce JWT integration
 class SalesforceService {
@@ -156,7 +157,7 @@ class SalesforceService {
       }
       return returnData;
     } catch (e) {
-      print('Error: $e');
+      debugPrint('Error: $e');
       return [];
     }
   }
@@ -176,7 +177,7 @@ class SalesforceService {
         "leaderPoints": (record["WantedTeam__r"]["Punktzahl__c"]).toInt(),
       };
     } catch (e) {
-      print('Salesforce Error getPageDiagramPopUp: $e');
+      debugPrint('Salesforce Error getPageDiagramPopUp: $e');
       return {
         "showPopup": false,
         "popupDataId": "",
@@ -193,7 +194,7 @@ class SalesforceService {
       patchRequest(id, "CatchUp__c", {"VisualizedAt__c": formatDateTime(visualisedAt)});
       return true;
     } catch (e) {
-      print('Error: $e');
+      debugPrint('Error: $e');
       return false;
     }
   }
@@ -216,7 +217,7 @@ class SalesforceService {
       }
       return returnData;
     } catch (e) {
-      print('Error: $e');
+      debugPrint('Error: $e');
       return [];
     }
   }
@@ -226,7 +227,7 @@ class SalesforceService {
       final data = await getRequest('SELECT Logo__c FROM Team__c WHERE Rang__c = 1');
       return data["records"][0]["Logo__c"] ?? "";
     } catch (e) {
-      print('Error: $e');
+      debugPrint('Error: $e');
       return "";
     }
   }
@@ -235,12 +236,12 @@ class SalesforceService {
     try {
       Map data = await getRequest(
           'SELECT Id, Comment1__c, Comment2__c, Comment3__c, Commentator__c, ImageURL__c FROM SocialMediaComment__c WHERE VisualizedAt__c = null ORDER BY LastModifiedDate DESC LIMIT 1');
-      print(data["records"]);
+      debugPrint(data["records"]);
       if (data["records"].isEmpty) {
         data = await getRequest(
             'SELECT Id, Comment1__c, Comment2__c, Comment3__c, Commentator__c, ImageURL__c FROM SocialMediaComment__c ORDER BY VisualizedAt__c ASC LIMIT 1'); //TODO is this correct?
       }
-      print(data["records"]);
+      debugPrint(data["records"]);
 
       var record = data["records"][0];
       List<String> quotes = [record["Comment1__c"] ?? "", record["Comment2__c"] ?? "", record["Comment3__c"] ?? ""];
@@ -251,7 +252,7 @@ class SalesforceService {
         "image": record["ImageURL__c"] ?? "",
       };
     } catch (e) {
-      print('Error: $e');
+      debugPrint('Error: $e');
       return {};
     }
   }
@@ -263,7 +264,7 @@ class SalesforceService {
       }); //TODO before it was wasUsed, I changed it to VisualizedAt__c, is that correct?
       return true;
     } catch (e) {
-      print('Error: $e');
+      debugPrint('Error: $e');
       return false;
     }
   }
@@ -276,7 +277,7 @@ class SalesforceService {
         data = await getRequest(
             'SELECT Id, ImageURL__c, Subject__c, Description__c FROM Advertisement__c ORDER BY VisualizedAt__c ASC LIMIT 1'); //TODO is this correct?
       }
-      print(data["records"]);
+      debugPrint(data["records"]);
       return {
         "id": data["records"][0]["Id"],
         "headline": data["records"][0]["Subject__c"] ?? "",
@@ -284,7 +285,7 @@ class SalesforceService {
         "image": data["records"][0]["ImageURL__c"] ?? "",
       };
     } catch (e) {
-      print('Error: $e');
+      debugPrint('Error: $e');
       return {};
     }
   }
@@ -294,7 +295,7 @@ class SalesforceService {
       patchRequest(id, "Advertisement__c", {"VisualizedAt__c": formatDateTime(visualisedAt)});
       return true;
     } catch (e) {
-      print('Error: $e');
+      debugPrint('Error: $e');
       return false;
     }
   }

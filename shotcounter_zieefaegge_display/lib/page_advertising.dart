@@ -5,14 +5,9 @@ import 'package:shotcounter_zieefaegge/backend_connection.dart';
 import 'package:shotcounter_zieefaegge/colors.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
 
-class PageAdvertising extends StatefulWidget {
+class PageAdvertising extends StatelessWidget {
   const PageAdvertising({super.key});
 
-  @override
-  State<PageAdvertising> createState() => _PageAdvertisingState();
-}
-
-class _PageAdvertisingState extends State<PageAdvertising> {
   Future<Map> _fetchAdvertisingData() async {
     try {
       return await SalesforceService().getPageAdvertising();

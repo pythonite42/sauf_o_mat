@@ -265,26 +265,28 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                           onChanged: (String? newValue) async {
                             final newIndex = pages.indexOf(newValue!);
+                            debugPrint("send event pageIndex with index $newIndex");
+                            channel?.sink.add(jsonEncode({"event": "pageIndex", "index": newIndex}));
+
                             setState(() {
-                              currentNavigationIndex = newIndex;
-                              debugPrint("send event pageIndex with index $newIndex");
-                              channel?.sink.add(jsonEncode({"event": "pageIndex", "index": newIndex}));
-                              if (indexFrozen || newValue == "Livestream") {
+                              if (indexFrozen || newIndex == 6) {
                                 channel?.sink.add(jsonEncode({"event": "freeze", "freeze": true}));
                                 indexFrozen = true;
                               }
-                            });
-
-                            if (newValue == "Livestream") {
-                              localVideo.initialize();
-                              initialization();
-                            } else {
-                              //await cleanupLivestream();
-                              setState(() {
+                              if (currentNavigationIndex == 6 && newIndex != 6) {
+                                channel?.sink.add(jsonEncode({"event": "freeze", "freeze": false}));
+                                indexFrozen = false;
+                              }
+                              currentNavigationIndex = newIndex;
+                              if (newIndex == 6) {
+                                localVideo.initialize();
+                                initialization();
+                              } else {
+                                //await cleanupLivestream();
                                 _showCamera = false;
                                 _isRecordingRunning = false;
-                              });
-                            }
+                              }
+                            });
                           },
                           items: pages.map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(value: value, child: Text(value));

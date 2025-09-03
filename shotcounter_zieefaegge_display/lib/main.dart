@@ -59,7 +59,6 @@ class MyScaffold extends StatefulWidget {
 class _MyScaffoldState extends State<MyScaffold> {
   bool titleBarVisible = true;
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
-  late Timer _pageIndexReloadTimer;
 
   int pageIndex = 0;
   bool animateNavigation = true;
@@ -67,20 +66,11 @@ class _MyScaffoldState extends State<MyScaffold> {
 
   late final MessageHandler socketPageIndexListener;
 
-  void _startPageIndexTimer() {
-    _pageIndexReloadTimer = Timer.periodic(Duration(seconds: CustomDurations.indexNavigationChange), (_) {
-      if (!overridePageIndex) {
-        int nextIndex = (pageIndex + 1) % 6;
-        if (nextIndex == 2 && DateTime.now().isAfter(GlobalSettings.prizeTimes.last)) {
-          nextIndex++;
-        }
-        animateNavigation = true;
-        _navigateToPage(nextIndex);
-      } else {
-        overridePageIndex = false;
-      }
-    });
-  }
+  Timer? _pageIndexReloadTimer;
+  Timer? _prePrizeTimer;
+  Timer? _unfreezeTimer;
+  bool _socketFrozen = false;
+  int _nextPrizeIndex = 0;
 
   @override
   void initState() {
@@ -89,9 +79,11 @@ class _MyScaffoldState extends State<MyScaffold> {
     socketPageIndexListener = (data) {
       debugPrint("socket event received: $data");
       if (data['event'] == 'freeze' && data["freeze"] == true) {
-        _pageIndexReloadTimer.cancel();
-      } else if (data['event'] == 'freeze' && data["freeze"] == false && !_pageIndexReloadTimer.isActive) {
-        _startPageIndexTimer();
+        //TODO wenn 5 Minuten vor Preis, dann wird auf prize page gewechselt. wenn dann per app überschrieben wird ist der freeze automatisch drin bis eine minute nach preisZeit. Das wird in der App nicht angezeigt. Ist das okay so?
+        _cancelAutoTimer();
+      } else if (data['event'] == 'freeze' && data["freeze"] == false) {
+        _socketFrozen = false;
+        _maybeStartAutoTimer();
       }
       if (data['event'] == 'pageIndex' && data['index'] is int) {
         int newIndex = data['index'];
@@ -106,6 +98,7 @@ class _MyScaffoldState extends State<MyScaffold> {
     ServerManager().addListener(socketPageIndexListener);
 
     _startPageIndexTimer();
+    _schedulePrizeGuard();
   }
 
   void _navigateToPage(int index) {
@@ -118,10 +111,83 @@ class _MyScaffoldState extends State<MyScaffold> {
     }
   }
 
+  void _startPageIndexTimer() {
+    _pageIndexReloadTimer?.cancel();
+    _pageIndexReloadTimer = Timer.periodic(Duration(seconds: CustomDurations.indexNavigationChange), (_) {
+      if (!overridePageIndex) {
+        int nextIndex = (pageIndex + 1) % 6;
+        if (nextIndex == 2 && DateTime.now().isAfter(GlobalSettings.prizeTimes.last)) {
+          nextIndex++;
+        }
+        animateNavigation = true;
+        _navigateToPage(nextIndex);
+      } else {
+        overridePageIndex = false;
+      }
+    });
+  }
+
+  void _schedulePrizeGuard() {
+    _prePrizeTimer?.cancel();
+    _unfreezeTimer?.cancel();
+
+    if (_nextPrizeIndex >= GlobalSettings.prizeTimes.length) {
+      return;
+    }
+
+    final prizeTime = GlobalSettings.prizeTimes[_nextPrizeIndex];
+    final preStart = prizeTime.subtract(Duration(seconds: CustomDurations.changeToPrizePageBeforePrizeTime));
+    final preEnd = prizeTime.add(Duration(seconds: CustomDurations.stayOnPrizePageAfterPrizeTime));
+    final now = DateTime.now();
+
+    if (now.isBefore(preStart)) {
+      final wait = preStart.difference(now);
+      _prePrizeTimer = Timer(wait, _enterPrizeFreeze);
+    } else if (!now.isAfter(preEnd)) {
+      _enterPrizeFreeze();
+      final remaining = preEnd.difference(now);
+      _unfreezeTimer = Timer(remaining, _exitPrizeFreeze);
+    } else {
+      _nextPrizeIndex++;
+      _schedulePrizeGuard();
+    }
+  }
+
+  void _enterPrizeFreeze() {
+    animateNavigation = true;
+    _navigateToPage(2);
+    _cancelAutoTimer();
+
+    _unfreezeTimer?.cancel();
+    _unfreezeTimer = Timer(
+        Duration(
+            seconds: CustomDurations.changeToPrizePageBeforePrizeTime + CustomDurations.stayOnPrizePageAfterPrizeTime),
+        _exitPrizeFreeze);
+  }
+
+  void _exitPrizeFreeze() {
+    _maybeStartAutoTimer();
+    _nextPrizeIndex++;
+    _schedulePrizeGuard();
+  }
+
+  void _cancelAutoTimer() {
+    _pageIndexReloadTimer?.cancel();
+    _pageIndexReloadTimer = null;
+  }
+
+  void _maybeStartAutoTimer() {
+    if (_socketFrozen) return;
+    if (_pageIndexReloadTimer != null) return;
+    _startPageIndexTimer();
+  }
+
   @override
   void dispose() {
     ServerManager().removeListener(socketPageIndexListener);
-    _pageIndexReloadTimer.cancel();
+    _pageIndexReloadTimer?.cancel();
+    _prePrizeTimer?.cancel();
+    _unfreezeTimer?.cancel();
     super.dispose();
   }
 

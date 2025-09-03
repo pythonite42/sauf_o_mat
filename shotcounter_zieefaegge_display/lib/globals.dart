@@ -19,6 +19,10 @@ class CustomDurations {
   static const int checkIfNavigationIndexChanged =
       1; //this is an internal duration and should not be changed. It does not affect the backend or my server communication
   static const int navigationTransition = 800;
+  static const int changeToPrizePageBeforePrizeTime =
+      5 * 60; //seconds before prize time the display changes to prize page
+  static const int stayOnPrizePageAfterPrizeTime =
+      60; //seconds after prize time the display changes back to normal navigation
 
   //page diagram
   static const int reloadDataDiagram = 7;
@@ -56,8 +60,8 @@ class GlobalSettings {
   static const int flashThreshold = 60;
   static const int redThreshold = 300;
   static List<DateTime> prizeTimes = [
-    DateTime(2025, 08, 21, 16, 30),
-    DateTime(2025, 08, 21, 16, 40),
-    DateTime(2025, 08, 21, 17, 22)
+    DateTime(2025, 09, 03, 10, 52),
+    DateTime(2025, 09, 03, 10, 53),
+    DateTime(2025, 09, 03, 11, 01),
   ];
 }

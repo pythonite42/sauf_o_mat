@@ -48,8 +48,8 @@ TODOs Prio 1
 
 TODOs Prio 2
 
-    - page_advertising.dart: im Stil einer alten Zeitung, "Newspaper" abgeschnitten oben angezeigt, Headline rechts, Text rechts
-    - page_advertising.dart: reload braucht es nicht (_startAutoReloadImage)
+(d) - page_advertising.dart: im Stil einer alten Zeitung, "Newspaper" abgeschnitten oben angezeigt, Headline rechts, Text rechts
+(d) - page_advertising.dart: reload braucht es nicht (_startAutoReloadImage)
     - page_diagram.dart: line 664, assets/placeholder_group.png image so groß wie möglich (höhe ausfüllen)
     - page_livestream.dart: herz größer, unten links "Kiss" unten rechts "Cam"
     - page_livestream.dart: Bier bisschen nach rechts versetzen und links daneben den Text: Ex-Cam Howdie Cowboy du wurdest zum Abschuss freigegeben

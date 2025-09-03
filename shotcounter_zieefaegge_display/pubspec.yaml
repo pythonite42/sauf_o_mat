@@ -41,6 +41,7 @@ flutter:
     - assets/billboard.png
     - assets/scroll.png
     - assets/parchment.png
+    - assets/newspaper.png
     - assets/arrow_up.svg
     - assets/beer_foam.svg
     - assets/cowboy_chasing.gif

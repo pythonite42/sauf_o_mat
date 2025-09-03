@@ -9,7 +9,7 @@ Color cactusGreen = Color(0xFF2E8B57);
 Color redAccent = Color(0xFFFF5252);
 Color greenAccent = Color(0xFF2EC91C);
 Color transparentWhite = Color(0xC8FFFFFF);
-Color backgroundColor = Color(0xFFCA7F36);
+Color billboardBackgroundColor = Color(0xFFCC7F34);
 final ThemeData appTheme = ThemeData(
   colorScheme: ColorScheme(
     brightness: Brightness.light,

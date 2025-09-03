@@ -195,12 +195,7 @@ class _MyScaffoldState extends State<MyScaffold> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/billboard.png"),
-            fit: BoxFit.cover,
-          ),
-        ),
+        color: billboardBackgroundColor,
         child: Column(
           children: [
             SizedBox(
@@ -278,18 +273,47 @@ class _MyScaffoldState extends State<MyScaffold> {
     if (animateNavigation) {
       return PageRouteBuilder(
         transitionDuration: Duration(milliseconds: CustomDurations.navigationTransition),
-        pageBuilder: (_, animation, __) => page,
-        transitionsBuilder: (_, animation, __, child) {
-          const begin = Offset(1.0, 0.0); // slide in from right
-          const end = Offset.zero;
+        pageBuilder: (_, animation, secondaryAnimation) => backgroundContainer(child: page),
+        transitionsBuilder: (_, animation, secondaryAnimation, child) {
           const curve = Curves.ease;
-          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-          return SlideTransition(position: animation.drive(tween), child: child);
+
+          // New page slides in from right → center
+          final inTween = Tween<Offset>(
+            begin: const Offset(1.0, 0.0),
+            end: Offset.zero,
+          ).chain(CurveTween(curve: curve));
+
+          // Old page slides from center → left
+          final outTween = Tween<Offset>(
+            begin: Offset.zero,
+            end: const Offset(-1.0, 0.0),
+          ).chain(CurveTween(curve: curve));
+
+          return SlideTransition(
+            position: animation.drive(inTween),
+            child: SlideTransition(
+              position: secondaryAnimation.drive(outTween),
+              child: child,
+            ),
+          );
         },
       );
     }
+
     return PageRouteBuilder(
-      pageBuilder: (_, __, ___) => page,
+      pageBuilder: (_, __, ___) => backgroundContainer(child: page),
+    );
+  }
+
+  Widget backgroundContainer({Widget? child}) {
+    return Container(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("assets/billboard.png"),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: child,
     );
   }
 }

@@ -33,6 +33,7 @@ TODOs Prio 1
     - Prize Bilder generieren: Infos ins Bild: uhrzeit vom Gewinn, was es zu gewinnen gibt
     - Prize Text und überschrift erstellen: der Text sind die Regeln (wie viele Punkte pro Getränk, wie kauf ich für meine Gruppe)
 (d) - Platzhalter erstellen: Einzelperson(SocialMedia Comment), Gruppe
+    - Hintergrundbild neu erstellen: rechts muss so aufhören wie links anfängt
     - Image required: 
         - timetable: nicht über URL sondern statisch
         - werbung: imageUrl
@@ -59,7 +60,7 @@ TODOs Prio 2
     - page_prize.dart: popUp stylen
     - page_quote.dart: line: 97 zusätzlich noch Name (doppelt so groß wie username) wie bei twitter
     - page_top3.dart: Wanted poster, Staatsfeind Nr. 1/2/3, Gesucht für 166 Punkte, 20 Bargetränke, 10 Bier usw.
-    - main.dart: Transition nicht so überlappend
+(d) - main.dart: Transition nicht so überlappend
 
 TODOs Prio 3
 

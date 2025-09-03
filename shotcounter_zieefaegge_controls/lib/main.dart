@@ -15,20 +15,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Shotcounter Zieefaegge Controls',
-      theme: appTheme,
-      debugShowCheckedModeBanner: false,
-
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
+    return MaterialApp(title: 'Shotcounter Zieefaegge Controls', theme: appTheme, home: const MyHomePage());
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -266,7 +258,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         decoration: BoxDecoration(color: darkAccent),
                         child: DropdownButtonFormField<String>(
-                          value: pages[currentNavigationIndex],
+                          initialValue: pages[currentNavigationIndex],
                           icon: const Icon(Icons.expand_more),
                           decoration: const InputDecoration(
                             enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent)),

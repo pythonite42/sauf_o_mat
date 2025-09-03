@@ -5,73 +5,38 @@ import 'package:shotcounter_zieefaegge/colors.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
 import 'package:shotcounter_zieefaegge/backend_connection.dart';
 
-class PageQuote extends StatefulWidget {
+class PageQuote extends StatelessWidget {
   const PageQuote({super.key});
 
-  @override
-  State<PageQuote> createState() => _PageQuoteState();
-}
-
-class _PageQuoteState extends State<PageQuote> {
-  bool dataLoaded = false;
-
-  late Timer _dataReloadTimer;
-
-  String username = "";
-  List<String> quotes = [];
-  String imageUrl = "";
-  String recordId = "";
-
-  @override
-  void initState() {
-    super.initState();
-
-    _loadData();
-    _startAutoReloadData();
-  }
-
-  void _startAutoReloadData() {
-    _dataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations.reloadDataQuote), (_) {
-      _loadData();
-    });
-  }
-
-  Future<void> _loadData() async {
+  Future<Map> _fetchQuoteData() async {
     try {
-      Map data = await SalesforceService().getPageQuote();
-
-      if (mounted) {
-        setState(() {
-          recordId = data["recordId"];
-          username = data["name"];
-          quotes = data["quotes"] as List<String>;
-          imageUrl = data["image"];
-          dataLoaded = true;
-        });
-        if (recordId.isNotEmpty) {
-          await SalesforceService().setPageQuoteQueryUsed(recordId, DateTime.now());
-        }
-      }
+      return await SalesforceService().getPageQuote();
     } catch (e) {
       debugPrint('Error fetching page 4 quote: $e');
+      return {};
     }
-  }
-
-  @override
-  void dispose() {
-    _dataReloadTimer.cancel();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsetsGeometry.all(MySize(context).h * 0.08),
-      child: !dataLoaded
-          ? Center(
+      child: FutureBuilder<Map>(
+        future: _fetchQuoteData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting ||
+              snapshot.hasError ||
+              !snapshot.hasData ||
+              snapshot.data!.isEmpty) {
+            return Center(
               child: CircularProgressIndicator(color: defaultOnPrimary),
-            )
-          : AspectRatio(
+            );
+          } else {
+            SalesforceService().setPageQuoteQueryUsed(snapshot.data!["recordId"], DateTime.now());
+            final username = snapshot.data!["name"] ?? "";
+            final quotes = snapshot.data!["quotes"] ?? [] as List<String>;
+            final imageUrl = snapshot.data!["image"] ?? "";
+            return AspectRatio(
               aspectRatio: 16 / 9,
               child: Card(
                 color: Color(0xFFF8F9FF),
@@ -163,7 +128,10 @@ class _PageQuoteState extends State<PageQuote> {
                   ),
                 ),
               ),
-            ),
+            );
+          }
+        },
+      ),
     );
   }
 }

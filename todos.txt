@@ -1,9 +1,11 @@
 TODOs Prio 1
 
 (d) - controls/main.dart: automatisch freeze bei Livestream
+    - controls/main.dart: unfreeze bei wechsel von Livestream auf anderen index
 (d) - controls/main.dart: reload bei allen Seiten außer Livestream (index reloaden obwohl er gleich ist wie vorher)
 (d) - controls/main.dart: unfreeze bei page wechsel entfernen (also freeze soll bleiben)
     - page_advertising.dart: last modified, patch wurdeBereitsAngezeigt
+    - page_advertising.dart: automatischen reload entfernen
 (d) - page_diagram.dart: wenn popUp angezeigt wurde patch mit timestamp
 (d) - page_diagram.dart: jedes popUp nach 10 Sekunden schließen
 (d) - page_diagram.dart: 20 sekunden warten zwischen popUps
@@ -24,6 +26,7 @@ TODOs Prio 1
     - main.dart: ab 5 Minuten vor Gewinn Index auf page_prize, dann freeze, 1 Minute nach Gewinn wieder freeze lösen, manuell über App überschreibbar
     - page_prize.dart: popUp mit Gewinnerbild und Glückwunsch
     - page_quote.dart: patch wenn Person schon gezeigt wurde
+    - page_quote.dart: automatischen reload entfernen
 
 
     - max Zeichenanzahl integrieren 

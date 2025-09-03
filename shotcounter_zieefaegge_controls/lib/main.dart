@@ -281,7 +281,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                 channel?.sink.add(jsonEncode({"event": "freeze", "freeze": true}));
                                 indexFrozen = true;
                               }
-                              //TODO soll ich den freeze lösen wenn von Livestream weggeschaltet wird?
                             });
 
                             if (newValue == "Livestream") {

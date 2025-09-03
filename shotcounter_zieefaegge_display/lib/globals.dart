@@ -36,14 +36,12 @@ class CustomDurations {
   static const int reloadDataPrizeUnder20sec = 1;
 
   //page quote
-  static const int reloadDataQuote =
-      10; //TODO Soll das überhaupt einen Reload haben? Oder nur einen Kommentator pro Laufzeit?
+  static const int reloadDataQuote = 10;
   static const int switchQuote = 4;
   static const int fadeTransistion = 800;
 
   //page advertising
-  static const int reloadDataAdvertising =
-      10; //TODO Soll das überhaupt einen Reload haben? Oder nur einen Kommentator pro Laufzeit?
+  static const int reloadDataAdvertising = 10;
 
   // ##### salesforce ######################
 

@@ -13,59 +13,36 @@ class PageAdvertising extends StatefulWidget {
 }
 
 class _PageAdvertisingState extends State<PageAdvertising> {
-  bool dataLoaded = false;
-
-  late Timer _dataReloadTimer;
-
-  String text = "";
-  String imageUrl = "";
-
-  @override
-  void initState() {
-    super.initState();
-
-    _loadImage();
-    _startAutoReloadImage();
-  }
-
-  void _startAutoReloadImage() {
-    _dataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations.reloadDataAdvertising), (_) {
-      _loadImage();
-    });
-  }
-
-  Future<void> _loadImage() async {
+  Future<Map> _fetchAdvertisingData() async {
     try {
       //Map data = await MockDataPage5().getData();
-      Map data = await SalesforceService().getPageAdvertising();
-
-      if (mounted) {
-        setState(() {
-          text = data["text"];
-          imageUrl = data["image"];
-          dataLoaded = true;
-        });
-      }
+      return await SalesforceService().getPageAdvertising();
     } catch (e) {
       debugPrint('Error fetching page 5 advertising image: $e');
+      return {};
     }
-  }
-
-  @override
-  void dispose() {
-    _dataReloadTimer.cancel();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsetsGeometry.all(MySize(context).h * 0.08),
-      child: !dataLoaded
-          ? Center(
+      child: FutureBuilder<Map>(
+        future: _fetchAdvertisingData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting ||
+              snapshot.hasError ||
+              !snapshot.hasData ||
+              snapshot.data!.isEmpty) {
+            return Center(
               child: CircularProgressIndicator(color: defaultOnPrimary),
-            )
-          : Row(
+            );
+          } else {
+            SalesforceService().setPageAdvertisingVisualizedAt(snapshot.data!["id"], DateTime.now());
+            final headline = snapshot.data!["headline"] ?? "";
+            final text = snapshot.data!["text"] ?? "";
+            final imageUrl = snapshot.data!["image"] ?? "";
+            return Row(
               children: [
                 Expanded(
                   flex: 4,
@@ -85,25 +62,31 @@ class _PageAdvertisingState extends State<PageAdvertising> {
                   ),
                 ),
                 SizedBox(width: MySize(context).w * 0.05), // spacing between image and content
-
                 Expanded(
                   flex: 3,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: EdgeInsetsGeometry.symmetric(vertical: MySize(context).h * 0.05),
-                        child: Text(
+                  child: Padding(
+                    padding: EdgeInsetsGeometry.symmetric(vertical: MySize(context).h * 0.05),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          headline,
+                          style: TextStyle(fontSize: 45, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
                           text,
                           style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ],
-            ),
+            );
+          }
+        },
+      ),
     );
   }
 }

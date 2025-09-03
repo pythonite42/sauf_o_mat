@@ -4,8 +4,8 @@ TODOs Prio 1
 (d) - controls/main.dart: unfreeze bei wechsel von Livestream auf anderen index
 (d) - controls/main.dart: reload bei allen Seiten außer Livestream (index reloaden obwohl er gleich ist wie vorher)
 (d) - controls/main.dart: unfreeze bei page wechsel entfernen (also freeze soll bleiben)
-    - page_advertising.dart: last modified, patch wurdeBereitsAngezeigt
-    - page_advertising.dart: automatischen reload entfernen
+(d) - page_advertising.dart: last modified, patch wurdeBereitsAngezeigt
+(d) - page_advertising.dart: automatischen reload entfernen
 (d) - page_diagram.dart: wenn popUp angezeigt wurde patch mit timestamp
 (d) - page_diagram.dart: jedes popUp nach 10 Sekunden schließen
 (d) - page_diagram.dart: 20 sekunden warten zwischen popUps
@@ -22,7 +22,7 @@ TODOs Prio 1
 (d)     - prizePage: 3 images statisch, immer gleiche statische headline, immer gleiche statische subline, groupName fällt weg, groupLogo: SELECT Logo__c FROM Team__c WHERE Rang__c = 1 
 (d)     - MockDataPage3.getImage löschen weil statisch
 (d)     - MockDataPage4.getData, zuletzt bearbeitete ohne schon benutzt, wenn alle schon benutzt dann wieder von vorne
-        - MockDataPage5.getData
+(d)     - MockDataPage5.getData
     - main.dart: ab 5 Minuten vor Gewinn Index auf page_prize, dann freeze, 1 Minute nach Gewinn wieder freeze lösen, manuell über App überschreibbar
     - page_prize.dart: popUp mit Gewinnerbild und Glückwunsch
     - page_quote.dart: patch wenn Person schon gezeigt wurde

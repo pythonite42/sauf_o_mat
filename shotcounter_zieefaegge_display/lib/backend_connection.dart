@@ -270,21 +270,19 @@ class SalesforceService {
 
   Future<Map> getPageAdvertising() async {
     try {
-      final data = await getRequest(
-          'SELECT Id, Subject__c, Description__c FROM Advertisement__c WHERE VisualizedAt__c = null ORDER BY LastModifiedDate DESC LIMIT 1');
+      Map data = await getRequest(
+          'SELECT Id, ImageURL__c, Subject__c, Description__c FROM Advertisement__c WHERE VisualizedAt__c = null ORDER BY LastModifiedDate DESC LIMIT 1');
+      if (data["records"].isEmpty) {
+        data = await getRequest(
+            'SELECT Id, ImageURL__c, Subject__c, Description__c FROM Advertisement__c ORDER BY VisualizedAt__c ASC LIMIT 1'); //TODO is this correct?
+      }
       print(data["records"]);
-      return /* data["records"].isNotEmpty
-          ? {
-              "id": data["records"][0]["Id"],
-              "text": data["records"][0]["Subject__c"] ?? "",
-              "image": data["records"][0]["Description__c"] ?? "",
-            }
-          : {
-              "id": "",
-              "text": "",
-              "image": "",
-            }; */
-          {};
+      return {
+        "id": data["records"][0]["Id"],
+        "headline": data["records"][0]["Subject__c"] ?? "",
+        "text": data["records"][0]["Description__c"] ?? "",
+        "image": data["records"][0]["ImageURL__c"] ?? "",
+      };
     } catch (e) {
       print('Error: $e');
       return {};

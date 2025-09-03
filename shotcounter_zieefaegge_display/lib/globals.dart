@@ -40,9 +40,6 @@ class CustomDurations {
   static const int switchQuote = 4;
   static const int fadeTransistion = 800;
 
-  //page advertising
-  static const int reloadDataAdvertising = 10;
-
   // ##### salesforce ######################
 
   static const int catchUpValidUntil = 60; //how long is a catchUp eligible for visualisation

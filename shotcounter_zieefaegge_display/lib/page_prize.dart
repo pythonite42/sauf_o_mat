@@ -27,6 +27,9 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
 
   String imagePrize = "assets/prize_0.png";
 
+  BuildContext? _popupContext;
+  bool _popupShown = false;
+
   @override
   void initState() {
     super.initState();
@@ -43,7 +46,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
     }
 
     _loadData();
-    _startAutoReloadChartData();
+    _startAutoReloadData();
 
     _startCountdown();
 
@@ -55,7 +58,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
     _fadeAnimation = CurvedAnimation(parent: _animationController, curve: Curves.easeInOut);
   }
 
-  void _startAutoReloadChartData() {
+  void _startAutoReloadData() {
     _dataReloadTimerIsFast = false;
     _dataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations.reloadDataPrize), (_) {
       _loadData();
@@ -98,8 +101,40 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
           _dataReloadTimer.cancel();
           _timer.cancel();
         }
+        if (_remainingTime!.inSeconds == 0 && !_popupShown && mounted) {
+          _popupShown = true;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _showPrizePopup();
+          });
+        }
       });
     });
+  }
+
+  void _showPrizePopup() {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (popupCtx) {
+        _popupContext = popupCtx;
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: const Text("Preiszeit!"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(imagePrize, height: 120),
+              const SizedBox(height: 20),
+              const Text(
+                "Der Gewinner wird jetzt bekanntgegeben!",
+                style: TextStyle(fontSize: 18),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -107,6 +142,9 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
     _dataReloadTimer.cancel();
     _timer.cancel();
     _animationController.dispose();
+    try {
+      Navigator.of(_popupContext!).pop();
+    } catch (_) {}
     super.dispose();
   }
 
@@ -134,6 +172,20 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
                     child: Image.asset(imagePrize, fit: BoxFit.cover),
                   ),
                 ),
+                /*
+                // TODO helper button zum stylen des PopUps, darf nicht in Production!!
+                 ElevatedButton(
+                  onPressed: () {
+                    _showPrizePopup();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    padding: EdgeInsets.zero,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+                  ),
+                  child: Text("showPopUp"),
+                ), */
                 SizedBox(width: MySize(context).w * 0.05), // spacing between image and content
 
                 Expanded(

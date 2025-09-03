@@ -24,7 +24,7 @@ TODOs Prio 1
 (d)     - MockDataPage4.getData, zuletzt bearbeitete ohne schon benutzt, wenn alle schon benutzt dann wieder von vorne
 (d)     - MockDataPage5.getData
 (d) - main.dart: ab 5 Minuten vor Gewinn Index auf page_prize, dann freeze, 1 Minute nach Gewinn wieder freeze lösen, manuell über App überschreibbar
-    - page_prize.dart: popUp mit Gewinnerbild und Glückwunsch
+(d) - page_prize.dart: popUp mit Gewinnerbild und Glückwunsch
 (d) - page_quote.dart: patch wenn Person schon gezeigt wurde
 (d) - page_quote.dart: automatischen reload entfernen
 

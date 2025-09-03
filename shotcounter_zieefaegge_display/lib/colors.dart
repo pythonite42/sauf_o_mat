@@ -21,8 +21,6 @@ final ThemeData appTheme = ThemeData(
     onTertiary: Colors.black,
     error: Colors.red.shade700,
     onError: Colors.white,
-    background: const Color(0xFFFFE4B5), // Moccasin
-    onBackground: Colors.brown.shade900,
     surface: const Color(0xFFFFDEAD), // Navajo white
     onSurface: Colors.brown.shade900,
   ),

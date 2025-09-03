@@ -16,7 +16,7 @@ TODOs Prio 1
 (d)     - page_top3 Gruppenplatzhalter
 (d)     - page_quote: EinzelpersonPlatzhalter
 (d)     - page_prize: Gruppenplatzhalter
-    - mockdataBackend ablösen:
+(d) - mockdataBackend ablösen:
 (d)     - getChartSettings löschen
 (d)     - getPopUp
 (d)     - prizePage: 3 images statisch, immer gleiche statische headline, immer gleiche statische subline, groupName fällt weg, groupLogo: SELECT Logo__c FROM Team__c WHERE Rang__c = 1 
@@ -56,6 +56,7 @@ TODOs Prio 2
     - page_prize.dart: Zettel als Hintergrund für rechte Seite
     - page_prize.dart: wenn timer < 60 Minuten dann stunden nicht anzeigen
     - page_prize.dart: line 183 Name leader entfernen, nur Logo anzeigen mit "aktuell führend" als Column
+    - page_prize.dart: popUp stylen
     - page_quote.dart: line: 97 zusätzlich noch Name (doppelt so groß wie username) wie bei twitter
     - page_top3.dart: Wanted poster, Staatsfeind Nr. 1/2/3, Gesucht für 166 Punkte, 20 Bargetränke, 10 Bier usw.
     - main.dart: Transition nicht so überlappend

@@ -50,7 +50,6 @@ class _PageTop3State extends State<PageTop3> {
 
   Future<void> _loadChartData() async {
     try {
-      //List<Map> newDataMapList = await MockDataPage1().getData();
       List<Map> newDataMapList = await SalesforceService().getPageTop3();
       newDataMapList.sort((a, b) {
         final aSum = (a["longdrink"] ?? 0) + (a["beer"] ?? 0) + (a["shot"] ?? 0) + (a["lutz"] ?? 0);

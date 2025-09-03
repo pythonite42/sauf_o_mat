@@ -38,7 +38,6 @@ class _PageQuoteState extends State<PageQuote> {
 
   Future<void> _loadData() async {
     try {
-      //Map data = await MockDataPage4().getData();
       Map data = await SalesforceService().getPageQuote();
 
       if (mounted) {

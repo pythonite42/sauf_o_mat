@@ -15,7 +15,6 @@ class PageAdvertising extends StatefulWidget {
 class _PageAdvertisingState extends State<PageAdvertising> {
   Future<Map> _fetchAdvertisingData() async {
     try {
-      //Map data = await MockDataPage5().getData();
       return await SalesforceService().getPageAdvertising();
     } catch (e) {
       debugPrint('Error fetching page 5 advertising image: $e');

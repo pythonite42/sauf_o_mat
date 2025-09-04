@@ -53,6 +53,7 @@ TODOs Prio 2
 (d) - page_diagram.dart: line 664, assets/placeholder_group.png image so groß wie möglich (höhe ausfüllen)
     - page_livestream.dart: herz größer, unten links "Kiss" unten rechts "Cam"
     - page_livestream.dart: Bier bisschen nach rechts versetzen und links daneben den Text: Ex-Cam Howdie Cowboy du wurdest zum Abschuss freigegeben
+    - page_livestream.dart: Bierglas andere Farben
     - page_prize.dart: überschrift größer
     - page_prize.dart: Zettel als Hintergrund für rechte Seite
     - page_prize.dart: wenn timer < 60 Minuten dann stunden nicht anzeigen
@@ -65,7 +66,6 @@ TODOs Prio 2
 TODOs Prio 3
 
     - page_diagram.dart: Grafik/Emoji für jedes Legenden Item, Farbkästchen größer machen, Symbol für Getränk in das Kästchen rein
-    - page_top3.dart: Grafik/Emoji für jedes Legenden Item, Farbkästchen größer machen, Symbol für Getränk in das Kästchen rein
     - page_diagram.dart:  Einschusslöcher um den Namen (3 Stück) als GIF das nicht looped
     - page_livestream.dart: bei Herz Hintergrund Rosen ans Brett
     - page_advertising.dart: Bild nach hinten kippen, damit es zum Winkel der Zeitung passt (evtl auch Texte, also einfach ganzen Container)

@@ -221,6 +221,29 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  Future<void> reloadApp() async {
+    await cleanupLivestream();
+    await peerConnection?.close();
+    peerConnection = null;
+
+    try {
+      await localVideo.dispose();
+    } catch (_) {}
+
+    channel?.sink.close();
+    channel = null;
+
+    connectToServer();
+    setState(() {
+      _showCamera = false;
+      _isRecordingRunning = false;
+      if (currentNavigationIndex == 6) {
+        localVideo.initialize();
+        initialization();
+      }
+    });
+  }
+
   @override
   void initState() {
     connectToServer();
@@ -252,9 +275,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text("Seite:", style: TextStyle(fontSize: 20)),
+                      ElevatedButton(onPressed: reloadApp, child: const Text("Neu verbinden")),
                       Container(
-                        width: MediaQuery.of(context).size.width * 0.6,
+                        width: MediaQuery.of(context).size.width * 0.5,
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         decoration: BoxDecoration(color: darkAccent),
                         child: DropdownButtonFormField<String>(

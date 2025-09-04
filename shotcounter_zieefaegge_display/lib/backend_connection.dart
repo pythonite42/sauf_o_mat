@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:jose/jose.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -217,6 +218,26 @@ class SalesforceService {
         });
       }
       return returnData;
+    } catch (e) {
+      debugPrint('Error: $e');
+      return [];
+    }
+  }
+
+  Future<List<Map>> getPageTop3BackgroundImages() async {
+    try {
+      final data = await getRequest('SELECT ImageURL__c, Name__c FROM BackgroundImage__c');
+      debugPrint(data["records"].toString());
+      List<Map> returnData = data["records"].map<Map>((record) {
+        return {
+          "name": record["Name__c"] ?? "",
+          "imageUrl": record["ImageURL__c"] ?? "",
+        };
+      }).toList();
+
+      returnData.shuffle(Random());
+
+      return returnData.take(3).toList();
     } catch (e) {
       debugPrint('Error: $e');
       return [];

@@ -25,6 +25,8 @@ class GroupData {
   });
 }
 
+double parchmentImageAspectRatio = 0.86; //seitenverhältnis von parchment.png
+
 class PageTop3 extends StatefulWidget {
   const PageTop3({super.key});
 
@@ -34,6 +36,7 @@ class PageTop3 extends StatefulWidget {
 
 class _PageTop3State extends State<PageTop3> {
   List<GroupData> _groupData = [];
+  List<Map> _backgroundImages = [];
 
   late Timer _dataReloadTimer;
 
@@ -43,6 +46,7 @@ class _PageTop3State extends State<PageTop3> {
 
     _loadData();
     _startAutoReloadData();
+    _loadBackgroundImages();
   }
 
   void _startAutoReloadData() {
@@ -58,6 +62,7 @@ class _PageTop3State extends State<PageTop3> {
 
       if (mounted) {
         setState(() {
+          _groupData.clear();
           for (var element in newDataMapList) {
             _groupData.add(GroupData(
               name: element["groupName"],
@@ -76,6 +81,26 @@ class _PageTop3State extends State<PageTop3> {
     }
   }
 
+  Future<void> _loadBackgroundImages() async {
+    try {
+      List<Map> newDataMapList = await SalesforceService().getPageTop3BackgroundImages();
+
+      if (mounted) {
+        setState(() {
+          for (var element in newDataMapList) {
+            _backgroundImages.add({
+              "name": element["name"],
+              "imageUrl": element["imageUrl"],
+            });
+          }
+        });
+      }
+      debugPrint(_backgroundImages.toString());
+    } catch (e) {
+      debugPrint('Error fetching chart data: $e');
+    }
+  }
+
   @override
   void dispose() {
     _dataReloadTimer.cancel();
@@ -87,7 +112,7 @@ class _PageTop3State extends State<PageTop3> {
     double size1 = MySize(context).w * 0.4;
     double size2 = MySize(context).w * 0.35;
     double size3 = MySize(context).w * 0.35;
-    double posterAspectRatio = 0.86; //seitenverhältnis von parchment.png
+    double backgroundImageSize = MySize(context).w * 0.3;
     return Stack(
       children: [
         (_groupData.isEmpty)
@@ -98,6 +123,39 @@ class _PageTop3State extends State<PageTop3> {
               )
             : Stack(
                 children: [
+                  //background Images:
+                  if (_backgroundImages.isNotEmpty)
+                    Positioned(
+                      left: MySize(context).w * 0.05,
+                      top: MySize(context).h * 0.0,
+                      child: ImagePoster(
+                        size: backgroundImageSize,
+                        name: _backgroundImages[0]["name"],
+                        imageUrl: _backgroundImages[0]["imageUrl"],
+                      ),
+                    ),
+                  if (_backgroundImages.length > 1)
+                    Positioned(
+                      right: MySize(context).w * 0.02,
+                      top: MySize(context).h * 0.05,
+                      child: ImagePoster(
+                        size: backgroundImageSize,
+                        name: _backgroundImages[1]["name"],
+                        imageUrl: _backgroundImages[1]["imageUrl"],
+                      ),
+                    ),
+                  if (_backgroundImages.length > 2)
+                    Positioned(
+                      left: (MySize(context).w / 2) - (backgroundImageSize * parchmentImageAspectRatio / 2),
+                      bottom: -MySize(context).h * 0.22,
+                      child: ImagePoster(
+                        size: backgroundImageSize,
+                        name: _backgroundImages[2]["name"],
+                        imageUrl: _backgroundImages[2]["imageUrl"],
+                      ),
+                    ),
+
+                  //top3 posters:
                   Positioned(
                     bottom: MySize(context).h * 0.02,
                     right: MySize(context).w * 0.07,
@@ -117,7 +175,7 @@ class _PageTop3State extends State<PageTop3> {
                     ),
                   ),
                   Positioned(
-                    left: (MySize(context).w / 2) - (size1 * posterAspectRatio / 2),
+                    left: (MySize(context).w / 2) - (size1 * parchmentImageAspectRatio / 2),
                     child: WantedPoster(
                       data: _groupData[0],
                       place: 1,
@@ -131,6 +189,50 @@ class _PageTop3State extends State<PageTop3> {
   }
 }
 
+class ImagePoster extends StatelessWidget {
+  const ImagePoster({super.key, required this.size, required this.name, required this.imageUrl});
+  final double size;
+  final String name;
+  final String imageUrl;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        height: size,
+        width: size * parchmentImageAspectRatio,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/parchment.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: size * 0.1,
+              vertical: size * 0.06,
+            ),
+            child: Column(mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.max, children: [
+              Padding(
+                padding: EdgeInsets.only(bottom: size * 0.02),
+                child: Text(
+                  name,
+                  maxLines: 1,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.rye(textStyle: TextStyle(fontSize: size * 0.06)),
+                ),
+              ),
+              Expanded(
+                child: Image.network(
+                  imageUrl,
+                  height: size * 0.6,
+                ),
+              ),
+            ]),
+          ),
+        ));
+  }
+}
+
 class WantedPoster extends StatelessWidget {
   const WantedPoster({super.key, required this.data, required this.place, required this.size});
 
@@ -140,10 +242,9 @@ class WantedPoster extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double posterAspectRatio = 0.86; //seitenverhältnis von parchment.png
     return Container(
       height: size,
-      width: size * posterAspectRatio,
+      width: size * parchmentImageAspectRatio,
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage('assets/parchment.png'),

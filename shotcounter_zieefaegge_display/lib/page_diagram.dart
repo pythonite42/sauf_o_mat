@@ -576,30 +576,37 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
               Divider(thickness: 2),
               SizedBox(height: MySize(context).h * 0.03),
               Container(
-                padding: EdgeInsets.only(top: MySize(context).w * 0.01, right: MySize(context).w * 0.01),
+                height: MySize(context).h * 0.23,
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: Colors.brown.shade900,
                     width: 4,
                   ),
                 ),
-                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  Stack(
-                    children: [
-                      Image.asset('assets/cowboy_chasing.gif', fit: BoxFit.cover, width: MySize(context).w * 0.18),
-                      /* Positioned(
+                child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                  Expanded(
+                    flex: 3,
+                    child: Image.asset(
+                      'assets/cowboy_chasing.gif',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  /* Positioned(
                         top: MySize(context).h * 0.037,
                         left: MySize(context).w * 0.065,
                         child: Image.asset('assets/placeholder_group.png', width: MySize(context).w * 0.03),
                       ), */
-                    ],
+                  Expanded(
+                    flex: 2,
+                    child: Image.network(
+                      imageUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, _, __) => Image.asset(
+                        'assets/placeholder_group.png',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                  Image.network(
-                    imageUrl,
-                    width: MySize(context).w * 0.1,
-                    errorBuilder: (context, _, __) =>
-                        Image.asset('assets/placeholder_group.png', width: MySize(context).w * 0.1),
-                  )
                 ]),
               ),
               SizedBox(height: MySize(context).h * 0.007),

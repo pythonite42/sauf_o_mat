@@ -55,7 +55,7 @@ class PageAdvertising extends StatelessWidget {
                   child: Column(
                     children: [
                       Text(
-                        "Zieefägge News",
+                        "The Guggeball Times", //"Zieefägge Allgemeine"
                         style: GoogleFonts.unifrakturCook(
                             textStyle: TextStyle(
                                 fontSize: 90,

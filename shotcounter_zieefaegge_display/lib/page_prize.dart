@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shotcounter_zieefaegge/backend_connection.dart';
 import 'package:shotcounter_zieefaegge/colors.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
@@ -150,6 +151,9 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
 
   String _formatDuration(Duration duration) {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
+    if (duration.inMinutes < 60) {
+      return "${twoDigits(duration.inMinutes % 60)}:${twoDigits(duration.inSeconds % 60)}";
+    }
     return "${twoDigits(duration.inHours)}:${twoDigits(duration.inMinutes % 60)}:${twoDigits(duration.inSeconds % 60)}";
   }
 
@@ -166,7 +170,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
           : Row(
               children: [
                 Expanded(
-                  flex: 4,
+                  flex: 5,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
                     child: Image.asset(imagePrize, fit: BoxFit.cover),
@@ -189,73 +193,68 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
                 SizedBox(width: MySize(context).w * 0.05), // spacing between image and content
 
                 Expanded(
-                  flex: 3,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(height: MySize(context).h * 0.02),
-                      Text(
-                        "Headline",
-                        style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+                  flex: 4,
+                  child: Container(
+                    height: MySize(context).h * 0.83,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/parchment.png'),
+                        fit: BoxFit.cover,
                       ),
-                      SizedBox(height: MySize(context).h * 0.02),
-                      Text(
-                        "subline sublinesublinesubline subline subline subline subline subline  sublinesublinesubline subline v sublinsublinesubline subline  sublinesubline subline",
-                        style: TextStyle(fontSize: 20),
-                        maxLines: 4,
-                        textAlign: TextAlign.left,
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: MySize(context).w * 0.05,
+                        vertical: MySize(context).h * 0.05,
                       ),
-                      SizedBox(height: MySize(context).h * 0.03),
-                      Container(
-                        height: MySize(context).h * 0.23,
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: Colors.white10,
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(color: Colors.white24),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            SizedBox(width: MySize(context).w * 0.01),
-                            CircleAvatar(
-                              radius: MySize(context).h * 0.07,
-                              child: ClipOval(
-                                child: Image.network(groupLogo,
-                                    errorBuilder: (context, _, __) => Image.asset("assets/placeholder_group.png")),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            "How to play",
+                            style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 50)),
+                          ),
+                          SizedBox(height: MySize(context).h * 0.03),
+                          Text(
+                            "subline sublinesublinesubline subline subline subline subline subline  sublinesublinesubline subline v sublinsublinesubline subline  sublinesubline subline",
+                            style: TextStyle(fontSize: 25),
+                            maxLines: 4,
+                            textAlign: TextAlign.left,
+                          ),
+                          SizedBox(height: MySize(context).h * 0.03),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Aktuell\nführend',
+                                textAlign: TextAlign.end,
+                                style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
                               ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text('Aktuell führend', style: TextStyle(fontSize: 18, color: defaultOnPrimary)),
-                                ],
+                              SizedBox(width: MySize(context).w * 0.02),
+                              CircleAvatar(
+                                radius: MySize(context).h * 0.1,
+                                child: ClipOval(
+                                  child: Image.network(groupLogo,
+                                      errorBuilder: (context, _, __) => Image.asset("assets/placeholder_group.png")),
+                                ),
                               ),
-                            ),
-                            /* SizedBox(width: MySize(context).w * 0.02),
-                            Text(
-                              "123",
-                              style: TextStyle(fontSize: 40, fontWeight: FontWeight.w800),
-                            ) */
-                          ],
-                        ),
+                            ],
+                          ),
+                          SizedBox(height: MySize(context).h * 0.05),
+                          if (_remainingTime != null)
+                            (_remainingTime!.inSeconds > GlobalSettings.redThreshold)
+                                ? _buildTimerBox(greenAccent, 25)
+                                : (_remainingTime!.inSeconds > GlobalSettings.flashThreshold ||
+                                        _remainingTime!.inSeconds == 0)
+                                    ? _buildTimerBox(redAccent, 25)
+                                    : FadeTransition(
+                                        opacity: _fadeAnimation,
+                                        child: _buildTimerBox(redAccent, 25),
+                                      ),
+                        ],
                       ),
-                      SizedBox(height: MySize(context).h * 0.05),
-                      if (_remainingTime != null)
-                        (_remainingTime!.inSeconds > GlobalSettings.redThreshold)
-                            ? _buildTimerBox(greenAccent, 25)
-                            : (_remainingTime!.inSeconds > GlobalSettings.flashThreshold ||
-                                    _remainingTime!.inSeconds == 0)
-                                ? _buildTimerBox(redAccent, 25)
-                                : FadeTransition(
-                                    opacity: _fadeAnimation,
-                                    child: _buildTimerBox(redAccent, 25),
-                                  ),
-                    ],
+                    ),
                   ),
                 ),
               ],

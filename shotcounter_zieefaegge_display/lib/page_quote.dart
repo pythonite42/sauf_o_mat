@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:shotcounter_zieefaegge/colors.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
@@ -34,6 +33,7 @@ class PageQuote extends StatelessWidget {
           } else {
             SalesforceService().setPageQuoteQueryUsed(snapshot.data!["recordId"], DateTime.now());
             final username = snapshot.data!["name"] ?? "";
+            final handle = snapshot.data!["handle"] ?? "";
             final quotes = snapshot.data!["quotes"] ?? [] as List<String>;
             final imageUrl = snapshot.data!["image"] ?? "";
             return AspectRatio(
@@ -66,10 +66,17 @@ class PageQuote extends StatelessWidget {
                           children: [
                             SizedBox(height: MySize(context).h * 0.1),
                             Text(
-                              "@$username",
+                              username,
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 50,
+                                fontSize: 60,
+                                color: Colors.black87,
+                              ),
+                            ),
+                            Text(
+                              "@$handle",
+                              style: const TextStyle(
+                                fontSize: 30,
                                 color: Colors.black87,
                               ),
                             ),

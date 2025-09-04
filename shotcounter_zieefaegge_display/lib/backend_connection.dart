@@ -257,11 +257,11 @@ class SalesforceService {
   Future<Map> getPageQuote() async {
     try {
       Map data = await getRequest(
-          'SELECT Id, Comment1__c, Comment2__c, Comment3__c, Commentator__c, ImageURL__c FROM SocialMediaComment__c WHERE VisualizedAt__c = null ORDER BY LastModifiedDate DESC LIMIT 1');
+          'SELECT Id, Comment1__c, Comment2__c, Comment3__c, Commentator__c, CommentatorHandle__c, ImageURL__c FROM SocialMediaComment__c WHERE VisualizedAt__c = null ORDER BY LastModifiedDate DESC LIMIT 1');
       debugPrint(data["records"].toString());
       if (data["records"].isEmpty) {
         data = await getRequest(
-            'SELECT Id, Comment1__c, Comment2__c, Comment3__c, Commentator__c, ImageURL__c FROM SocialMediaComment__c ORDER BY VisualizedAt__c ASC LIMIT 1'); //TODO is this correct?
+            'SELECT Id, Comment1__c, Comment2__c, Comment3__c, Commentator__c, CommentatorHandle__c, ImageURL__c FROM SocialMediaComment__c ORDER BY VisualizedAt__c ASC LIMIT 1'); //TODO is this correct?
       }
       debugPrint(data["records"].toString());
 
@@ -270,6 +270,7 @@ class SalesforceService {
       return {
         "recordId": record["Id"],
         "name": record["Commentator__c"] ?? "",
+        "handle": record["CommentatorHandle__c"] ?? "",
         "quotes": quotes,
         "image": record["ImageURL__c"] ?? "",
       };

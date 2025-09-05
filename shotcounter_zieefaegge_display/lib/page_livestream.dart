@@ -163,18 +163,12 @@ class _PageLivestreamState extends State<PageLivestream> {
                           )
                         : ClipPath(
                             clipper: HeartClipper(),
-                            child: Container(
+                            child: SizedBox(
                               width: size,
                               height: size,
-                              color: Color.fromARGB(172, 255, 255, 255),
-                              child: Center(
-                                child: SizedBox(
-                                  width: 50,
-                                  height: 50,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 8,
-                                  ),
-                                ),
+                              child: Image.asset(
+                                "assets/kiss.gif",
+                                fit: BoxFit.cover,
                               ),
                             ),
                           ),

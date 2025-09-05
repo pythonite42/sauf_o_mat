@@ -64,4 +64,6 @@ class GlobalSettings {
     DateTime(2025, 09, 03, 10, 53),
     DateTime(2025, 09, 03, 11, 01),
   ];
+
+  static const newspaperTitle = "The Guggeball Times"; //"Zieefägge Allgemeine"
 }

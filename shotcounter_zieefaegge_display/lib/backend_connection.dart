@@ -246,9 +246,10 @@ class SalesforceService {
 
   Future<Map> getPagePrize() async {
     try {
-      final data = await getRequest('SELECT Logo__c, Punktzahl__c FROM Team__c WHERE Rang__c = 1');
+      final data = await getRequest('SELECT Logo__c, Punktzahl__c, NAME FROM Team__c WHERE Rang__c = 1');
       return {
         "logo": data["records"][0]["Logo__c"] ?? "",
+        "name": data["records"][0]["Name"] ?? "",
         "points": (data["records"][0]["Punktzahl__c"]).toInt(),
       };
     } catch (e) {

@@ -24,6 +24,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
   DateTime? nextPrize;
 
   String groupLogo = "";
+  String groupName = "";
   int groupPoints = 0;
 
   String imagePrize = "assets/prize_0.png";
@@ -73,6 +74,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
       if (mounted) {
         setState(() {
           groupLogo = data["logo"];
+          groupName = data["name"];
           groupPoints = data["points"];
           dataLoaded = true;
         });
@@ -121,6 +123,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
         _popupContext = popupCtx;
         return WinnerPopupWidget(
           imageUrl: groupLogo,
+            name: groupName,
           prize: "2 Säulen Bier",
           points: groupPoints,
         );
@@ -283,11 +286,13 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
 class WinnerPopupWidget extends StatefulWidget {
   const WinnerPopupWidget({
     required this.imageUrl,
+    required this.name,
     required this.prize,
     required this.points,
     super.key,
   });
   final String imageUrl;
+  final String name;
   final String prize;
   final int points;
 
@@ -358,14 +363,15 @@ class _WinnerPopupWidgetState extends State<WinnerPopupWidget> with SingleTicker
           ),
           Positioned(
             left: MySize(context).w * 0.12,
-            top: MySize(context).h * 0.1,
+                top: MySize(context).h * 0.08,
             child: Column(mainAxisSize: MainAxisSize.min, children: [
               Text(
-                'Verbrecher-Bande gefasst',
-                style: NewspaperTextTheme.headline,
+                    GlobalSettings.newspaperTitle,
+                    style: NewspaperTextTheme.title.copyWith(fontSize: 70),
               ),
               SizedBox(height: MySize(context).h * 0.05),
               Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Image.network(
                         widget.imageUrl,
@@ -381,7 +387,12 @@ class _WinnerPopupWidgetState extends State<WinnerPopupWidget> with SingleTicker
                     child: Column(
                       children: [
                         Text(
-                          "Begangenes Verbrechen:",
+                              "Verbrecher Gefasst!",
+                              style: NewspaperTextTheme.headline.copyWith(fontSize: 35),
+                            ),
+                            SizedBox(height: MySize(context).h * 0.03),
+                            Text(
+                              widget.name,
                           style: TextStyle(fontSize: 30),
                         ),
                         Row(
@@ -400,7 +411,7 @@ class _WinnerPopupWidgetState extends State<WinnerPopupWidget> with SingleTicker
                         ),
                         SizedBox(height: MySize(context).h * 0.03),
                         Text(
-                          "Verhängte Strafe:",
+                              "Strafe:",
                           style: TextStyle(fontSize: 30),
                         ),
                         Text(

@@ -55,7 +55,7 @@ class PageAdvertising extends StatelessWidget {
                   child: Column(
                     children: [
                       Text(
-                        "The Guggeball Times", //"Zieefägge Allgemeine"
+                        GlobalSettings.newspaperTitle,
                         style: NewspaperTextTheme.title,
                       ),
                       SizedBox(height: MySize(context).h * 0.03),

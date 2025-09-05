@@ -58,7 +58,7 @@ TODOs Prio 2
 (d) - page_prize.dart: Zettel als Hintergrund für rechte Seite
 (d) - page_prize.dart: wenn timer < 60 Minuten dann stunden nicht anzeigen
 (d) - page_prize.dart: line 183 Name leader entfernen, nur Logo anzeigen mit "aktuell führend" als Column
-    - page_prize.dart: popUp stylen
+(d) - page_prize.dart: popUp stylen
 (d) - page_quote.dart: line: 97 zusätzlich noch Name (doppelt so groß wie username) wie bei twitter
 (d) - page_top3.dart: Wanted poster, Staatsfeind Nr. 1/2/3, Gesucht für 166 Punkte, 20 Bargetränke, 10 Bier usw.
 (d) - main.dart: Transition nicht so überlappend

@@ -1,7 +1,5 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:shotcounter_zieefaegge/backend_connection.dart';
 import 'package:shotcounter_zieefaegge/theme.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:shotcounter_zieefaegge/colors.dart';
+import 'package:shotcounter_zieefaegge/theme.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
 import 'package:shotcounter_zieefaegge/page_diagram.dart';
 import 'package:shotcounter_zieefaegge/page_livestream.dart';

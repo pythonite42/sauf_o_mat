@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shotcounter_zieefaegge/backend_connection.dart';
-import 'package:shotcounter_zieefaegge/colors.dart';
+import 'package:shotcounter_zieefaegge/theme.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:math';

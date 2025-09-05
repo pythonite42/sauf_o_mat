@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 Color defaultOnPrimary = Color(0xFFC7C5D0);
 Color defaultOnScroll = Color(0xFF8B4513);
@@ -10,6 +11,7 @@ Color redAccent = Color(0xFFFF5252);
 Color greenAccent = Color(0xFF2EC91C);
 Color transparentWhite = Color(0xC8FFFFFF);
 Color billboardBackgroundColor = Color(0xFFCC7F34);
+
 final ThemeData appTheme = ThemeData(
   colorScheme: ColorScheme(
     brightness: Brightness.light,
@@ -74,3 +76,14 @@ final ThemeData appTheme = ThemeData(
     ),
   ),
 );
+
+class NewspaperTextTheme {
+  static TextStyle headline = GoogleFonts.unifrakturCook(
+      textStyle: TextStyle(
+          fontSize: 90,
+          fontWeight: FontWeight.bold)); //alternative Schriftarten: rye, unifrakturMaguntia, frederickaTheGreat
+
+  static TextStyle title = GoogleFonts.playfairDisplay(textStyle: TextStyle(fontSize: 55, fontWeight: FontWeight.bold));
+
+  static const TextStyle body = TextStyle(fontSize: 35);
+}

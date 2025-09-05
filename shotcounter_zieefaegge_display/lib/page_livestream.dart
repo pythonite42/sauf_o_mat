@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shotcounter_zieefaegge/server_manager.dart';
@@ -113,60 +114,98 @@ class _PageLivestreamState extends State<PageLivestream> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        double size = constraints.biggest.shortestSide;
-        return Center(
-          child: videoIsRunning
-              ? isKiss
-                  ? ClipPath(
-                      clipper: HeartClipper(),
-                      child: SizedBox(
-                        width: size,
-                        height: size,
-                        child: RTCVideoView(
-                          remoteVideo,
-                          mirror: false,
-                          objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
-                        ),
+    final kissPaddingHorizontal = MySize(context).w * 0.14;
+    final kissRotationAngle = 0.75;
+    final kissTextStyle = GoogleFonts.rye(textStyle: TextStyle(fontSize: 150));
+    return isKiss
+        ? Stack(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(
+                    top: MySize(context).h * 0.68, left: kissPaddingHorizontal, right: kissPaddingHorizontal),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Transform.rotate(
+                      angle: kissRotationAngle,
+                      child: Text(
+                        "Kiss",
+                        style: kissTextStyle,
                       ),
-                    )
-                  : Container(
-                      width: size,
-                      height: size,
-                      padding: EdgeInsets.symmetric(vertical: MySize(context).h * 0.05),
-                      child: BeerGlassStack(
-                        size: size,
-                        videoRenderer: remoteVideo,
+                    ),
+                    Transform.rotate(
+                      angle: -kissRotationAngle,
+                      child: Text(
+                        " Cam",
+                        style: kissTextStyle,
                       ),
-                    )
-              : isKiss
-                  ? ClipPath(
-                      clipper: HeartClipper(),
-                      child: Container(
-                        width: size,
-                        height: size,
-                        color: Color.fromARGB(172, 255, 255, 255),
-                        child: Center(
-                          child: SizedBox(
-                            width: 50,
-                            height: 50,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 8,
+                    ),
+                  ],
+                ),
+              ),
+              LayoutBuilder(builder: (context, constraints) {
+                double size = constraints.biggest.shortestSide;
+                return Center(
+                  child: Transform.scale(
+                    scale: 1.2,
+                    child: videoIsRunning
+                        ? ClipPath(
+                            clipper: HeartClipper(),
+                            child: SizedBox(
+                              width: size,
+                              height: size,
+                              child: RTCVideoView(
+                                remoteVideo,
+                                mirror: false,
+                                objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+                              ),
+                            ),
+                          )
+                        : ClipPath(
+                            clipper: HeartClipper(),
+                            child: Container(
+                              width: size,
+                              height: size,
+                              color: Color.fromARGB(172, 255, 255, 255),
+                              child: Center(
+                                child: SizedBox(
+                                  width: 50,
+                                  height: 50,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 8,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
+                  ),
+                );
+              })
+            ],
+          )
+        : LayoutBuilder(
+            builder: (context, constraints) {
+              double size = constraints.biggest.shortestSide;
+              return Center(
+                child: videoIsRunning
+                    ? Container(
+                        width: size,
+                        height: size,
+                        padding: EdgeInsets.symmetric(vertical: MySize(context).h * 0.05),
+                        child: BeerGlassStack(
+                          size: size,
+                          videoRenderer: remoteVideo,
                         ),
+                      )
+                    : Container(
+                        width: size,
+                        height: size,
+                        padding: EdgeInsets.symmetric(vertical: MySize(context).h * 0.05),
+                        child: BeerGlassStack(size: size, videoRenderer: null),
                       ),
-                    )
-                  : Container(
-                      width: size,
-                      height: size,
-                      padding: EdgeInsets.symmetric(vertical: MySize(context).h * 0.05),
-                      child: BeerGlassStack(size: size, videoRenderer: null),
-                    ),
-        );
-      },
-    );
+              );
+            },
+          );
   }
 }
 

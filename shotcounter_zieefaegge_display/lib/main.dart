@@ -102,6 +102,7 @@ class _MyScaffoldState extends State<MyScaffold> {
   }
 
   void _navigateToPage(int index) {
+    if (index == 2 && DateTime.now().isAfter(GlobalSettings.prizeTimes.last)) return;
     setState(() {
       pageIndex = index;
     });

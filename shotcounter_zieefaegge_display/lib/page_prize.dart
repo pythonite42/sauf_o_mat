@@ -23,8 +23,8 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
   bool _dataReloadTimerIsFast = false;
   DateTime? nextPrize;
 
-  String groupName = "";
   String groupLogo = "";
+  int groupPoints = 0;
 
   String imagePrize = "assets/prize_0.png";
 
@@ -68,11 +68,12 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
 
   Future<void> _loadData() async {
     try {
-      String logoUrl = await SalesforceService().getPagePrize();
+      Map data = await SalesforceService().getPagePrize();
 
       if (mounted) {
         setState(() {
-          groupLogo = logoUrl;
+          groupLogo = data["logo"];
+          groupPoints = data["points"];
           dataLoaded = true;
         });
       }
@@ -118,21 +119,10 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
       barrierDismissible: true,
       builder: (popupCtx) {
         _popupContext = popupCtx;
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: const Text("Preiszeit!"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset(imagePrize, height: 120),
-              const SizedBox(height: 20),
-              const Text(
-                "Der Gewinner wird jetzt bekanntgegeben!",
-                style: TextStyle(fontSize: 18),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+        return WinnerPopupWidget(
+          imageUrl: groupLogo,
+          prize: "2 Säulen Bier",
+          points: groupPoints,
         );
       },
     );
@@ -275,16 +265,113 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
         children: [
           Icon(
             Icons.timer,
-            color: Colors.white,
+            color: Colors.black,
             size: MySize(context).h * 0.05,
           ),
           const SizedBox(width: 10),
           if (_remainingTime != null)
             Text(
               'Noch ${_formatDuration(_remainingTime!)}',
-              style: TextStyle(fontSize: fontsize, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: fontsize, fontWeight: FontWeight.bold, color: Colors.black),
             ),
         ],
+      ),
+    );
+  }
+}
+
+class WinnerPopupWidget extends StatelessWidget {
+  const WinnerPopupWidget({
+    required this.imageUrl,
+    required this.prize,
+    required this.points,
+    super.key,
+  });
+  final String imageUrl;
+  final String prize;
+  final int points;
+
+  @override
+  Widget build(BuildContext context) {
+    final imageWidth = MySize(context).w * 0.2;
+
+    return AlertDialog(
+      backgroundColor: Colors.transparent, // make dialog itself transparent
+      contentPadding: EdgeInsets.zero, // remove default padding
+      content: SizedBox(
+        height: MySize(context).h * 0.75,
+        width: MySize(context).w * 0.7,
+        child: Stack(children: [
+          Align(
+            alignment: Alignment.topCenter,
+            child: SizedBox(
+              child: Image.asset(
+                'assets/newspaper.png',
+                width: MySize(context).w,
+                fit: BoxFit.fitHeight,
+                alignment: Alignment.topCenter,
+              ),
+            ),
+          ),
+          Positioned(
+            left: MySize(context).w * 0.12,
+            top: MySize(context).h * 0.1,
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              Text(
+                'Verbrecher-Bande gefasst',
+                style: NewspaperTextTheme.headline,
+              ),
+              SizedBox(height: MySize(context).h * 0.05),
+              Row(
+                children: [
+                  Image.network(
+                    imageUrl,
+                    width: imageWidth,
+                    errorBuilder: (context, _, __) => Image.asset(
+                      "assets/placeholder_group.png",
+                      width: imageWidth,
+                    ),
+                  ),
+                  SizedBox(width: MySize(context).w * 0.01),
+                  SizedBox(
+                    width: MySize(context).w * 0.23,
+                    child: Column(
+                      children: [
+                        Text(
+                          "Begangenes Verbrechen:",
+                          style: TextStyle(fontSize: 30),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Text(
+                              "$points",
+                              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              " Punkte",
+                              style: TextStyle(fontSize: 30),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: MySize(context).h * 0.03),
+                        Text(
+                          "Verhängte Strafe:",
+                          style: TextStyle(fontSize: 30),
+                        ),
+                        Text(
+                          prize,
+                          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              )
+            ]),
+          ),
+        ]),
       ),
     );
   }

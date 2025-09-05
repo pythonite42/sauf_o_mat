@@ -225,6 +225,7 @@ class ImagePoster extends StatelessWidget {
                 child: Image.network(
                   imageUrl,
                   height: size * 0.6,
+                  errorBuilder: (context, error, stackTrace) => SizedBox(),
                 ),
               ),
             ]),

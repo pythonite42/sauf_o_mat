@@ -280,7 +280,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
   }
 }
 
-class WinnerPopupWidget extends StatelessWidget {
+class WinnerPopupWidget extends StatefulWidget {
   const WinnerPopupWidget({
     required this.imageUrl,
     required this.prize,
@@ -292,13 +292,56 @@ class WinnerPopupWidget extends StatelessWidget {
   final int points;
 
   @override
+  State<WinnerPopupWidget> createState() => _WinnerPopupWidgetState();
+}
+
+class _WinnerPopupWidgetState extends State<WinnerPopupWidget> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _rotationAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    );
+
+    _scaleAnimation = Tween<double>(begin: 0.3, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Interval(
+          0.1, 0.9, // stays small for 10% of duration, then expands fully at 90% of duration
+          curve: Curves.linear,
+        ),
+      ),
+    );
+
+    _rotationAnimation = Tween<double>(begin: -5, end: 0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.decelerate),
+    );
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final imageWidth = MySize(context).w * 0.2;
 
-    return AlertDialog(
-      backgroundColor: Colors.transparent, // make dialog itself transparent
-      contentPadding: EdgeInsets.zero, // remove default padding
-      content: SizedBox(
+    return Center(
+      child: ScaleTransition(
+        scale: _scaleAnimation,
+        child: RotationTransition(
+          turns: _rotationAnimation,
+          child: SizedBox(
         height: MySize(context).h * 0.75,
         width: MySize(context).w * 0.7,
         child: Stack(children: [
@@ -325,7 +368,7 @@ class WinnerPopupWidget extends StatelessWidget {
               Row(
                 children: [
                   Image.network(
-                    imageUrl,
+                        widget.imageUrl,
                     width: imageWidth,
                     errorBuilder: (context, _, __) => Image.asset(
                       "assets/placeholder_group.png",
@@ -346,7 +389,7 @@ class WinnerPopupWidget extends StatelessWidget {
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             Text(
-                              "$points",
+                                  "${widget.points}",
                               style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                             ),
                             Text(
@@ -361,7 +404,7 @@ class WinnerPopupWidget extends StatelessWidget {
                           style: TextStyle(fontSize: 30),
                         ),
                         Text(
-                          prize,
+                              widget.prize,
                           style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                         )
                       ],
@@ -372,6 +415,8 @@ class WinnerPopupWidget extends StatelessWidget {
             ]),
           ),
         ]),
+          ),
+        ),
       ),
     );
   }

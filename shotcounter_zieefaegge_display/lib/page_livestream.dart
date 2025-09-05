@@ -227,27 +227,30 @@ class BeerGlassStack extends StatelessWidget {
       alignment: Alignment.topCenter,
       children: [
         // Glass border and clipping
-        if (videoRenderer != null)
           Positioned(
             top: size * 0.11, // adjust to match foam position
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20), // match your inner glass radius
-              child: SizedBox(
+            child: Stack(children: [
+              Container(
                 width: beerGlassWidth,
                 height: size * 0.78,
-                child: RTCVideoView(
+                color: Colors.black,
+              ),
+              SizedBox(
+                width: beerGlassWidth,
+                height: size * 0.78,
+                child: videoRenderer != null
+                    ? RTCVideoView(
                   videoRenderer!,
                   objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
-                ),
-              ),
+                      )
+                    : Image.asset(
+                        'assets/bottle_spin.gif',
+                        fit: BoxFit.cover,
             ),
           ),
-        if (videoRenderer == null)
-          Positioned(
-            top: size * 0.45,
-            child: CircularProgressIndicator(
-              color: Color.fromARGB(172, 255, 255, 255),
-              strokeWidth: 8,
+            ]),
             ),
           ),
 

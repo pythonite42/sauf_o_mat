@@ -56,11 +56,7 @@ class PageAdvertising extends StatelessWidget {
                     children: [
                       Text(
                         "The Guggeball Times", //"Zieefägge Allgemeine"
-                        style: GoogleFonts.unifrakturCook(
-                            textStyle: TextStyle(
-                                fontSize: 90,
-                                fontWeight: FontWeight
-                                    .bold)), //alternative Schriftarten: rye, unifrakturMaguntia, frederickaTheGreat
+                        style: NewspaperTextTheme.headline,
                       ),
                       SizedBox(height: MySize(context).h * 0.03),
                       Row(
@@ -91,15 +87,10 @@ class PageAdvertising extends StatelessWidget {
                                 Text(
                                   headline,
                                   textAlign: TextAlign.center,
-                                  style: GoogleFonts.playfairDisplay(
-                                      textStyle: TextStyle(fontSize: 55, fontWeight: FontWeight.bold)),
+                                  style: NewspaperTextTheme.title,
                                 ),
                                 SizedBox(height: MySize(context).h * 0.03),
-                                Text(
-                                  text,
-                                  textAlign: TextAlign.justify,
-                                  style: TextStyle(fontSize: 35),
-                                ),
+                                Text(text, textAlign: TextAlign.justify, style: NewspaperTextTheme.body),
                               ],
                             ),
                           ),

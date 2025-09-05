@@ -107,7 +107,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
         }
         if (_remainingTime!.inSeconds == 0 && !_popupShown && mounted) {
           _popupShown = true;
-            _showPrizePopup();
+          _showPrizePopup();
         }
       });
     });
@@ -117,19 +117,20 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
     await Future.delayed(Duration(seconds: 2));
     WidgetsBinding.instance.addPostFrameCallback((_) {
       debugPrint("show prize popup: ${DateTime.now()}");
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (popupCtx) {
-        _popupContext = popupCtx;
-        return WinnerPopupWidget(
-          imageUrl: groupLogo,
+      showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (popupCtx) {
+          _popupContext = popupCtx;
+          return WinnerPopupWidget(
+            imageUrl: groupLogo,
             name: groupName,
-          prize: "2 Säulen Bier",
-          points: groupPoints,
-        );
-      },
-    );
+            prize: "2 Säulen Bier",
+            points: groupPoints,
+          );
+        },
+      );
+    });
   }
 
   @override
@@ -172,7 +173,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
                 ),
                 /*
                 // TODO helper button zum stylen des PopUps, darf nicht in Production!!
-                 ElevatedButton(
+                ElevatedButton(
                   onPressed: () {
                     _showPrizePopup();
                   },
@@ -348,85 +349,85 @@ class _WinnerPopupWidgetState extends State<WinnerPopupWidget> with SingleTicker
         child: RotationTransition(
           turns: _rotationAnimation,
           child: SizedBox(
-        height: MySize(context).h * 0.75,
-        width: MySize(context).w * 0.7,
-        child: Stack(children: [
-          Align(
-            alignment: Alignment.topCenter,
-            child: SizedBox(
-              child: Image.asset(
-                'assets/newspaper.png',
-                width: MySize(context).w,
-                fit: BoxFit.fitHeight,
+            height: MySize(context).h * 0.75,
+            width: MySize(context).w * 0.7,
+            child: Stack(children: [
+              Align(
                 alignment: Alignment.topCenter,
+                child: SizedBox(
+                  child: Image.asset(
+                    'assets/newspaper.png',
+                    width: MySize(context).w,
+                    fit: BoxFit.fitHeight,
+                    alignment: Alignment.topCenter,
+                  ),
+                ),
               ),
-            ),
-          ),
-          Positioned(
-            left: MySize(context).w * 0.12,
+              Positioned(
+                left: MySize(context).w * 0.12,
                 top: MySize(context).h * 0.08,
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              Text(
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  Text(
                     GlobalSettings.newspaperTitle,
                     style: NewspaperTextTheme.title.copyWith(fontSize: 70),
-              ),
-              SizedBox(height: MySize(context).h * 0.05),
-              Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Image.network(
-                        widget.imageUrl,
-                    width: imageWidth,
-                    errorBuilder: (context, _, __) => Image.asset(
-                      "assets/placeholder_group.png",
-                      width: imageWidth,
-                    ),
                   ),
-                  SizedBox(width: MySize(context).w * 0.01),
-                  SizedBox(
-                    width: MySize(context).w * 0.23,
-                    child: Column(
-                      children: [
-                        Text(
+                  SizedBox(height: MySize(context).h * 0.05),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Image.network(
+                        widget.imageUrl,
+                        width: imageWidth,
+                        errorBuilder: (context, _, __) => Image.asset(
+                          "assets/placeholder_group.png",
+                          width: imageWidth,
+                        ),
+                      ),
+                      SizedBox(width: MySize(context).w * 0.01),
+                      SizedBox(
+                        width: MySize(context).w * 0.23,
+                        child: Column(
+                          children: [
+                            Text(
                               "Verbrecher Gefasst!",
                               style: NewspaperTextTheme.headline.copyWith(fontSize: 35),
                             ),
                             SizedBox(height: MySize(context).h * 0.03),
                             Text(
                               widget.name,
-                          style: TextStyle(fontSize: 30),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Text(
-                                  "${widget.points}",
-                              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              " Punkte",
                               style: TextStyle(fontSize: 30),
                             ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Text(
+                                  "${widget.points}",
+                                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  " Punkte",
+                                  style: TextStyle(fontSize: 30),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: MySize(context).h * 0.03),
+                            Text(
+                              "Strafe:",
+                              style: TextStyle(fontSize: 30),
+                            ),
+                            Text(
+                              widget.prize,
+                              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                            )
                           ],
                         ),
-                        SizedBox(height: MySize(context).h * 0.03),
-                        Text(
-                              "Strafe:",
-                          style: TextStyle(fontSize: 30),
-                        ),
-                        Text(
-                              widget.prize,
-                          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              )
+                      ),
+                    ],
+                  )
+                ]),
+              ),
             ]),
-          ),
-        ]),
           ),
         ),
       ),

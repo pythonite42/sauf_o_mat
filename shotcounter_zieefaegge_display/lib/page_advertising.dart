@@ -56,7 +56,7 @@ class PageAdvertising extends StatelessWidget {
                     children: [
                       Text(
                         "The Guggeball Times", //"Zieefägge Allgemeine"
-                        style: NewspaperTextTheme.headline,
+                        style: NewspaperTextTheme.title,
                       ),
                       SizedBox(height: MySize(context).h * 0.03),
                       Row(
@@ -87,7 +87,7 @@ class PageAdvertising extends StatelessWidget {
                                 Text(
                                   headline,
                                   textAlign: TextAlign.center,
-                                  style: NewspaperTextTheme.title,
+                                  style: NewspaperTextTheme.headline,
                                 ),
                                 SizedBox(height: MySize(context).h * 0.03),
                                 Text(text, textAlign: TextAlign.justify, style: NewspaperTextTheme.body),

@@ -78,12 +78,13 @@ final ThemeData appTheme = ThemeData(
 );
 
 class NewspaperTextTheme {
-  static TextStyle headline = GoogleFonts.unifrakturCook(
+  static TextStyle title = GoogleFonts.unifrakturCook(
       textStyle: TextStyle(
           fontSize: 90,
           fontWeight: FontWeight.bold)); //alternative Schriftarten: rye, unifrakturMaguntia, frederickaTheGreat
 
-  static TextStyle title = GoogleFonts.playfairDisplay(textStyle: TextStyle(fontSize: 55, fontWeight: FontWeight.bold));
+  static TextStyle headline =
+      GoogleFonts.playfairDisplay(textStyle: TextStyle(fontSize: 55, fontWeight: FontWeight.bold));
 
   static const TextStyle body = TextStyle(fontSize: 35);
 }

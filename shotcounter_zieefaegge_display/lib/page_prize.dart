@@ -107,15 +107,16 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
         }
         if (_remainingTime!.inSeconds == 0 && !_popupShown && mounted) {
           _popupShown = true;
-          WidgetsBinding.instance.addPostFrameCallback((_) {
             _showPrizePopup();
-          });
         }
       });
     });
   }
 
-  void _showPrizePopup() {
+  void _showPrizePopup() async {
+    await Future.delayed(Duration(seconds: 2));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      debugPrint("show prize popup: ${DateTime.now()}");
     showDialog(
       context: context,
       barrierDismissible: true,

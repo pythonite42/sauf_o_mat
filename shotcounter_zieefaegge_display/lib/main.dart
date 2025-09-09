@@ -195,78 +195,59 @@ class _MyScaffoldState extends State<MyScaffold> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: billboardBackgroundColor,
-        child: Column(
-          children: [
-            SizedBox(
-              height: GlobalSettings.fullscreenIconSize,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  titleBarVisible
-                      ? IconButton(
-                          onPressed: () async {
-                            windowManager.setTitleBarStyle(TitleBarStyle.hidden);
-                            setState(() {
-                              titleBarVisible = false;
-                            });
-                            await windowManager.setFullScreen(true);
-                          },
-                          padding: EdgeInsets.all(0),
-                          icon: Icon(
-                            Icons.open_in_full,
-                            color: Theme.of(context).colorScheme.primary,
-                            size: GlobalSettings.fullscreenIconSize,
-                          ),
-                        )
-                      : IconButton(
-                          onPressed: () async {
-                            windowManager.setTitleBarStyle(TitleBarStyle.normal);
-                            setState(() {
-                              titleBarVisible = true;
-                            });
-                            await windowManager.setFullScreen(false);
-                          },
-                          padding: EdgeInsets.all(0),
-                          icon: Icon(
-                            Icons.close_fullscreen,
-                            color: Theme.of(context).colorScheme.secondary,
-                            size: GlobalSettings.fullscreenIconSize,
-                          ),
-                        ),
-                ],
-              ),
+      body: Stack(children: [
+        Positioned.fill(
+          child: Container(
+            color: billboardBackgroundColor,
+            child: Navigator(
+              key: _navigatorKey,
+              initialRoute: '/page0',
+              onGenerateRoute: (settings) {
+                switch (settings.name) {
+                  case '/page0':
+                    return _createRoute(PageDiagram());
+                  case '/page1':
+                    return _createRoute(PageTop3());
+                  case '/page2':
+                    return _createRoute(PagePrize());
+                  case '/page3':
+                    return _createRoute(PageSchedule());
+                  case '/page4':
+                    return _createRoute(PageQuote());
+                  case '/page5':
+                    return _createRoute(PageAdvertising());
+                  case '/page6':
+                    return _createRoute(PageLivestream());
+                  default:
+                    return MaterialPageRoute(builder: (_) => const Center(child: Text('Unknown Page')));
+                }
+              },
             ),
-            Expanded(
-              child: Navigator(
-                key: _navigatorKey,
-                initialRoute: '/page0',
-                onGenerateRoute: (settings) {
-                  switch (settings.name) {
-                    case '/page0':
-                      return _createRoute(PageDiagram());
-                    case '/page1':
-                      return _createRoute(PageTop3());
-                    case '/page2':
-                      return _createRoute(PagePrize());
-                    case '/page3':
-                      return _createRoute(PageSchedule());
-                    case '/page4':
-                      return _createRoute(PageQuote());
-                    case '/page5':
-                      return _createRoute(PageAdvertising());
-                    case '/page6':
-                      return _createRoute(PageLivestream());
-                    default:
-                      return MaterialPageRoute(builder: (_) => const Center(child: Text('Unknown Page')));
-                  }
-                },
-              ),
-            ),
-          ],
+          ),
         ),
-      ),
+        Positioned(
+          top: 5,
+          right: 5,
+          child: IconButton(
+            onPressed: () async {
+              if (titleBarVisible) {
+                windowManager.setTitleBarStyle(TitleBarStyle.hidden);
+                setState(() => titleBarVisible = false);
+                await windowManager.setFullScreen(true);
+              } else {
+                windowManager.setTitleBarStyle(TitleBarStyle.normal);
+                setState(() => titleBarVisible = true);
+                await windowManager.setFullScreen(false);
+              }
+            },
+            icon: Icon(
+              titleBarVisible ? Icons.open_in_full : Icons.close_fullscreen,
+              color: titleBarVisible ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.secondary,
+              size: GlobalSettings.fullscreenIconSize,
+            ),
+          ),
+        ),
+      ]),
     );
   }
 

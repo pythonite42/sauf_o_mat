@@ -114,32 +114,86 @@ class _PageLivestreamState extends State<PageLivestream> {
 
   @override
   Widget build(BuildContext context) {
-    final kissPaddingHorizontal = MySize(context).w * 0.14;
+    final kissPaddingHorizontal = MySize(context).w * 0.03;
     final kissRotationAngle = 0.75;
-    final kissTextStyle = GoogleFonts.rye(textStyle: TextStyle(fontSize: 150));
+    final double kissTextSize = 200;
+    final kissTextStyle = GoogleFonts.rye(textStyle: TextStyle(fontSize: kissTextSize, color: Colors.pink));
+    final kissTextStyleOutline = GoogleFonts.rye(
+      textStyle: TextStyle(
+        fontSize: kissTextSize,
+        foreground: Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 6
+          ..color = Colors.white,
+      ),
+    );
     return isKiss
         ? Stack(
             children: [
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  double size = constraints.biggest.shortestSide;
+
+                  return Center(
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Transform.scale(
+                          scale: 1.2,
+                          child: ClipPath(
+                            clipper: HeartClipper(),
+                            child: SizedBox(
+                              width: size,
+                              height: size,
+                              child: videoIsRunning
+                                  ? RTCVideoView(
+                                      remoteVideo,
+                                      mirror: false,
+                                      objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+                                    )
+                                  : Image.asset(
+                                      "assets/kiss.gif",
+                                      fit: BoxFit.cover,
+                                    ),
+                            ),
+                          ),
+                        ),
+                        Transform.scale(
+                          scale: 1.55,
+                          child: Image.asset(
+                            'assets/rose_wreath.png',
+                            width: size,
+                            height: size * 0.8,
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
               Padding(
                 padding: EdgeInsets.only(
-                    top: MySize(context).h * 0.68, left: kissPaddingHorizontal, right: kissPaddingHorizontal),
+                    top: MySize(context).h * 0.6, left: kissPaddingHorizontal, right: kissPaddingHorizontal),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Transform.rotate(
                       angle: kissRotationAngle,
-                      child: Text(
-                        "Kiss",
-                        style: kissTextStyle,
-                      ),
-                    ),
+                        child: Stack(
+                          children: [
+                            Text("Kiss", style: kissTextStyleOutline),
+                            Text("Kiss", style: kissTextStyle),
+                          ],
+                        )),
                     Transform.rotate(
                       angle: -kissRotationAngle,
-                      child: Text(
-                        " Cam",
-                        style: kissTextStyle,
-                      ),
-                    ),
+                        child: Stack(
+                          children: [
+                            Text(" Cam", style: kissTextStyleOutline),
+                            Text(" Cam", style: kissTextStyle),
+                          ],
+                        )),
                   ],
                 ),
               ),

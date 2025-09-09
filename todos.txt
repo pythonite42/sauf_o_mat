@@ -67,9 +67,10 @@ TODOs Prio 3
 
     - page_diagram.dart: Grafik/Emoji für jedes Legenden Item, Farbkästchen größer machen, Symbol für Getränk in das Kästchen rein
     - page_diagram.dart:  Einschusslöcher um den Namen (3 Stück) als GIF das nicht looped
-    - page_livestream.dart: bei Herz Hintergrund Rosen ans Brett
+(d) - page_livestream.dart: bei Herz Hintergrund Rosen ans Brett
     - page_advertising.dart: Bild nach hinten kippen, damit es zum Winkel der Zeitung passt (evtl auch Texte, also einfach ganzen Container)
     - controls/main.dart: Kamera in Form von Herz/Bier damit ausschnitt gleich ist
+    - controls/main.dart: landscape mode
 
 
 TODOs am Ende

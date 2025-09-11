@@ -71,6 +71,7 @@ TODOs Prio 3
     - page_advertising.dart: Bild nach hinten kippen, damit es zum Winkel der Zeitung passt (evtl auch Texte, also einfach ganzen Container)
     - controls/main.dart: Kamera in Form von Herz/Bier damit ausschnitt gleich ist
     - controls/main.dart: landscape mode
+    - controls/main.dart: keine ex/kiss auswahl sondern in dropdown: Livestream - Ex / Livestream - Kiss
 
 
 TODOs am Ende

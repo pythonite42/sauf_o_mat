@@ -39,6 +39,7 @@ flutter:
   assets:
     - .env
     - assets/billboard.png
+    - assets/billboard_pink.png
     - assets/scroll.png
     - assets/parchment.png
     - assets/newspaper.png

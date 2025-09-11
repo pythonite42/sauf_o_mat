@@ -130,6 +130,12 @@ class _PageLivestreamState extends State<PageLivestream> {
     return isKiss
         ? Stack(
             children: [
+              Positioned.fill(
+                child: Image.asset(
+                  'assets/billboard_pink.png',
+                  fit: BoxFit.fitWidth,
+                ),
+              ),
               LayoutBuilder(
                 builder: (context, constraints) {
                   double size = constraints.biggest.shortestSide;

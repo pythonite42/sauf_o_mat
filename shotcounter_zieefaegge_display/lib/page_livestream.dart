@@ -247,7 +247,7 @@ class _PageLivestreamState extends State<PageLivestream> {
                 alignment: Alignment.centerRight,
                 child: Padding(
                   padding: EdgeInsets.symmetric(
-                    vertical: MySize(context).h * 0.02,
+                    vertical: MySize(context).h * 0.04,
                     horizontal: MySize(context).w * 0.02,
                   ),
                   child: LayoutBuilder(
@@ -282,10 +282,9 @@ class BeerGlassStack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double beerGlassWidth = size * 0.6;
-    double beerGlassHeight = size * 0.78;
-    double paddingTop = size * 0.05;
-    double paddingRight = size * 0.25;
+    double beerGlassWidth = size * 0.68;
+    double beerGlassHeight = beerGlassWidth * 1.3;
+    double paddingRight = size * 0.23;
 
     return SizedBox(
       width: size,
@@ -295,7 +294,7 @@ class BeerGlassStack extends StatelessWidget {
         children: [
           // Glass border and clipping
           Positioned(
-            top: size * 0.11 + paddingTop, // adjust to match foam position
+            top: size * 0.11, // adjust to match foam position
             right: paddingRight,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20), // match your inner glass radius
@@ -324,7 +323,7 @@ class BeerGlassStack extends StatelessWidget {
 
           // Beer glass border overlay
           Positioned(
-            top: size * 0.11 + paddingTop,
+            top: size * 0.11,
             right: paddingRight,
             child: CustomPaint(
               painter: BeerGlassBorderPainter(), // adjust painter to only paint border
@@ -337,7 +336,6 @@ class BeerGlassStack extends StatelessWidget {
 
           // Foam on top
           Positioned(
-            top: paddingTop,
             right: -size * 0.06 + paddingRight,
             child: SvgPicture.asset(
               'assets/beer_foam.svg',

@@ -52,7 +52,7 @@ TODOs Prio 2
 (d) - page_advertising.dart: reload braucht es nicht (_startAutoReloadImage)
 (d) - page_diagram.dart: line 664, assets/placeholder_group.png image so groß wie möglich (höhe ausfüllen)
 (d) - page_livestream.dart: herz größer, unten links "Kiss" unten rechts "Cam"
-    - page_livestream.dart: Bier bisschen nach rechts versetzen und links daneben den Text: Ex-Cam Howdie Cowboy du wurdest zum Abschuss freigegeben
+(d) - page_livestream.dart: Bier bisschen nach rechts versetzen und links daneben den Text: Ex-Cam Howdie Cowboy du wurdest zum Abschuss freigegeben
     - page_livestream.dart: Bierglas andere Farben
 (d) - page_prize.dart: überschrift größer
 (d) - page_prize.dart: Zettel als Hintergrund für rechte Seite

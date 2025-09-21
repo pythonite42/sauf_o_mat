@@ -355,17 +355,17 @@ class BeerGlassBorderPainter extends CustomPainter {
     double cornerRadius = 20;
 
     final outerPaint = Paint()
-      ..color = const Color.fromARGB(172, 255, 255, 255)
+      ..color = const Color.fromARGB(255, 0, 0, 0)
       ..strokeWidth = strokeWidth
       ..style = PaintingStyle.stroke;
 
     final innerPaint = Paint()
-      ..color = const Color.fromARGB(172, 255, 255, 255)
+      ..color = const Color.fromARGB(255, 255, 255, 255)
       ..strokeWidth = strokeWidth
       ..style = PaintingStyle.stroke;
 
     final borderFillPaint = Paint()
-      ..color = const Color.fromARGB(106, 255, 255, 255)
+      ..color = const Color.fromARGB(255, 255, 255, 255)
       ..style = PaintingStyle.fill;
 
     final outerRRect = RRect.fromRectAndRadius(

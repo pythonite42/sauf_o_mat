@@ -79,7 +79,7 @@ class _MyScaffoldState extends State<MyScaffold> {
     socketPageIndexListener = (data) {
       debugPrint("socket event received: $data");
       if (data['event'] == 'freeze' && data["freeze"] == true) {
-        //TODO wenn 5 Minuten vor Preis, dann wird auf prize page gewechselt. wenn dann per app überschrieben wird ist der freeze automatisch drin bis eine minute nach preisZeit. Das wird in der App nicht angezeigt. Ist das okay so?
+        //wenn 5 Minuten vor Preis, dann wird auf prize page gewechselt. wenn dann per app überschrieben wird ist der freeze automatisch drin bis eine minute nach preisZeit. Das wird in der App nicht angezeigt. Ist das okay so?
         _cancelAutoTimer();
       } else if (data['event'] == 'freeze' && data["freeze"] == false) {
         _socketFrozen = false;

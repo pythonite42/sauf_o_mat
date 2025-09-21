@@ -265,7 +265,7 @@ class SalesforceService {
       debugPrint(data["records"].toString());
       if (data["records"].isEmpty) {
         data = await getRequest(
-            'SELECT Id, Comment1__c, Comment2__c, Comment3__c, Commentator__c, CommentatorHandle__c, ImageURL__c FROM SocialMediaComment__c ORDER BY VisualizedAt__c ASC LIMIT 1'); //TODO is this correct?
+            'SELECT Id, Comment1__c, Comment2__c, Comment3__c, Commentator__c, CommentatorHandle__c, ImageURL__c FROM SocialMediaComment__c ORDER BY VisualizedAt__c ASC LIMIT 1');
       }
       debugPrint(data["records"].toString());
 
@@ -286,9 +286,7 @@ class SalesforceService {
 
   Future<bool> setPageQuoteQueryUsed(String id, DateTime visualisedAt) async {
     try {
-      patchRequest(id, "SocialMediaComment__c", {
-        "VisualizedAt__c": formatDateTime(visualisedAt)
-      }); //TODO before it was wasUsed, I changed it to VisualizedAt__c, is that correct?
+      patchRequest(id, "SocialMediaComment__c", {"VisualizedAt__c": formatDateTime(visualisedAt)});
       return true;
     } catch (e) {
       debugPrint('Error: $e');
@@ -302,7 +300,7 @@ class SalesforceService {
           'SELECT Id, ImageURL__c, Subject__c, Description__c FROM Advertisement__c WHERE VisualizedAt__c = null ORDER BY LastModifiedDate DESC LIMIT 1');
       if (data["records"].isEmpty) {
         data = await getRequest(
-            'SELECT Id, ImageURL__c, Subject__c, Description__c FROM Advertisement__c ORDER BY VisualizedAt__c ASC LIMIT 1'); //TODO is this correct?
+            'SELECT Id, ImageURL__c, Subject__c, Description__c FROM Advertisement__c ORDER BY VisualizedAt__c ASC LIMIT 1');
       }
       debugPrint(data["records"].toString());
       return {

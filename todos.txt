@@ -34,17 +34,17 @@ TODOs Prio 1
     - Prize Text und überschrift erstellen: der Text sind die Regeln (wie viele Punkte pro Getränk, wie kauf ich für meine Gruppe)
 (d) - Platzhalter erstellen: Einzelperson(SocialMedia Comment), Gruppe
 (d) - Hintergrundbild neu erstellen: rechts muss so aufhören wie links anfängt
-    - Image required: 
-        - timetable: nicht über URL sondern statisch
-        - werbung: imageUrl
-        - prize (3 statische Bilder)
-    - SOQLs:
+(d) - Image required: 
+(d)     - timetable: nicht über URL sondern statisch
+(d)     - werbung: imageUrl
+(d)     - prize (3 statische Bilder)
+(d) - SOQLs:
 (d)     - catchUp
 (d)     - advertising
         
 
-    - page_quote.dart: SOQL reihenfolge immer das zuletzt bearbeitete
-    - page_advertising.dart: SOQL reihenfolge immer das zuletzt bearbeitete
+(d) - page_quote.dart: SOQL reihenfolge immer das zuletzt bearbeitete
+(d) - page_advertising.dart: SOQL reihenfolge immer das zuletzt bearbeitete
 
 TODOs Prio 2
 

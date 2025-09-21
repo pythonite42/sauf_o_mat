@@ -248,15 +248,13 @@ class _PageLivestreamState extends State<PageLivestream> {
                 child: Padding(
                   padding: EdgeInsets.symmetric(
                     vertical: MySize(context).h * 0.02,
-                    horizontal: MySize(context).w * 0.02, // margin from right edge
+                    horizontal: MySize(context).w * 0.02,
                   ),
                   child: LayoutBuilder(
                     builder: (context, constraints) {
-                      // Glass should fit into the right half
                       final availableWidth = constraints.maxWidth;
                       final availableHeight = constraints.maxHeight;
 
-                      // Pick the limiting side (to keep square ratio)
                       final size = availableWidth < availableHeight ? availableWidth : availableHeight;
 
                       return BeerGlassStack(
@@ -285,6 +283,9 @@ class BeerGlassStack extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double beerGlassWidth = size * 0.6;
+    double beerGlassHeight = size * 0.78;
+    double paddingTop = size * 0.05;
+    double paddingRight = size * 0.25;
 
     return SizedBox(
       width: size,
@@ -294,18 +295,19 @@ class BeerGlassStack extends StatelessWidget {
         children: [
           // Glass border and clipping
           Positioned(
-            top: size * 0.11, // adjust to match foam position
+            top: size * 0.11 + paddingTop, // adjust to match foam position
+            right: paddingRight,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20), // match your inner glass radius
               child: Stack(children: [
                 Container(
                   width: beerGlassWidth,
-                  height: size * 0.78,
+                  height: beerGlassHeight,
                   color: Colors.black,
                 ),
                 SizedBox(
                   width: beerGlassWidth,
-                  height: size * 0.78,
+                  height: beerGlassHeight,
                   child: videoRenderer != null
                       ? RTCVideoView(
                           videoRenderer!,
@@ -322,19 +324,21 @@ class BeerGlassStack extends StatelessWidget {
 
           // Beer glass border overlay
           Positioned(
-            top: size * 0.11,
+            top: size * 0.11 + paddingTop,
+            right: paddingRight,
             child: CustomPaint(
               painter: BeerGlassBorderPainter(), // adjust painter to only paint border
               child: SizedBox(
                 width: beerGlassWidth,
-                height: size * 0.78,
+                height: beerGlassHeight,
               ),
             ),
           ),
 
           // Foam on top
           Positioned(
-            top: -size * 0.24,
+            top: paddingTop,
+            right: -size * 0.06 + paddingRight,
             child: SvgPicture.asset(
               'assets/beer_foam.svg',
               width: beerGlassWidth * 1.2,

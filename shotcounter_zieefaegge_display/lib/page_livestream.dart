@@ -211,7 +211,7 @@ class _PageLivestreamState extends State<PageLivestream> {
                 alignment: Alignment.centerLeft,
                 child: Padding(
                   padding: EdgeInsets.only(
-                    left: MySize(context).w * 0.06,
+                    left: MySize(context).w * 0.1,
                   ),
                   child: Container(
                     height: MySize(context).h * 0.8,
@@ -248,7 +248,7 @@ class _PageLivestreamState extends State<PageLivestream> {
                 child: Padding(
                   padding: EdgeInsets.symmetric(
                     vertical: MySize(context).h * 0.04,
-                    horizontal: MySize(context).w * 0.02,
+                    horizontal: MySize(context).w * 0.05,
                   ),
                   child: LayoutBuilder(
                     builder: (context, constraints) {

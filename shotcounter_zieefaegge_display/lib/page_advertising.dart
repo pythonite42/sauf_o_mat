@@ -64,17 +64,17 @@ class PageAdvertising extends StatelessWidget {
                             width: MySize(context).w * 0.3,
                             height: MySize(context).h * 0.6,
                             child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: Image.network(
-                              imageUrl,
-                              width: imageWidth,
-                              errorBuilder: (context, _, __) => Container(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Image.network(
+                                imageUrl,
                                 width: imageWidth,
-                                height: imageWidth,
-                                color: Colors.grey[300],
-                                child: Icon(
-                                  Icons.image,
-                                  size: MySize(context).w * 0.3 / 2,
+                                errorBuilder: (context, _, __) => Container(
+                                  width: imageWidth,
+                                  height: imageWidth,
+                                  color: Colors.grey[300],
+                                  child: Icon(
+                                    Icons.image,
+                                    size: MySize(context).w * 0.3 / 2,
                                   ),
                                 ),
                               ),
@@ -89,10 +89,16 @@ class PageAdvertising extends StatelessWidget {
                                 Text(
                                   headline,
                                   textAlign: TextAlign.center,
-                                  style: NewspaperTextTheme.headline,
+                                  style: NewspaperTextTheme.headline.copyWith(height: 1),
+                                  maxLines: 2,
                                 ),
                                 SizedBox(height: MySize(context).h * 0.03),
-                                Text(text, textAlign: TextAlign.justify, style: NewspaperTextTheme.body),
+                                Text(
+                                  text,
+                                  textAlign: TextAlign.justify,
+                                  style: NewspaperTextTheme.body.copyWith(height: 1),
+                                  maxLines: 9,
+                                ),
                               ],
                             ),
                           ),

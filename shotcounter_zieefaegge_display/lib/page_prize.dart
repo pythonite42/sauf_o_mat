@@ -208,6 +208,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
                         children: [
                           Text(
                             "How to play",
+                            maxLines: 1,
                             style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 50)),
                           ),
                           SizedBox(height: MySize(context).h * 0.03),

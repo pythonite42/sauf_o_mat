@@ -70,7 +70,9 @@ class PageQuote extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                                 fontSize: 60,
                                 color: Colors.black87,
+                                height: 1,
                               ),
+                              maxLines: 2,
                             ),
                             Text(
                               "@$handle",
@@ -78,6 +80,7 @@ class PageQuote extends StatelessWidget {
                                 fontSize: 30,
                                 color: Colors.black87,
                               ),
+                              maxLines: 1,
                             ),
                             SizedBox(height: MySize(context).h * 0.1),
 
@@ -254,6 +257,7 @@ class _FadingQuoteCarouselState extends State<FadingQuoteCarousel> {
           fontSize: 35,
           color: Colors.black87,
         ),
+        maxLines: 5,
       ),
     );
   }

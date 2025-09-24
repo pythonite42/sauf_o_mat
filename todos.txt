@@ -10,7 +10,7 @@ TODOs Prio 1
 (d) - page_diagram.dart: jedes popUp nach 10 Sekunden schließen
 (d) - page_diagram.dart: 20 sekunden warten zwischen popUps
 (d) - page_diagram.dart: popUp daten mit timestamp nicht anzeigen (in SOQL lösen)
-    - alle Strings die aus dem Backend kommen: maximale Zeichenanzahl
+(d) - alle Strings die aus dem Backend kommen: maximale Zeichenanzahl
 (d) - wenn keine BildURL dann Platzhalter (statisch) nehmen: 
 (d)     - page_diagram PopUp Gruppenplatzhalter
 (d)     - page_top3 Gruppenplatzhalter

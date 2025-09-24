@@ -409,12 +409,13 @@ class _PageDiagramState extends State<PageDiagram> {
                                                   child: Text(
                                                     data?.group != null ? "${data?.group}" : '',
                                                     style: TextStyle(
-                                                      fontSize: fontSizeLegend,
-                                                      fontWeight: FontWeight.bold,
-                                                      color: fontColor,
-                                                    ),
+                                                        fontSize: fontSizeLegend,
+                                                        fontWeight: FontWeight.bold,
+                                                        color: fontColor,
+                                                        height: 1),
                                                     softWrap: true,
-                                                    overflow: TextOverflow.visible,
+                                                    overflow: TextOverflow.ellipsis,
+                                                    maxLines: 2,
                                                   ),
                                                 ),
                                               ],
@@ -614,8 +615,9 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
                 child: Center(
                   child: Text(
                     leader,
-                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
+                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30, height: 1)),
                     textAlign: TextAlign.center,
+                    maxLines: 2,
                   ),
                 ),
               ),
@@ -648,8 +650,9 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
                 child: Center(
                   child: Text(
                     chaser,
-                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
+                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30, height: 1)),
                     textAlign: TextAlign.center,
+                    maxLines: 2,
                   ),
                 ),
               ),

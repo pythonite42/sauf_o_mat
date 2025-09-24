@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+import 'package:shotcounter_zieefaegge/backend_testing.dart';
 
 /// Singleton service to handle Salesforce JWT integration
 class SalesforceService {
@@ -20,6 +21,7 @@ class SalesforceService {
   final String? username = dotenv.env['SF_USERNAME'];
   final String? loginUrl = dotenv.env['SF_LOGIN_URL'];
   final String privateKeyPath = 'assets/server.key';
+  final bool isTestVersion = dotenv.env['IS_TEST_VERSION'] == 'true';
 
   /// Returns a valid access token, caching it until it expires
   Future<String> getAccessToken() async {
@@ -141,6 +143,7 @@ class SalesforceService {
   }
 
   Future<List<Map>> getPageDiagram() async {
+    if (isTestVersion) return TestBackendData().getPageDiagram();
     try {
       final data = await getRequest(
           'SELECT Anzahl_Bargetr_nke__c , Anzahl_Bier_Wein_Schorle__c , Anzahl_Kaffee_Lutz__c , AnzahlShots__c , NAME, StatusDisplay__c FROM Team__c');
@@ -164,6 +167,7 @@ class SalesforceService {
   }
 
   Future<Map> getPageDiagramPopUp() async {
+    if (isTestVersion) return TestBackendData().getPageDiagramPopUp();
     try {
       final data = await getRequest(
           //'SELECT Id, VisualizedAt__c, ChasingTeam__r.Name, WantedTeam__r.Name, WantedTeam__r.Logo__c, WantedTeam__r.Punktzahl__c FROM CatchUp__c WHERE VisualizedAt__c = null AND RankDeltaIsOne__c = true AND IsLessThan1Minute__c = true ORDER BY LastModifiedDate DESC LIMIT 1');
@@ -191,6 +195,7 @@ class SalesforceService {
   }
 
   Future<bool> setPageDiagramVisualizedAt(String id, DateTime visualisedAt) async {
+    if (isTestVersion) return true;
     try {
       patchRequest(id, "CatchUp__c", {"VisualizedAt__c": formatDateTime(visualisedAt)});
       return true;
@@ -201,6 +206,7 @@ class SalesforceService {
   }
 
   Future<List<Map>> getPageTop3() async {
+    if (isTestVersion) return TestBackendData().getPageTop3();
     try {
       final data = await getRequest(
           'SELECT Anzahl_Bargetr_nke__c , Anzahl_Bier_Wein_Schorle__c , Anzahl_Kaffee_Lutz__c , AnzahlShots__c , Punktzahl__c, Logo__c FROM Team__c WHERE Rang__c < 4');
@@ -224,6 +230,7 @@ class SalesforceService {
   }
 
   Future<List<Map>> getPageTop3BackgroundImages() async {
+    if (isTestVersion) return TestBackendData().getPageTop3BackgroundImages();
     try {
       final data = await getRequest('SELECT ImageURL__c, Name__c FROM BackgroundImage__c');
       debugPrint(data["records"].toString());
@@ -244,6 +251,7 @@ class SalesforceService {
   }
 
   Future<Map> getPagePrize() async {
+    if (isTestVersion) return TestBackendData().getPagePrize();
     try {
       final data = await getRequest('SELECT Logo__c, Punktzahl__c, NAME FROM Team__c WHERE Rang__c = 1');
       return {
@@ -258,6 +266,7 @@ class SalesforceService {
   }
 
   Future<Map> getPageQuote() async {
+    if (isTestVersion) return TestBackendData().getPageQuote();
     try {
       Map data = await getRequest(
           'SELECT Id, Comment1__c, Comment2__c, Comment3__c, Commentator__c, CommentatorHandle__c, ImageURL__c FROM SocialMediaComment__c WHERE VisualizedAt__c = null ORDER BY LastModifiedDate DESC LIMIT 1');
@@ -284,6 +293,7 @@ class SalesforceService {
   }
 
   Future<bool> setPageQuoteQueryUsed(String id, DateTime visualisedAt) async {
+    if (isTestVersion) return true;
     try {
       patchRequest(id, "SocialMediaComment__c", {"VisualizedAt__c": formatDateTime(visualisedAt)});
       return true;
@@ -294,6 +304,7 @@ class SalesforceService {
   }
 
   Future<Map> getPageAdvertising() async {
+    if (isTestVersion) return TestBackendData().getPageAdvertising();
     try {
       Map data = await getRequest(
           'SELECT Id, ImageURL__c, Subject__c, Description__c FROM Advertisement__c WHERE VisualizedAt__c = null ORDER BY LastModifiedDate DESC LIMIT 1');
@@ -315,6 +326,7 @@ class SalesforceService {
   }
 
   Future<bool> setPageAdvertisingVisualizedAt(String id, DateTime visualisedAt) async {
+    if (isTestVersion) return true;
     try {
       patchRequest(id, "Advertisement__c", {"VisualizedAt__c": formatDateTime(visualisedAt)});
       return true;

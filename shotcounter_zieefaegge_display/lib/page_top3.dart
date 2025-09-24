@@ -6,7 +6,6 @@ import 'package:shotcounter_zieefaegge/theme.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
 
 class GroupData {
-  String name;
   String logoUrl;
   int longdrink;
   int beer;
@@ -15,7 +14,6 @@ class GroupData {
   int points;
 
   GroupData({
-    required this.name,
     required this.logoUrl,
     required this.longdrink,
     required this.beer,
@@ -65,7 +63,6 @@ class _PageTop3State extends State<PageTop3> {
           _groupData.clear();
           for (var element in newDataMapList) {
             _groupData.add(GroupData(
-              name: element["groupName"],
               logoUrl: element["groupLogo"],
               longdrink: element["longdrink"],
               beer: element["beer"],

@@ -203,12 +203,11 @@ class SalesforceService {
   Future<List<Map>> getPageTop3() async {
     try {
       final data = await getRequest(
-          'SELECT Anzahl_Bargetr_nke__c , Anzahl_Bier_Wein_Schorle__c , Anzahl_Kaffee_Lutz__c , AnzahlShots__c , Punktzahl__c, NAME, Logo__c FROM Team__c WHERE Rang__c < 4');
+          'SELECT Anzahl_Bargetr_nke__c , Anzahl_Bier_Wein_Schorle__c , Anzahl_Kaffee_Lutz__c , AnzahlShots__c , Punktzahl__c, Logo__c FROM Team__c WHERE Rang__c < 4');
       var records = data["records"];
       List<Map> returnData = [];
       for (var record in records) {
         returnData.add({
-          "groupName": record["Name"],
           "longdrink": (record["Anzahl_Bargetr_nke__c"]).toInt(),
           "beer": (record["Anzahl_Bier_Wein_Schorle__c"]).toInt(),
           "shot": (record["AnzahlShots__c"]).toInt(),

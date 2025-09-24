@@ -437,7 +437,50 @@ class _MyHomePageState extends State<MyHomePage> {
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SizedBox(width: width, height: height, child: RTCVideoView(localVideo, mirror: false)),
+                            selectedIndex == 0
+                                ? Stack(
+                                    alignment: Alignment.topCenter,
+                                    children: [
+                                      SizedBox(
+                                        width: width,
+                                        height: height,
+                                        child: RTCVideoView(localVideo, mirror: false),
+                                      ),
+                                      SizedBox(
+                                        height: height,
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(width: width, height: height * 0.2, color: Colors.black),
+                                            Container(width: width, height: height * 0.16, color: Colors.black),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      SizedBox(
+                                        width: width,
+                                        height: height,
+                                        child: RTCVideoView(localVideo, mirror: false),
+                                      ),
+                                      Image.asset('assets/rose_wreath.png', width: width * 1.1),
+                                      SizedBox(
+                                        height: height,
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(width: width, height: height * 0.22, color: Colors.black),
+                                            Container(width: width, height: height * 0.22, color: Colors.black),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                             Container(
                               width: width,
                               height: controlBarHeight,

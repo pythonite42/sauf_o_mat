@@ -228,10 +228,13 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
                               ),
                               SizedBox(width: MySize(context).w * 0.02),
                               CircleAvatar(
+                                backgroundColor: Colors.transparent,
                                 radius: MySize(context).h * 0.1,
                                 child: ClipOval(
-                                  child: Image.network(groupLogo,
-                                      errorBuilder: (context, _, __) => Image.asset("assets/placeholder_group.png")),
+                                  child: Image.network(
+                                    groupLogo,
+                                    errorBuilder: (context, _, __) => Image.asset("assets/placeholder_group.png"),
+                                  ),
                                 ),
                               ),
                             ],
@@ -259,7 +262,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
 
   Widget _buildTimerBox(Color color, double fontsize) {
     return Container(
-      height: MySize(context).h * 0.15,
+      height: MySize(context).h * 0.1,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: color,
@@ -342,6 +345,8 @@ class _WinnerPopupWidgetState extends State<WinnerPopupWidget> with SingleTicker
   @override
   Widget build(BuildContext context) {
     final imageWidth = MySize(context).w * 0.2;
+    final imageHeight = MySize(context).h * 0.35;
+    final double textSize = 25;
 
     return Center(
       child: ScaleTransition(
@@ -378,9 +383,11 @@ class _WinnerPopupWidgetState extends State<WinnerPopupWidget> with SingleTicker
                       Image.network(
                         widget.imageUrl,
                         width: imageWidth,
+                        height: imageHeight,
                         errorBuilder: (context, _, __) => Image.asset(
                           "assets/placeholder_group.png",
                           width: imageWidth,
+                          height: imageHeight,
                         ),
                       ),
                       SizedBox(width: MySize(context).w * 0.01),
@@ -390,12 +397,14 @@ class _WinnerPopupWidgetState extends State<WinnerPopupWidget> with SingleTicker
                           children: [
                             Text(
                               "Verbrecher Gefasst!",
-                              style: NewspaperTextTheme.headline.copyWith(fontSize: 35),
+                              style: NewspaperTextTheme.headline.copyWith(fontSize: 30),
                             ),
                             SizedBox(height: MySize(context).h * 0.03),
                             Text(
                               widget.name,
-                              style: TextStyle(fontSize: 30),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: textSize),
+                              maxLines: 2,
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -403,22 +412,22 @@ class _WinnerPopupWidgetState extends State<WinnerPopupWidget> with SingleTicker
                               children: [
                                 Text(
                                   "${widget.points}",
-                                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                                  style: TextStyle(fontSize: textSize, fontWeight: FontWeight.bold),
                                 ),
                                 Text(
                                   " Punkte",
-                                  style: TextStyle(fontSize: 30),
+                                  style: TextStyle(fontSize: textSize),
                                 ),
                               ],
                             ),
                             SizedBox(height: MySize(context).h * 0.03),
                             Text(
                               "Strafe:",
-                              style: TextStyle(fontSize: 30),
+                              style: TextStyle(fontSize: textSize),
                             ),
                             Text(
                               widget.prize,
-                              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                              style: TextStyle(fontSize: textSize, fontWeight: FontWeight.bold),
                             )
                           ],
                         ),

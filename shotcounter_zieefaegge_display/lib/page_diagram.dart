@@ -566,7 +566,7 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
             children: [
               Text(
                 'WANTED',
-                style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 80)),
+                style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 70)),
               ),
               Divider(thickness: 2),
               Text(
@@ -574,7 +574,7 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
                 style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 25)),
               ),
               Divider(thickness: 2),
-              SizedBox(height: MySize(context).h * 0.03),
+              SizedBox(height: MySize(context).h * 0.01),
               Container(
                 height: MySize(context).h * 0.23,
                 decoration: BoxDecoration(
@@ -609,7 +609,6 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
                   ),
                 ]),
               ),
-              SizedBox(height: MySize(context).h * 0.007),
               SizedBox(
                 height: MySize(context).h * 0.1,
                 child: Center(

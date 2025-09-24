@@ -55,7 +55,7 @@ class GlobalSettings {
   // page diagram
   static const int totalBarsVisible = 5;
   static const int totalGridLinesVisible = 5;
-  static const double groupNameSpaceFactor = 0.3; //Anteilig an ganzer Breite
+  static const double groupNameSpaceFactor = 0.37; //Anteilig an ganzer Breite
   // page prize
   static const int flashThreshold = 60;
   static const int redThreshold = 300;

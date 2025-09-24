@@ -59,12 +59,11 @@ class PageQuote extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(width: MySize(context).w * 0.1),
+                      SizedBox(width: MySize(context).w * 0.05),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(height: MySize(context).h * 0.1),
                             Text(
                               username,
                               style: const TextStyle(

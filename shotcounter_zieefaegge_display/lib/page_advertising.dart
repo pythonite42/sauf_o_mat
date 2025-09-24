@@ -60,7 +60,10 @@ class PageAdvertising extends StatelessWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ClipRRect(
+                          SizedBox(
+                            width: MySize(context).w * 0.3,
+                            height: MySize(context).h * 0.6,
+                            child: ClipRRect(
                             borderRadius: BorderRadius.circular(20),
                             child: Image.network(
                               imageUrl,
@@ -72,6 +75,7 @@ class PageAdvertising extends StatelessWidget {
                                 child: Icon(
                                   Icons.image,
                                   size: MySize(context).w * 0.3 / 2,
+                                  ),
                                 ),
                               ),
                             ),
@@ -79,7 +83,7 @@ class PageAdvertising extends StatelessWidget {
 
                           SizedBox(width: MySize(context).w * 0.03), // spacing between image and content
                           SizedBox(
-                            width: MySize(context).w * 0.25,
+                            width: MySize(context).w * 0.27,
                             child: Column(
                               children: [
                                 Text(

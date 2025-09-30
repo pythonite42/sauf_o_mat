@@ -55,6 +55,8 @@ flutter:
     - assets/prize_0.png
     - assets/prize_1.png
     - assets/prize_2.png
+    - assets/bullet_hole_angled.png
+    - assets/bullet_hole_angled_grey.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

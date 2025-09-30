@@ -545,6 +545,7 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final random = Random();
     return AlertDialog(
       backgroundColor: Colors.transparent, // make dialog itself transparent
       contentPadding: EdgeInsets.zero, // remove default padding
@@ -562,100 +563,113 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
             horizontal: MySize(context).w * 0.05,
             vertical: MySize(context).h * 0.03,
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+          child: Stack(
             children: [
-              Text(
-                'WANTED',
-                style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 70)),
-              ),
-              Divider(thickness: 2),
-              Text(
-                'DEAD OR ALIVE',
-                style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 25)),
-              ),
-              Divider(thickness: 2),
-              SizedBox(height: MySize(context).h * 0.01),
-              Container(
-                height: MySize(context).h * 0.23,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.brown.shade900,
-                    width: 4,
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'WANTED',
+                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 70)),
                   ),
-                ),
-                child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                  Expanded(
-                    flex: 3,
-                    child: Image.asset(
-                      'assets/cowboy_chasing.gif',
-                      fit: BoxFit.cover,
+                  Divider(thickness: 2),
+                  Text(
+                    'DEAD OR ALIVE',
+                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 25)),
+                  ),
+                  Divider(thickness: 2),
+                  SizedBox(height: MySize(context).h * 0.01),
+                  Container(
+                    height: MySize(context).h * 0.23,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.brown.shade900,
+                        width: 4,
+                      ),
                     ),
-                  ),
-                  /* Positioned(
+                    child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                      Expanded(
+                        flex: 3,
+                        child: Image.asset(
+                          'assets/cowboy_chasing.gif',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      /* Positioned(
                         top: MySize(context).h * 0.037,
                         left: MySize(context).w * 0.065,
                         child: Image.asset('assets/placeholder_group.png', width: MySize(context).w * 0.03),
                       ), */
-                  Expanded(
-                    flex: 2,
-                    child: Image.network(
-                      imageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, _, __) => Image.asset(
-                        'assets/placeholder_group.png',
-                        fit: BoxFit.cover,
+                      Expanded(
+                        flex: 2,
+                        child: Image.network(
+                          imageUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, _, __) => Image.asset(
+                            'assets/placeholder_group.png',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ]),
+                  ),
+                  SizedBox(
+                    height: MySize(context).h * 0.1,
+                    child: Center(
+                      child: Text(
+                        leader,
+                        style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30, height: 1)),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
                       ),
                     ),
                   ),
-                ]),
-              ),
-              SizedBox(
-                height: MySize(context).h * 0.1,
-                child: Center(
-                  child: Text(
-                    leader,
-                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30, height: 1)),
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
+                  SizedBox(height: MySize(context).h * 0.005),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Mit ",
+                        style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
+                      ),
+                      Text(
+                        pointsOfLeader.toString(),
+                        style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
+                      ),
+                      Text(
+                        " Punkten",
+                        style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
+                      ),
+                    ],
                   ),
-                ),
-              ),
-              SizedBox(height: MySize(context).h * 0.005),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                  Divider(thickness: 2),
                   Text(
-                    "Mit ",
+                    "Gejagt von ",
                     style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
                   ),
-                  Text(
-                    pointsOfLeader.toString(),
-                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
-                  ),
-                  Text(
-                    " Punkten",
-                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
+                  SizedBox(height: MySize(context).h * 0.005),
+                  SizedBox(
+                    height: MySize(context).h * 0.1,
+                    child: Center(
+                      child: Text(
+                        chaser,
+                        style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30, height: 1)),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                      ),
+                    ),
                   ),
                 ],
               ),
-              Divider(thickness: 2),
-              Text(
-                "Gejagt von ",
-                style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
-              ),
-              SizedBox(height: MySize(context).h * 0.005),
-              SizedBox(
-                height: MySize(context).h * 0.1,
-                child: Center(
-                  child: Text(
-                    chaser,
-                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30, height: 1)),
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
+              for (int i = 1; i <= random.nextInt(6) + 1; i++)
+                Positioned(
+                  left: MySize(context).w * random.nextDouble() * 0.25,
+                  top: MySize(context).h * random.nextDouble() * 0.72,
+                  child: Image.asset(
+                    'assets/bullet_hole_angled_grey.png',
+                    height: MySize(context).h * (random.nextDouble() * 0.05 + 0.08),
                   ),
                 ),
-              ),
             ],
           ),
         ),

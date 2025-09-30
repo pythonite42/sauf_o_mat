@@ -217,7 +217,9 @@ class _MyScaffoldState extends State<MyScaffold> {
                   case '/page5':
                     return _createRoute(PageAdvertising());
                   case '/page6':
-                    return _createRoute(PageLivestream());
+                    return _createRoute(PageLivestream(isKiss: false));
+                  case '/page7':
+                    return _createRoute(PageLivestream(isKiss: true));
                   default:
                     return MaterialPageRoute(builder: (_) => const Center(child: Text('Unknown Page')));
                 }

@@ -6,7 +6,8 @@ import 'package:shotcounter_zieefaegge/server_manager.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 class PageLivestream extends StatefulWidget {
-  const PageLivestream({super.key});
+  const PageLivestream({super.key, required this.isKiss});
+  final bool isKiss;
 
   @override
   State<PageLivestream> createState() => _PageLivestreamState();
@@ -18,7 +19,6 @@ class _PageLivestreamState extends State<PageLivestream> {
   RTCPeerConnection? peerConnection;
 
   bool videoIsRunning = false;
-  bool isKiss = false;
 
   // STUN server configuration
   Map<String, dynamic> configuration = {
@@ -89,10 +89,6 @@ class _PageLivestreamState extends State<PageLivestream> {
       setState(() => videoIsRunning = false);
     } else if (decoded["event"] == "resumed") {
       setState(() => videoIsRunning = true);
-    } else if (decoded["selectedCam"] == 0) {
-      setState(() => isKiss = false);
-    } else if (decoded["selectedCam"] == 1) {
-      setState(() => isKiss = true);
     }
   }
 
@@ -127,7 +123,7 @@ class _PageLivestreamState extends State<PageLivestream> {
           ..color = Colors.white,
       ),
     );
-    return isKiss
+    return widget.isKiss
         ? Stack(
             children: [
               Positioned.fill(

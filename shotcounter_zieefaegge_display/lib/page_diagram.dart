@@ -501,6 +501,13 @@ class _PageDiagramState extends State<PageDiagram> {
   }
 }
 
+class BulletHole {
+  final Offset position;
+  final double size;
+
+  BulletHole({required this.position, required this.size});
+}
+
 class RacePopupWidget extends StatefulWidget {
   final String initialImageUrl;
   final String initialLeader;
@@ -525,6 +532,9 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
   late String chaser;
   late int pointsOfLeader;
 
+  final List<BulletHole> _bulletHoles = [];
+  final Random _random = Random();
+
   @override
   void initState() {
     super.initState();
@@ -532,6 +542,32 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
     leader = widget.initialLeader;
     chaser = widget.initialChaser;
     pointsOfLeader = widget.initialPointsOfLeader;
+
+    _shootBullets();
+  }
+
+  void _shootBullets() async {
+    int count = _random.nextInt(GlobalSettings.popUpMaxShotCounts - 1) + 1; // up to 7 shots
+    for (int i = 0; i < count; i++) {
+      await Future.delayed(Duration(
+          milliseconds: _random.nextInt(CustomDurations.popUpMillisecondsBetweenShotsMaximum) +
+              CustomDurations.popUpMillisecondsBetweenShotsMinimum)); // delay between shots
+      try {
+        setState(() {
+          _bulletHoles.add(
+            BulletHole(
+              position: Offset(
+                MySize(context).w * _random.nextDouble() * 0.25,
+                MySize(context).h * _random.nextDouble() * 0.72,
+              ),
+              size: MySize(context).h * (_random.nextDouble() * 0.05 + 0.08),
+            ),
+          );
+        });
+      } catch (_) {
+        break;
+      }
+    }
   }
 
   void updateData(String newImageUrl, String newLeader, String newChaser, int newPointsOfLeader) {
@@ -545,7 +581,6 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final random = Random();
     return AlertDialog(
       backgroundColor: Colors.transparent, // make dialog itself transparent
       contentPadding: EdgeInsets.zero, // remove default padding
@@ -661,13 +696,24 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
                   ),
                 ],
               ),
-              for (int i = 1; i <= random.nextInt(6) + 1; i++)
+              for (final hole in _bulletHoles)
                 Positioned(
-                  left: MySize(context).w * random.nextDouble() * 0.25,
-                  top: MySize(context).h * random.nextDouble() * 0.72,
-                  child: Image.asset(
-                    'assets/bullet_hole_angled_grey.png',
-                    height: MySize(context).h * (random.nextDouble() * 0.05 + 0.08),
+                  left: hole.position.dx,
+                  top: hole.position.dy,
+                  child: TweenAnimationBuilder<double>(
+                    tween: Tween(begin: 0.0, end: 1.0),
+                    duration: Duration(milliseconds: CustomDurations.popUpShotAnimation),
+                    curve: Curves.linear,
+                    builder: (context, scale, child) {
+                      return Transform.scale(
+                        scale: scale,
+                        child: child,
+                      );
+                    },
+                    child: Image.asset(
+                      'assets/bullet_hole_angled_grey.png',
+                      height: hole.size,
+                    ),
                   ),
                 ),
             ],

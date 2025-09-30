@@ -30,6 +30,10 @@ class CustomDurations {
   static const int speedChartScroll = 500;
   static const int showPopup = 10;
   static const int popUpCooldown = 20; //after a popup was shown, wait x seconds until another popup can be shown
+  static const int popUpMillisecondsBetweenShotsMinimum = 200;
+  static const int popUpMillisecondsBetweenShotsMaximum =
+      400; //real maximum is minimum + maximum (e.g. 200 + 400 = 600)
+  static const int popUpShotAnimation = 100;
 
   //page top3
   static const int reloadDataTop3 = 7;
@@ -56,6 +60,7 @@ class GlobalSettings {
   static const int totalBarsVisible = 5;
   static const int totalGridLinesVisible = 5;
   static const double groupNameSpaceFactor = 0.37; //Anteilig an ganzer Breite
+  static const int popUpMaxShotCounts = 7;
   // page prize
   static const int flashThreshold = 60;
   static const int redThreshold = 300;

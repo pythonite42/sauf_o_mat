@@ -67,7 +67,7 @@ TODOs Prio 3
 (d) - page_livestream.dart: bei Herz Hintergrund Rosen ans Brett
 (d) - controls/main.dart: Kamera in Form von Herz/Bier damit ausschnitt gleich ist
     - controls/main.dart: keine ex/kiss auswahl sondern in dropdown: Livestream - Ex / Livestream - Kiss
-    - page_advertising.dart: Bild nach hinten kippen, damit es zum Winkel der Zeitung passt (evtl auch Texte, also einfach ganzen Container)
+(d) - page_advertising.dart: Bild nach hinten kippen, damit es zum Winkel der Zeitung passt (evtl auch Texte, also einfach ganzen Container)
 (d) - page_diagram.dart:  Einschusslöcher um den Namen (3 Stück) als GIF das nicht looped
     - controls/main.dart: landscape mode
     - page_diagram.dart: Grafik/Emoji für jedes Legenden Item, Farbkästchen größer machen, Symbol für Getränk in das Kästchen rein

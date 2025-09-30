@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shotcounter_zieefaegge/backend_connection.dart';
 import 'package:shotcounter_zieefaegge/theme.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
+import 'package:flutter_tilt/flutter_tilt.dart';
 
 class PageAdvertising extends StatelessWidget {
   const PageAdvertising({super.key});
@@ -48,8 +49,13 @@ class PageAdvertising extends StatelessWidget {
                 ),
               ),
               Positioned(
-                  left: MySize(context).w * 0.18,
-                  top: MySize(context).h * 0.1,
+                left: MySize(context).w * 0.18,
+                top: MySize(context).h * 0.1,
+                child: Tilt(
+                  disable: true,
+                  lightConfig: const LightConfig(disable: true),
+                  shadowConfig: const ShadowConfig(disable: true),
+                  tiltConfig: TiltConfig(initial: Offset(-0.4, -0.4)),
                   child: Column(
                     children: [
                       Text(
@@ -105,7 +111,9 @@ class PageAdvertising extends StatelessWidget {
                         ],
                       ),
                     ],
-                  )),
+                  ),
+                ),
+              ),
             ],
           );
         }

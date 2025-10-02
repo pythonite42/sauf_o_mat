@@ -30,10 +30,10 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 **/build/
-**/shotcounter_zieefaegge_display/build/
+**/sauf_o_mat_display_app/build/
 **/.env
-**/shotcounter_zieefaegge_display/assets/server.key
-**/shotcounter_zieefaegge_display/build/
+**/sauf_o_mat_display_app/assets/server.key
+**/sauf_o_mat_display_app/build/
 
 
 # Symbolication related
@@ -48,20 +48,20 @@ app.*.map.json
 **/android/app/release
 
 # specific files
-shotcounter_zieefaegge_display/assets/server.key
-shotcounter_zieefaegge_display/.env
-shotcounter_zieefaegge_display/linux/flutter/generated_plugin_registrant.cc
-shotcounter_zieefaegge_display/linux/flutter/generated_plugins.cmake
-shotcounter_zieefaegge_display/macos/Flutter/GeneratedPluginRegistrant.swift
-shotcounter_zieefaegge_display/windows/flutter/generated_plugin_registrant.cc
-shotcounter_zieefaegge_display/windows/flutter/generated_plugins.cmake
-shotcounter_zieefaegge_display/linux/flutter/generated_plugin_registrant.h
-shotcounter_zieefaegge_display/windows/flutter/generated_plugin_registrant.h
+sauf_o_mat_display_app/assets/server.key
+sauf_o_mat_display_app/.env
+sauf_o_mat_display_app/linux/flutter/generated_plugin_registrant.cc
+sauf_o_mat_display_app/linux/flutter/generated_plugins.cmake
+sauf_o_mat_display_app/macos/Flutter/GeneratedPluginRegistrant.swift
+sauf_o_mat_display_app/windows/flutter/generated_plugin_registrant.cc
+sauf_o_mat_display_app/windows/flutter/generated_plugins.cmake
+sauf_o_mat_display_app/linux/flutter/generated_plugin_registrant.h
+sauf_o_mat_display_app/windows/flutter/generated_plugin_registrant.h
 
-shotcounter_zieefaegge_controls/linux/flutter/generated_plugin_registrant.cc
-shotcounter_zieefaegge_controls/linux/flutter/generated_plugin_registrant.h
-shotcounter_zieefaegge_controls/linux/flutter/generated_plugins.cmake
-shotcounter_zieefaegge_controls/macos/Flutter/GeneratedPluginRegistrant.swift
-shotcounter_zieefaegge_controls/windows/flutter/generated_plugin_registrant.cc
-shotcounter_zieefaegge_controls/windows/flutter/generated_plugin_registrant.h
-shotcounter_zieefaegge_controls/windows/flutter/generated_plugins.cmake
+sauf_o_mat_control_app/linux/flutter/generated_plugin_registrant.cc
+sauf_o_mat_control_app/linux/flutter/generated_plugin_registrant.h
+sauf_o_mat_control_app/linux/flutter/generated_plugins.cmake
+sauf_o_mat_control_app/macos/Flutter/GeneratedPluginRegistrant.swift
+sauf_o_mat_control_app/windows/flutter/generated_plugin_registrant.cc
+sauf_o_mat_control_app/windows/flutter/generated_plugin_registrant.h
+sauf_o_mat_control_app/windows/flutter/generated_plugins.cmake

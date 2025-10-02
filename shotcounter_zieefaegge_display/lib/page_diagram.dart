@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:shotcounter_zieefaegge/backend_mockdata.dart';
-import 'package:shotcounter_zieefaegge/colors.dart';
+import 'package:shotcounter_zieefaegge/backend_connection.dart';
+import 'package:shotcounter_zieefaegge/theme.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:math';
 import 'package:google_fonts/google_fonts.dart';
-//import 'package:syncfusion_flutter_charts/charts.dart';
 
 class ChartData {
   ChartData({
@@ -45,18 +44,14 @@ class _PageDiagramState extends State<PageDiagram> {
   BuildContext? _popupContext;
   bool _isPopupVisible = false;
   GlobalKey<_RacePopupWidgetState>? _popupKey;
-
-  int totalBarsVisible = 5;
-  int totalGridLinesVisible = 5;
-  double groupNameSpaceFactor = 0.15; //Anteilig an ganzer Breite
+  bool _popupCooldown = false;
 
   bool showPopup = false;
+  String popupDataId = "";
   String imageUrl = "";
   String chaserGroupName = "";
   String leaderGroupName = "";
   int leaderPoints = 0;
-  String headline = "";
-  String motivationalText = "";
 
   Color fontColor = defaultOnScroll;
 
@@ -73,16 +68,16 @@ class _PageDiagramState extends State<PageDiagram> {
   }
 
   void _startAutoReloadChartData() {
-    _chartDataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations().reloadDataDiagram), (_) {
+    _chartDataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations.reloadDataDiagram), (_) {
       _loadChartData();
     });
   }
 
   Future<void> _loadChartData() async {
     try {
-      Map generalSettings = await MockDataPage0().getChartSettings();
-      List<Map> newDataMapList = await MockDataPage0().getRandomChartData();
-      Map popupData = await MockDataPage0().getPopup();
+      List<Map> newDataMapList = await SalesforceService().getPageDiagram();
+
+      Map popupData = await SalesforceService().getPageDiagramPopUp();
 
       List<ChartData> newData = [];
       for (var newDataMap in newDataMapList) {
@@ -99,16 +94,12 @@ class _PageDiagramState extends State<PageDiagram> {
       }
       if (mounted) {
         setState(() {
-          totalBarsVisible = generalSettings["totalBarsVisible"];
-          groupNameSpaceFactor = generalSettings["groupNameSpaceFactor"];
-
           showPopup = popupData["showPopup"];
+          popupDataId = popupData["popupDataId"];
           imageUrl = popupData["imageUrl"];
           chaserGroupName = popupData["chaserGroupName"];
           leaderGroupName = popupData["leaderGroupName"];
           leaderPoints = popupData["leaderPoints"];
-          headline = popupData["headline"];
-          motivationalText = popupData["motivationalText"];
 
           _chartData = newData;
           _chartData?.sort((a, b) {
@@ -138,7 +129,7 @@ class _PageDiagramState extends State<PageDiagram> {
   }
 
   void _startAutoScroll() {
-    var duration = Duration(seconds: CustomDurations().chartAutoScroll);
+    var duration = Duration(seconds: CustomDurations.chartAutoScroll);
 
     _scrollTimer = Timer.periodic(duration, (timer) {
       if (!_scrollController.hasClients) return;
@@ -149,53 +140,51 @@ class _PageDiagramState extends State<PageDiagram> {
 
       _scrollController.animateTo(
         next >= (maxScroll + barHeight / 2) ? 0 : next,
-        duration: Duration(milliseconds: CustomDurations().speedChartScroll),
+        duration: Duration(milliseconds: CustomDurations.speedChartScroll),
         curve: Curves.easeInOut,
       );
     });
   }
 
   void buildPopup() {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
+    if (_popupCooldown || _isPopupVisible || !showPopup) return;
+
+    _popupCooldown = true;
+    _isPopupVisible = true;
+    _popupKey = GlobalKey<_RacePopupWidgetState>();
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (popupCtx) {
+        _popupContext = popupCtx;
+        return RacePopupWidget(
+          key: _popupKey,
+          initialImageUrl: imageUrl,
+          initialLeader: leaderGroupName,
+          initialChaser: chaserGroupName,
+          initialPointsOfLeader: leaderPoints,
+        );
+      },
+    );
+    SalesforceService().setPageDiagramVisualizedAt(popupDataId, DateTime.now());
+
+    Future.delayed(Duration(seconds: CustomDurations.showPopup), () {
       try {
-        if (showPopup && !_isPopupVisible) {
-          _isPopupVisible = true;
-          _popupKey = GlobalKey<_RacePopupWidgetState>();
+        Navigator.of(_popupContext!).pop();
+      } catch (_) {}
 
-          await showDialog(
-            context: context,
-            barrierDismissible: true,
-            builder: (popupCtx) {
-              _popupContext = popupCtx;
-              return RacePopupWidget(
-                key: _popupKey,
-                initialImageUrl: imageUrl,
-                initialLeader: leaderGroupName,
-                initialChaser: chaserGroupName,
-                initialPointsOfLeader: leaderPoints,
-                headline: headline,
-                motivationalText: motivationalText,
-              );
-            },
-          );
-
-          if (mounted) {
-            setState(() {
-              _isPopupVisible = false;
-              _popupContext = null;
-              _popupKey = null;
-            });
-          }
-        } else if (!showPopup && _isPopupVisible && _popupContext != null) {
-          Navigator.of(_popupContext!).pop();
+      if (mounted) {
+        setState(() {
           _isPopupVisible = false;
           _popupContext = null;
           _popupKey = null;
-        } else if (_isPopupVisible && _popupKey?.currentState != null) {
-          _popupKey?.currentState!
-              .updateData(imageUrl, leaderGroupName, chaserGroupName, leaderPoints, headline, motivationalText);
-        }
-      } catch (_) {}
+        });
+      }
+
+      Future.delayed(Duration(seconds: CustomDurations.popUpCooldown), () {
+        _popupCooldown = false;
+      });
     });
   }
 
@@ -204,6 +193,7 @@ class _PageDiagramState extends State<PageDiagram> {
     _chartDataReloadTimer.cancel();
     _scrollTimer.cancel();
     _scrollController.dispose();
+
     try {
       Navigator.of(_popupContext!).pop();
     } catch (_) {}
@@ -305,10 +295,10 @@ class _PageDiagramState extends State<PageDiagram> {
                           final Size size = (textPainter..layout()).size;
 
                           final availableHeight = constraints.maxHeight - size.height;
-                          barHeight = (availableHeight / totalBarsVisible);
+                          barHeight = (availableHeight / GlobalSettings.totalBarsVisible);
                           double frameLineWidth = 4;
                           var gridLine = Container(width: 1, height: availableHeight, color: defaultOnScroll);
-                          var groupNameWidth = constraints.maxWidth * groupNameSpaceFactor;
+                          var groupNameWidth = constraints.maxWidth * GlobalSettings.groupNameSpaceFactor;
                           var chartWidth = constraints.maxWidth - groupNameWidth;
 
                           int gridIntervalsDividableBy = 10;
@@ -321,14 +311,15 @@ class _PageDiagramState extends State<PageDiagram> {
                           int chartMaxValue = maxValue ?? 1 + emptyCountRightOfFirst;
 
                           while (true) {
-                            if ((chartMaxValue / totalGridLinesVisible) % gridIntervalsDividableBy == 0) {
+                            if ((chartMaxValue / GlobalSettings.totalGridLinesVisible) % gridIntervalsDividableBy ==
+                                0) {
                               break;
                             } else {
                               chartMaxValue++;
                             }
                           }
 
-                          var gridInterval = chartMaxValue / totalGridLinesVisible;
+                          var gridInterval = chartMaxValue / GlobalSettings.totalGridLinesVisible;
 
                           return Stack(children: <Widget>[
                             Positioned(
@@ -347,14 +338,15 @@ class _PageDiagramState extends State<PageDiagram> {
                                 top: availableHeight - frameLineWidth,
                                 child: Container(width: chartWidth, height: frameLineWidth, color: defaultOnScroll)),
                             ...List.generate(
-                                (totalGridLinesVisible + 1).floor(),
+                                (GlobalSettings.totalGridLinesVisible + 1).floor(),
                                 (index) => Positioned(
-                                    left: groupNameWidth + index * (chartWidth / totalGridLinesVisible),
+                                    left: groupNameWidth + index * (chartWidth / GlobalSettings.totalGridLinesVisible),
                                     child: gridLine)),
                             ...List.generate(
-                              (totalGridLinesVisible).floor(),
+                              (GlobalSettings.totalGridLinesVisible).floor(),
                               (index) => Positioned(
-                                left: groupNameWidth + (index + 1) * (chartWidth / totalGridLinesVisible),
+                                left:
+                                    groupNameWidth + (index + 1) * (chartWidth / GlobalSettings.totalGridLinesVisible),
                                 top: availableHeight,
                                 child: Text(
                                   ((index + 1) * gridInterval).toInt().toString(),
@@ -417,12 +409,13 @@ class _PageDiagramState extends State<PageDiagram> {
                                                   child: Text(
                                                     data?.group != null ? "${data?.group}" : '',
                                                     style: TextStyle(
-                                                      fontSize: fontSizeLegend,
-                                                      fontWeight: FontWeight.bold,
-                                                      color: fontColor,
-                                                    ),
+                                                        fontSize: fontSizeLegend,
+                                                        fontWeight: FontWeight.bold,
+                                                        color: fontColor,
+                                                        height: 1),
                                                     softWrap: true,
-                                                    overflow: TextOverflow.visible,
+                                                    overflow: TextOverflow.ellipsis,
+                                                    maxLines: 2,
                                                   ),
                                                 ),
                                               ],
@@ -508,21 +501,24 @@ class _PageDiagramState extends State<PageDiagram> {
   }
 }
 
+class BulletHole {
+  final Offset position;
+  final double size;
+
+  BulletHole({required this.position, required this.size});
+}
+
 class RacePopupWidget extends StatefulWidget {
   final String initialImageUrl;
   final String initialLeader;
   final String initialChaser;
   final int initialPointsOfLeader;
-  final String headline;
-  final String motivationalText;
 
   const RacePopupWidget({
     required this.initialImageUrl,
     required this.initialLeader,
     required this.initialChaser,
     required this.initialPointsOfLeader,
-    required this.headline,
-    required this.motivationalText,
     super.key,
   });
 
@@ -535,8 +531,9 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
   late String leader;
   late String chaser;
   late int pointsOfLeader;
-  late String headline;
-  late String motivationalText;
+
+  final List<BulletHole> _bulletHoles = [];
+  final Random _random = Random();
 
   @override
   void initState() {
@@ -545,72 +542,46 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
     leader = widget.initialLeader;
     chaser = widget.initialChaser;
     pointsOfLeader = widget.initialPointsOfLeader;
-    headline = widget.headline;
-    motivationalText = widget.motivationalText;
+
+    _shootBullets();
   }
 
-  void updateData(String newImageUrl, String newLeader, String newChaser, int newPointsOfLeader, String newHeadline,
-      String newMotivationalText) {
+  void _shootBullets() async {
+    int count = _random.nextInt(GlobalSettings.popUpMaxShotCounts - 1) + 1; // up to 7 shots
+    for (int i = 0; i < count; i++) {
+      await Future.delayed(Duration(
+          milliseconds: _random.nextInt(CustomDurations.popUpMillisecondsBetweenShotsMaximum) +
+              CustomDurations.popUpMillisecondsBetweenShotsMinimum)); // delay between shots
+      try {
+        setState(() {
+          _bulletHoles.add(
+            BulletHole(
+              position: Offset(
+                MySize(context).w * _random.nextDouble() * 0.25,
+                MySize(context).h * _random.nextDouble() * 0.72,
+              ),
+              size: MySize(context).h * (_random.nextDouble() * 0.05 + 0.08),
+            ),
+          );
+        });
+      } catch (_) {
+        break;
+      }
+    }
+  }
+
+  void updateData(String newImageUrl, String newLeader, String newChaser, int newPointsOfLeader) {
     setState(() {
       imageUrl = newImageUrl;
       leader = newLeader;
       chaser = newChaser;
       pointsOfLeader = newPointsOfLeader;
-      headline = newHeadline;
-      motivationalText = newMotivationalText;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return /* AlertDialog(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      content: SizedBox(
-        height: MySize(context).h * 0.8,
-        width: MySize(context).w * 0.7,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(height: MySize(context).h * 0.02),
-            Text(
-              '🍻 $headline',
-              style: GoogleFonts.rye(
-                textStyle: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: cactusGreen),
-              ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: MySize(context).h * 0.02),
-            Text(
-              '$chaser ist nur noch $diff Getränke von $leader entfernt!',
-              style: TextStyle(color: Colors.white, fontSize: 20),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: MySize(context).h * 0.03),
-            Expanded(
-              flex: 3,
-              child: Image.network(
-                imageUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (context, _, __) => AspectRatio(
-                  aspectRatio: 1,
-                  child: Container(
-                    color: Colors.grey[300],
-                    child: Icon(Icons.image, size: MySize(context).h * 0.2),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: MySize(context).h * 0.02),
-            Text(
-              motivationalText,
-              style: TextStyle(color: defaultOnPrimary, fontStyle: FontStyle.italic, fontSize: 18),
-            ),
-          ],
-        ),
-      ),
-    ); */
-        AlertDialog(
+    return AlertDialog(
       backgroundColor: Colors.transparent, // make dialog itself transparent
       contentPadding: EdgeInsets.zero, // remove default padding
       content: Container(
@@ -627,66 +598,78 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
             horizontal: MySize(context).w * 0.05,
             vertical: MySize(context).h * 0.03,
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+          child: Stack(
             children: [
-              Text(
-                'WANTED',
-                style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 80)),
-              ),
-              Divider(thickness: 2),
-              Text(
-                'DEAD OR ALIVE',
-                style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 25)),
-              ),
-              Divider(thickness: 2),
-              SizedBox(height: MySize(context).h * 0.03),
-              Container(
-                padding: EdgeInsets.only(top: MySize(context).w * 0.01, right: MySize(context).w * 0.01),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.brown.shade900,
-                    width: 4,
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'WANTED',
+                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 70)),
                   ),
-                ),
-                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  Stack(
-                    children: [
-                      Image.asset('assets/cowboy_chasing.gif', fit: BoxFit.cover, width: MySize(context).w * 0.18),
+                  Divider(thickness: 2),
+                  Text(
+                    'DEAD OR ALIVE',
+                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 25)),
+                  ),
+                  Divider(thickness: 2),
+                  SizedBox(height: MySize(context).h * 0.01),
+                  Container(
+                    height: MySize(context).h * 0.23,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.brown.shade900,
+                        width: 4,
+                      ),
+                    ),
+                    child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                      Expanded(
+                        flex: 3,
+                        child: Image.asset(
+                          'assets/cowboy_chasing.gif',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                       /* Positioned(
                         top: MySize(context).h * 0.037,
                         left: MySize(context).w * 0.065,
-                        child: Image.asset('assets/mock_logo.png', width: MySize(context).w * 0.03),
+                        child: Image.asset('assets/placeholder_group.png', width: MySize(context).w * 0.03),
                       ), */
-                    ],
+                      Expanded(
+                        flex: 2,
+                        child: Image.network(
+                          imageUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, _, __) => Image.asset(
+                            'assets/placeholder_group.png',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ]),
                   ),
-                  Image.asset('assets/mock_logo.png', width: MySize(context).w * 0.1),
-                ]),
-              ),
-              SizedBox(height: MySize(context).h * 0.007),
-              Text(
-                leader,
-                style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 60)),
-              ),
-              SizedBox(height: MySize(context).h * 0.005),
-
-              /* Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
+                  SizedBox(
+                    height: MySize(context).h * 0.1,
+                    child: Center(
+                      child: Text(
+                        leader,
+                        style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30, height: 1)),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: MySize(context).h * 0.005),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Mit ",
-                            style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
-                          ),
-                          Text(
-                            pointsOfLeader.toString(),
-                            style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 40)),
-                          ),
-                        ],
+                      Text(
+                        "Mit ",
+                        style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
+                      ),
+                      Text(
+                        pointsOfLeader.toString(),
+                        style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
                       ),
                       Text(
                         " Punkten",
@@ -694,51 +677,45 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
                       ),
                     ],
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Gejagt von ",
-                        style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
-                      ),
-                      Text(
-                        chaser,
-                        style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 40)),
-                      ),
-                    ],
-                  ),
-                ],
-              ) */
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Mit ",
-                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
-                  ),
-                  Text(
-                    pointsOfLeader.toString(),
-                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 40)),
-                  ),
-                  Text(
-                    " Punkten",
-                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                  Divider(thickness: 2),
                   Text(
                     "Gejagt von ",
                     style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
                   ),
-                  Text(
-                    chaser,
-                    style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 40)),
+                  SizedBox(height: MySize(context).h * 0.005),
+                  SizedBox(
+                    height: MySize(context).h * 0.1,
+                    child: Center(
+                      child: Text(
+                        chaser,
+                        style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30, height: 1)),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                      ),
+                    ),
                   ),
                 ],
               ),
+              for (final hole in _bulletHoles)
+                Positioned(
+                  left: hole.position.dx,
+                  top: hole.position.dy,
+                  child: TweenAnimationBuilder<double>(
+                    tween: Tween(begin: 0.0, end: 1.0),
+                    duration: Duration(milliseconds: CustomDurations.popUpShotAnimation),
+                    curve: Curves.linear,
+                    builder: (context, scale, child) {
+                      return Transform.scale(
+                        scale: scale,
+                        child: child,
+                      );
+                    },
+                    child: Image.asset(
+                      'assets/bullet_hole_angled_grey.png',
+                      height: hole.size,
+                    ),
+                  ),
+                ),
             ],
           ),
         ),

@@ -74,13 +74,11 @@ class MockDataPage0 {
   Future<Map> getPopup() async {
     await Future.delayed(Duration(seconds: 2));
     return {
-      "showPopup": false, //hier müssen wir kontrollieren ob das klappt, True vs. true macht einen Unterschied
+      "showPopup": true, //hier müssen wir kontrollieren ob das klappt, True vs. true macht einen Unterschied
       "imageUrl": "",
       "chaserGroupName": "Gruppe 1",
       "leaderGroupName": "Gruppe 2",
       "leaderPoints": 87,
-      "headline": "Die Aufholjagd beginnt",
-      "motivationalText": "Fast geschafft - Trinken, trinken, trinken!"
     };
   }
 }
@@ -137,7 +135,7 @@ class MockDataPage1 {
       var lutz = Random().nextInt(60);
       result.add({
         "groupName": "Gruppe ${i + 1}",
-        "groupLogo": "https://randomuser.me/api/portraits/men/1.jpg",
+        "groupLogo": "", //"https://randomuser.me/api/portraits/men/1.jpg",
         "longdrink": longdrink,
         "beer": beer,
         "shot": shot,
@@ -159,25 +157,8 @@ class MockDataPage2 {
     await Future.delayed(Duration(seconds: 2));
     return {
       "groupName": "Wollbacher Stachelbieschter",
-      "headline": 'Gewinne zwei Biersäulen!',
-      "subline":
-          'Sauft Sauft Sauft, zwei Säulen gehen auf unsSauft Sauft Sauft, zwei Säulen gehen auf unsSauft Sauft Sauft, zwei Säulen gehen auf unsSauft Sauft Sauft, zwei Säulen gehen auf unsSauft Sauft Sauft, zwei Säulen gehen auf uns',
-      "imagePrize": "https://picsum.photos/300/200",
       "groupLogo": "https://randomuser.me/api/portraits/men/1.jpg",
     };
-  }
-}
-
-/*
-================================================================================================================
-     Page 3 - Schedule 
-================================================================================================================
-*/
-
-class MockDataPage3 {
-  Future<Map> getImage() async {
-    await Future.delayed(Duration(seconds: 2));
-    return {"imageUrl": ""};
   }
 }
 

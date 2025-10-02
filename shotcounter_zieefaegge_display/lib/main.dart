@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:shotcounter_zieefaegge/colors.dart';
+import 'package:shotcounter_zieefaegge/theme.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
 import 'package:shotcounter_zieefaegge/page_diagram.dart';
 import 'package:shotcounter_zieefaegge/page_livestream.dart';
@@ -9,8 +9,9 @@ import 'package:shotcounter_zieefaegge/page_quote.dart';
 import 'package:shotcounter_zieefaegge/page_schedule.dart';
 import 'package:shotcounter_zieefaegge/page_top3.dart';
 import 'package:shotcounter_zieefaegge/page_advertising.dart';
-import 'package:shotcounter_zieefaegge/server_manager.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:shotcounter_zieefaegge/server_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +27,7 @@ void main() async {
     await windowManager.show();
     await windowManager.focus();
   });
+  await dotenv.load(fileName: ".env");
 
   // Connect to WebSocket before running app
   await ServerManager().connect("ws://192.168.2.49:8080");
@@ -57,26 +59,18 @@ class MyScaffold extends StatefulWidget {
 class _MyScaffoldState extends State<MyScaffold> {
   bool titleBarVisible = true;
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
-  late Timer _pageIndexReloadTimer;
 
   int pageIndex = 0;
+  bool animateNavigation = true;
   bool overridePageIndex = false;
 
   late final MessageHandler socketPageIndexListener;
 
-  void _startPageIndexTimer() {
-    _pageIndexReloadTimer = Timer.periodic(Duration(seconds: CustomDurations().indexNavigationChange), (_) {
-      if (!overridePageIndex) {
-        int nextIndex = (pageIndex + 1) % 6;
-        if (nextIndex == 2 && DateTime.now().isAfter(GlobalSettings().prizeTimes.last)) {
-          nextIndex++;
-        }
-        _navigateToPage(nextIndex);
-      } else {
-        overridePageIndex = false;
-      }
-    });
-  }
+  Timer? _pageIndexReloadTimer;
+  Timer? _prePrizeTimer;
+  Timer? _unfreezeTimer;
+  bool _socketFrozen = false;
+  int _nextPrizeIndex = 0;
 
   @override
   void initState() {
@@ -85,24 +79,17 @@ class _MyScaffoldState extends State<MyScaffold> {
     socketPageIndexListener = (data) {
       debugPrint("socket event received: $data");
       if (data['event'] == 'freeze' && data["freeze"] == true) {
-        _pageIndexReloadTimer.cancel();
-      } else {
-        if (!_pageIndexReloadTimer.isActive) {
-          _startPageIndexTimer();
-        }
+        //wenn 5 Minuten vor Preis, dann wird auf prize page gewechselt. wenn dann per app überschrieben wird ist der freeze automatisch drin bis eine minute nach preisZeit. Das wird in der App nicht angezeigt. Ist das okay so?
+        _cancelAutoTimer();
+      } else if (data['event'] == 'freeze' && data["freeze"] == false) {
+        _socketFrozen = false;
+        _maybeStartAutoTimer();
       }
       if (data['event'] == 'pageIndex' && data['index'] is int) {
         int newIndex = data['index'];
-        if (newIndex != pageIndex) {
+        if (newIndex != pageIndex || data['reset'] == true) {
+          animateNavigation = !(data['reset'] == true);
           overridePageIndex = true;
-          if (newIndex == 6) {
-            _pageIndexReloadTimer.cancel();
-          } else {
-            if (!_pageIndexReloadTimer.isActive) {
-              _startPageIndexTimer();
-            }
-          }
-
           _navigateToPage(newIndex);
         }
       }
@@ -111,9 +98,11 @@ class _MyScaffoldState extends State<MyScaffold> {
     ServerManager().addListener(socketPageIndexListener);
 
     _startPageIndexTimer();
+    _schedulePrizeGuard();
   }
 
   void _navigateToPage(int index) {
+    if (index == 2 && DateTime.now().isAfter(GlobalSettings.prizeTimes.last)) return;
     setState(() {
       pageIndex = index;
     });
@@ -123,107 +112,192 @@ class _MyScaffoldState extends State<MyScaffold> {
     }
   }
 
+  void _startPageIndexTimer() {
+    _pageIndexReloadTimer?.cancel();
+    _pageIndexReloadTimer = Timer.periodic(Duration(seconds: CustomDurations.indexNavigationChange), (_) {
+      if (!overridePageIndex) {
+        int nextIndex = (pageIndex + 1) % 6;
+        if (nextIndex == 2 && DateTime.now().isAfter(GlobalSettings.prizeTimes.last)) {
+          nextIndex++;
+        }
+        animateNavigation = true;
+        _navigateToPage(nextIndex);
+      } else {
+        overridePageIndex = false;
+      }
+    });
+  }
+
+  void _schedulePrizeGuard() {
+    _prePrizeTimer?.cancel();
+    _unfreezeTimer?.cancel();
+
+    if (_nextPrizeIndex >= GlobalSettings.prizeTimes.length) {
+      return;
+    }
+
+    final prizeTime = GlobalSettings.prizeTimes[_nextPrizeIndex];
+    final preStart = prizeTime.subtract(Duration(seconds: CustomDurations.changeToPrizePageBeforePrizeTime));
+    final preEnd = prizeTime.add(Duration(seconds: CustomDurations.stayOnPrizePageAfterPrizeTime));
+    final now = DateTime.now();
+
+    if (now.isBefore(preStart)) {
+      final wait = preStart.difference(now);
+      _prePrizeTimer = Timer(wait, _enterPrizeFreeze);
+    } else if (!now.isAfter(preEnd)) {
+      _enterPrizeFreeze();
+      final remaining = preEnd.difference(now);
+      _unfreezeTimer = Timer(remaining, _exitPrizeFreeze);
+    } else {
+      _nextPrizeIndex++;
+      _schedulePrizeGuard();
+    }
+  }
+
+  void _enterPrizeFreeze() {
+    animateNavigation = true;
+    _navigateToPage(2);
+    _cancelAutoTimer();
+
+    _unfreezeTimer?.cancel();
+    _unfreezeTimer = Timer(
+        Duration(
+            seconds: CustomDurations.changeToPrizePageBeforePrizeTime + CustomDurations.stayOnPrizePageAfterPrizeTime),
+        _exitPrizeFreeze);
+  }
+
+  void _exitPrizeFreeze() {
+    _maybeStartAutoTimer();
+    _nextPrizeIndex++;
+    _schedulePrizeGuard();
+  }
+
+  void _cancelAutoTimer() {
+    _pageIndexReloadTimer?.cancel();
+    _pageIndexReloadTimer = null;
+  }
+
+  void _maybeStartAutoTimer() {
+    if (_socketFrozen) return;
+    if (_pageIndexReloadTimer != null) return;
+    _startPageIndexTimer();
+  }
+
   @override
   void dispose() {
     ServerManager().removeListener(socketPageIndexListener);
-    _pageIndexReloadTimer.cancel();
+    _pageIndexReloadTimer?.cancel();
+    _prePrizeTimer?.cancel();
+    _unfreezeTimer?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/billboard.png"),
-            fit: BoxFit.cover,
+      body: Stack(children: [
+        Positioned.fill(
+          child: Container(
+            color: billboardBackgroundColor,
+            child: Navigator(
+              key: _navigatorKey,
+              initialRoute: '/page0',
+              onGenerateRoute: (settings) {
+                switch (settings.name) {
+                  case '/page0':
+                    return _createRoute(PageDiagram());
+                  case '/page1':
+                    return _createRoute(PageTop3());
+                  case '/page2':
+                    return _createRoute(PagePrize());
+                  case '/page3':
+                    return _createRoute(PageSchedule());
+                  case '/page4':
+                    return _createRoute(PageQuote());
+                  case '/page5':
+                    return _createRoute(PageAdvertising());
+                  case '/page6':
+                    return _createRoute(PageLivestream(isKiss: false));
+                  case '/page7':
+                    return _createRoute(PageLivestream(isKiss: true));
+                  default:
+                    return MaterialPageRoute(builder: (_) => const Center(child: Text('Unknown Page')));
+                }
+              },
+            ),
           ),
         ),
-        child: Column(
-          children: [
-            SizedBox(
-              height: fullscreenIconSize,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  titleBarVisible
-                      ? IconButton(
-                          onPressed: () async {
-                            windowManager.setTitleBarStyle(TitleBarStyle.hidden);
-                            setState(() {
-                              titleBarVisible = false;
-                            });
-                            await windowManager.setFullScreen(true);
-                          },
-                          padding: EdgeInsets.all(0),
-                          icon: Icon(
-                            Icons.open_in_full,
-                            color: Theme.of(context).colorScheme.primary,
-                            size: fullscreenIconSize,
-                          ),
-                        )
-                      : IconButton(
-                          onPressed: () async {
-                            windowManager.setTitleBarStyle(TitleBarStyle.normal);
-                            setState(() {
-                              titleBarVisible = true;
-                            });
-                            await windowManager.setFullScreen(false);
-                          },
-                          padding: EdgeInsets.all(0),
-                          icon: Icon(
-                            Icons.close_fullscreen,
-                            color: Theme.of(context).colorScheme.secondary,
-                            size: fullscreenIconSize,
-                          ),
-                        ),
-                ],
-              ),
+        Positioned(
+          top: 5,
+          right: 5,
+          child: IconButton(
+            onPressed: () async {
+              if (titleBarVisible) {
+                windowManager.setTitleBarStyle(TitleBarStyle.hidden);
+                setState(() => titleBarVisible = false);
+                await windowManager.setFullScreen(true);
+              } else {
+                windowManager.setTitleBarStyle(TitleBarStyle.normal);
+                setState(() => titleBarVisible = true);
+                await windowManager.setFullScreen(false);
+              }
+            },
+            icon: Icon(
+              titleBarVisible ? Icons.open_in_full : Icons.close_fullscreen,
+              color: titleBarVisible ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.secondary,
+              size: GlobalSettings.fullscreenIconSize,
             ),
-            Expanded(
-              child: Navigator(
-                key: _navigatorKey,
-                initialRoute: '/page0',
-                onGenerateRoute: (settings) {
-                  switch (settings.name) {
-                    case '/page0':
-                      return _createRoute(PageDiagram());
-                    case '/page1':
-                      return _createRoute(PageTop3());
-                    case '/page2':
-                      return _createRoute(PagePrize());
-                    case '/page3':
-                      return _createRoute(PageSchedule());
-                    case '/page4':
-                      return _createRoute(PageQuote());
-                    case '/page5':
-                      return _createRoute(PageAdvertising());
-                    case '/page6':
-                      return _createRoute(PageLivestream());
-                    default:
-                      return MaterialPageRoute(builder: (_) => const Center(child: Text('Unknown Page')));
-                  }
-                },
-              ),
-            ),
-          ],
+          ),
         ),
-      ),
+      ]),
     );
   }
 
   Route _createRoute(Widget page) {
+    if (animateNavigation) {
+      return PageRouteBuilder(
+        transitionDuration: Duration(milliseconds: CustomDurations.navigationTransition),
+        pageBuilder: (_, animation, secondaryAnimation) => backgroundContainer(child: page),
+        transitionsBuilder: (_, animation, secondaryAnimation, child) {
+          const curve = Curves.ease;
+
+          // New page slides in from right → center
+          final inTween = Tween<Offset>(
+            begin: const Offset(1.0, 0.0),
+            end: Offset.zero,
+          ).chain(CurveTween(curve: curve));
+
+          // Old page slides from center → left
+          final outTween = Tween<Offset>(
+            begin: Offset.zero,
+            end: const Offset(-1.0, 0.0),
+          ).chain(CurveTween(curve: curve));
+
+          return SlideTransition(
+            position: animation.drive(inTween),
+            child: SlideTransition(
+              position: secondaryAnimation.drive(outTween),
+              child: child,
+            ),
+          );
+        },
+      );
+    }
+
     return PageRouteBuilder(
-      transitionDuration: Duration(milliseconds: CustomDurations().navigationTransition),
-      pageBuilder: (_, animation, __) => page,
-      transitionsBuilder: (_, animation, __, child) {
-        const begin = Offset(1.0, 0.0); // slide in from right
-        const end = Offset.zero;
-        const curve = Curves.ease;
-        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-        return SlideTransition(position: animation.drive(tween), child: child);
-      },
+      pageBuilder: (_, __, ___) => backgroundContainer(child: page),
+    );
+  }
+
+  Widget backgroundContainer({Widget? child}) {
+    return Container(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("assets/billboard.png"),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: child,
     );
   }
 }

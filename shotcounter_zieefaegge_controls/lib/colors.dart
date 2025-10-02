@@ -20,9 +20,10 @@ final ThemeData appTheme = ThemeData(
   appBarTheme: const AppBarTheme(backgroundColor: Color(0xFF0F22AF), foregroundColor: Colors.white, elevation: 0),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
-      backgroundColor: const Color(0xFFF5BF17),
-      foregroundColor: Colors.black,
+      backgroundColor: const Color(0xFF263deb),
+      foregroundColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
     ),
   ),
   canvasColor: darkAccent,

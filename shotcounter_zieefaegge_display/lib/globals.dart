@@ -7,54 +7,68 @@ class MySize {
 
   MySize(this.context) {
     w = MediaQuery.of(context).size.width;
-    h = MediaQuery.of(context).size.height - fullscreenIconSize;
+    h = MediaQuery.of(context).size.height - GlobalSettings.fullscreenIconSize;
   }
 }
-
-double fullscreenIconSize = 20;
 
 class CustomDurations {
   // ##### frontend ######################
 
   //general
-  int indexNavigationChange = 10;
-  int checkIfNavigationIndexChanged =
+  static const int indexNavigationChange = 10;
+  static const int checkIfNavigationIndexChanged =
       1; //this is an internal duration and should not be changed. It does not affect the backend or my server communication
-  int navigationTransition = 800;
+  static const int navigationTransition = 800;
+  static const int changeToPrizePageBeforePrizeTime =
+      5 * 60; //seconds before prize time the display changes to prize page
+  static const int stayOnPrizePageAfterPrizeTime =
+      60; //seconds after prize time the display changes back to normal navigation
 
   //page diagram
-  int reloadDataDiagram = 7;
-  int chartAutoScroll = 8; //every x seconds the chart scrolls one bar down
-  int speedChartScroll = 500;
+  static const int reloadDataDiagram = 7;
+  static const int chartAutoScroll = 8; //every x seconds the chart scrolls one bar down
+  static const int speedChartScroll = 500;
+  static const int showPopup = 10;
+  static const int popUpCooldown = 20; //after a popup was shown, wait x seconds until another popup can be shown
+  static const int popUpMillisecondsBetweenShotsMinimum = 200;
+  static const int popUpMillisecondsBetweenShotsMaximum =
+      400; //real maximum is minimum + maximum (e.g. 200 + 400 = 600)
+  static const int popUpShotAnimation = 100;
 
   //page top3
-  int reloadDataTop3 = 7;
+  static const int reloadDataTop3 = 7;
 
   //page prize
-  int flashSpeed = 400;
-  int reloadDataPrize = 10;
-  int reloadDataPrizeUnder20sec = 1;
+  static const int flashSpeed = 400;
+  static const int reloadDataPrize = 10;
+  static const int reloadDataPrizeUnder20sec = 1;
 
   //page quote
-  int reloadDataQuote = 10;
-  int switchQuote = 4;
-  int fadeTransistion = 800;
-
-  //page advertising
-  int reloadDataAdvertising = 10;
+  static const int reloadDataQuote = 10;
+  static const int switchQuote = 4;
+  static const int fadeTransistion = 800;
 
   // ##### salesforce ######################
 
-  int catchUpValidUntil = 60; //how long is a catchUp eligible for visualisation
+  static const int catchUpValidUntil = 60; //how long is a catchUp eligible for visualisation
 }
 
 class GlobalSettings {
+  static const double fullscreenIconSize = 20;
+
+  // page diagram
+  static const int totalBarsVisible = 5;
+  static const int totalGridLinesVisible = 5;
+  static const double groupNameSpaceFactor = 0.37; //Anteilig an ganzer Breite
+  static const int popUpMaxShotCounts = 7;
   // page prize
-  int flashThreshold = 60;
-  int redThreshold = 300;
-  List<DateTime> prizeTimes = [
-    DateTime(2025, 08, 20, 10, 07),
-    DateTime(2025, 08, 20, 10, 08),
-    DateTime(2025, 08, 20, 10, 40)
+  static const int flashThreshold = 60;
+  static const int redThreshold = 300;
+  static List<DateTime> prizeTimes = [
+    DateTime(2025, 09, 03, 10, 52),
+    DateTime(2025, 09, 03, 10, 53),
+    DateTime(2025, 09, 03, 11, 01),
   ];
+
+  static const newspaperTitle = "The Guggeball Times"; //"Zieefägge Allgemeine"
 }

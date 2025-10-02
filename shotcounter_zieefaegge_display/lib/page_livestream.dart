@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
-import 'package:shotcounter_zieefaegge/server_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shotcounter_zieefaegge/server_manager.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 class PageLivestream extends StatefulWidget {
-  const PageLivestream({super.key});
+  const PageLivestream({super.key, required this.isKiss});
+  final bool isKiss;
 
   @override
   State<PageLivestream> createState() => _PageLivestreamState();
@@ -17,7 +19,6 @@ class _PageLivestreamState extends State<PageLivestream> {
   RTCPeerConnection? peerConnection;
 
   bool videoIsRunning = false;
-  bool isKiss = false;
 
   // STUN server configuration
   Map<String, dynamic> configuration = {
@@ -88,10 +89,6 @@ class _PageLivestreamState extends State<PageLivestream> {
       setState(() => videoIsRunning = false);
     } else if (decoded["event"] == "resumed") {
       setState(() => videoIsRunning = true);
-    } else if (decoded["selectedCam"] == 0) {
-      setState(() => isKiss = false);
-    } else if (decoded["selectedCam"] == 1) {
-      setState(() => isKiss = true);
     }
   }
 
@@ -113,60 +110,159 @@ class _PageLivestreamState extends State<PageLivestream> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        double size = constraints.biggest.shortestSide;
-        return Center(
-          child: videoIsRunning
-              ? isKiss
-                  ? ClipPath(
-                      clipper: HeartClipper(),
-                      child: SizedBox(
-                        width: size,
-                        height: size,
-                        child: RTCVideoView(
-                          remoteVideo,
-                          mirror: false,
-                          objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
-                        ),
-                      ),
-                    )
-                  : Container(
-                      width: size,
-                      height: size,
-                      padding: EdgeInsets.symmetric(vertical: MySize(context).h * 0.05),
-                      child: BeerGlassStack(
-                        size: size,
-                        videoRenderer: remoteVideo,
-                      ),
-                    )
-              : isKiss
-                  ? ClipPath(
-                      clipper: HeartClipper(),
-                      child: Container(
-                        width: size,
-                        height: size,
-                        color: Color.fromARGB(172, 255, 255, 255),
-                        child: Center(
-                          child: SizedBox(
-                            width: 50,
-                            height: 50,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 8,
+    final kissPaddingHorizontal = MySize(context).w * 0.03;
+    final kissRotationAngle = 0.75;
+    final double kissTextSize = 200;
+    final kissTextStyle = GoogleFonts.rye(textStyle: TextStyle(fontSize: kissTextSize, color: Colors.pink));
+    final kissTextStyleOutline = GoogleFonts.rye(
+      textStyle: TextStyle(
+        fontSize: kissTextSize,
+        foreground: Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 6
+          ..color = Colors.white,
+      ),
+    );
+    return widget.isKiss
+        ? Stack(
+            children: [
+              Positioned.fill(
+                child: Image.asset(
+                  'assets/billboard_pink.png',
+                  fit: BoxFit.cover,
+                ),
+              ),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  double size = constraints.biggest.shortestSide;
+
+                  return Center(
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Transform.scale(
+                          scale: 1.2,
+                          child: ClipPath(
+                            clipper: HeartClipper(),
+                            child: SizedBox(
+                              width: size,
+                              height: size,
+                              child: videoIsRunning
+                                  ? RTCVideoView(
+                                      remoteVideo,
+                                      mirror: false,
+                                      objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+                                    )
+                                  : Image.asset(
+                                      "assets/kiss.gif",
+                                      fit: BoxFit.cover,
+                                    ),
                             ),
                           ),
                         ),
-                      ),
-                    )
-                  : Container(
-                      width: size,
-                      height: size,
-                      padding: EdgeInsets.symmetric(vertical: MySize(context).h * 0.05),
-                      child: BeerGlassStack(size: size, videoRenderer: null),
+                        Transform.scale(
+                          scale: 1.55,
+                          child: Image.asset(
+                            'assets/rose_wreath.png',
+                            width: size,
+                            height: size * 0.8,
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                      ],
                     ),
-        );
-      },
-    );
+                  );
+                },
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                    top: MySize(context).h * 0.6, left: kissPaddingHorizontal, right: kissPaddingHorizontal),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Transform.rotate(
+                        angle: kissRotationAngle,
+                        child: Stack(
+                          children: [
+                            Text("Kiss", style: kissTextStyleOutline),
+                            Text("Kiss", style: kissTextStyle),
+                          ],
+                        )),
+                    Transform.rotate(
+                        angle: -kissRotationAngle,
+                        child: Stack(
+                          children: [
+                            Text(" Cam", style: kissTextStyleOutline),
+                            Text(" Cam", style: kissTextStyle),
+                          ],
+                        )),
+                  ],
+                ),
+              ),
+            ],
+          )
+        : Stack(
+            children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: MySize(context).w * 0.1,
+                  ),
+                  child: Container(
+                    height: MySize(context).h * 0.8,
+                    width: MySize(context).h * 0.8 * 0.86,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/parchment.png'),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: MySize(context).w * 0.05,
+                          vertical: MySize(context).h * 0.05,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(
+                              "Howdy Cowboy!",
+                              style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 60)),
+                            ),
+                            Text(
+                              "Du wurdest zum Abschuss freigegeben",
+                              style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 60)),
+                            ),
+                          ],
+                        )),
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: MySize(context).h * 0.04,
+                    horizontal: MySize(context).w * 0.05,
+                  ),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final availableWidth = constraints.maxWidth;
+                      final availableHeight = constraints.maxHeight;
+
+                      final size = availableWidth < availableHeight ? availableWidth : availableHeight;
+
+                      return BeerGlassStack(
+                        size: size,
+                        videoRenderer: videoIsRunning ? remoteVideo : null,
+                      );
+                    },
+                  ),
+                ),
+              )
+            ],
+          );
   }
 }
 
@@ -182,57 +278,68 @@ class BeerGlassStack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double beerGlassWidth = size * 0.6;
+    double beerGlassWidth = size * 0.68;
+    double beerGlassHeight = beerGlassWidth * 1.3;
+    double paddingRight = size * 0.23;
 
-    return Stack(
-      alignment: Alignment.topCenter,
-      children: [
-        // Glass border and clipping
-        if (videoRenderer != null)
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          // Glass border and clipping
           Positioned(
             top: size * 0.11, // adjust to match foam position
+            right: paddingRight,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20), // match your inner glass radius
+              child: Stack(children: [
+                Container(
+                  width: beerGlassWidth,
+                  height: beerGlassHeight,
+                  color: Colors.black,
+                ),
+                SizedBox(
+                  width: beerGlassWidth,
+                  height: beerGlassHeight,
+                  child: videoRenderer != null
+                      ? RTCVideoView(
+                          videoRenderer!,
+                          objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+                        )
+                      : Image.asset(
+                          'assets/bottle_spin.gif',
+                          fit: BoxFit.cover,
+                        ),
+                ),
+              ]),
+            ),
+          ),
+
+          // Beer glass border overlay
+          Positioned(
+            top: size * 0.11,
+            right: paddingRight,
+            child: CustomPaint(
+              painter: BeerGlassBorderPainter(), // adjust painter to only paint border
               child: SizedBox(
                 width: beerGlassWidth,
-                height: size * 0.78,
-                child: RTCVideoView(
-                  videoRenderer!,
-                  objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
-                ),
+                height: beerGlassHeight,
               ),
             ),
           ),
-        if (videoRenderer == null)
+
+          // Foam on top
           Positioned(
-            top: size * 0.45,
-            child: CircularProgressIndicator(
-              color: Color.fromARGB(172, 255, 255, 255),
-              strokeWidth: 8,
+            right: -size * 0.06 + paddingRight,
+            child: SvgPicture.asset(
+              'assets/beer_foam.svg',
+              width: beerGlassWidth * 1.2,
             ),
           ),
-
-        // Beer glass border overlay
-        Positioned(
-          top: size * 0.11,
-          child: CustomPaint(
-            painter: BeerGlassBorderPainter(), // adjust painter to only paint border
-            child: SizedBox(
-              width: beerGlassWidth,
-              height: size * 0.78,
-            ),
-          ),
-        ),
-
-        // Foam on top
-        Positioned(
-          top: -size * 0.24,
-          child: SvgPicture.asset(
-            'assets/beer_foam.svg',
-            width: beerGlassWidth * 1.2,
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -244,17 +351,17 @@ class BeerGlassBorderPainter extends CustomPainter {
     double cornerRadius = 20;
 
     final outerPaint = Paint()
-      ..color = const Color.fromARGB(172, 255, 255, 255)
+      ..color = const Color.fromARGB(255, 0, 0, 0)
       ..strokeWidth = strokeWidth
       ..style = PaintingStyle.stroke;
 
     final innerPaint = Paint()
-      ..color = const Color.fromARGB(172, 255, 255, 255)
+      ..color = const Color.fromARGB(255, 255, 255, 255)
       ..strokeWidth = strokeWidth
       ..style = PaintingStyle.stroke;
 
     final borderFillPaint = Paint()
-      ..color = const Color.fromARGB(106, 255, 255, 255)
+      ..color = const Color.fromARGB(255, 255, 255, 255)
       ..style = PaintingStyle.fill;
 
     final outerRRect = RRect.fromRectAndRadius(
@@ -335,7 +442,6 @@ class BeerGlassBorderPainter extends CustomPainter {
       innerPath,
     );
     canvas.drawPath(borderPath, borderFillPaint);
-
     // 🧱 Draw outer borders (glass + handle)
     canvas.drawPath(outerPath, outerPaint);
     canvas.drawRRect(innerRRect, innerPaint);

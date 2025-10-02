@@ -15,30 +15,51 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Shotcounter Zieefaegge Controls',
-      theme: appTheme,
-      debugShowCheckedModeBanner: false,
-
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
+    return MaterialApp(title: 'Shotcounter Zieefaegge Controls', theme: appTheme, home: const MyHomePage());
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class NavigationPage {
+  final String name;
+  final int index;
+  final bool isLivestream;
 
-  final String title;
+  NavigationPage({required this.name, required this.index, this.isLivestream = false});
+}
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+List<NavigationPage> pages = [
+  NavigationPage(name: "Balkendiagramm", index: 0),
+  NavigationPage(name: "Top 3", index: 1),
+  NavigationPage(name: "Gewinn", index: 2),
+  NavigationPage(name: "Ablaufplan", index: 3),
+  NavigationPage(name: "Kommentare", index: 4),
+  NavigationPage(name: "Werbung", index: 5),
+  NavigationPage(name: "Ex-Cam", index: 6, isLivestream: true),
+  NavigationPage(name: "Kiss-Cam", index: 7, isLivestream: true),
+];
+
+class MySize {
+  double h = 0.0;
+  double w = 0.0;
+  BuildContext context;
+
+  MySize(this.context) {
+    w = MediaQuery.of(context).size.width;
+    h = MediaQuery.of(context).size.height;
+  }
+}
+
 class _MyHomePageState extends State<MyHomePage> {
-  int selectedIndex = 0;
-  int currentNavigationIndex = 0;
+  NavigationPage currentNavigationPage = pages.first;
   bool indexFrozen = false;
-  List<String> pages = ["Balkendiagramm", "Top 3", "Gewinn", "Ablaufplan", "Kommentare", "Werbung", "Livestream"];
+
   bool _showCamera = false;
   bool _isRecordingRunning = false;
 
@@ -117,30 +138,35 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // This must be done as soon as app loads
   void initialization() async {
-    // Getting video feed from the user camera
-    localStream = await navigator.mediaDevices.getUserMedia({
-      'video': {'facingMode': 'environment'},
-      'audio': false,
-    });
-    localVideo = RTCVideoRenderer();
-    await localVideo.initialize();
+    try {
+      await localVideo.dispose();
+      localStream = null;
 
-    // Set the local video to display
-    localVideo.srcObject = localStream;
-    // Initializing the peer connecion
-    peerConnection = await createPeerConnection(configuration);
-    setState(() {});
-    // Adding the local media to peer connection
-    // When connection establish, it send to the remote peer
-    localStream?.getTracks().forEach((track) {
-      peerConnection?.addTrack(track, localStream!);
-    });
+      // Getting video feed from the user camera
+      localStream = await navigator.mediaDevices.getUserMedia({
+        'video': {'facingMode': 'environment'},
+        'audio': false,
+      });
+      localVideo = RTCVideoRenderer();
+      await localVideo.initialize();
 
-    debugPrint("initialization");
-    registerPeerConnectionListeners();
-    setState(() {
-      _showCamera = true;
-    });
+      // Set the local video to display
+      localVideo.srcObject = localStream;
+      // Initializing the peer connecion
+      peerConnection = await createPeerConnection(configuration);
+      setState(() {});
+      // Adding the local media to peer connection
+      // When connection establish, it send to the remote peer
+      localStream?.getTracks().forEach((track) {
+        peerConnection?.addTrack(track, localStream!);
+      });
+
+      debugPrint("initialization");
+      registerPeerConnectionListeners();
+      setState(() {
+        _showCamera = true;
+      });
+    } catch (_) {}
   }
 
   void makeCall() async {
@@ -229,6 +255,30 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  Future<void> reloadApp() async {
+    await pauseCamera();
+    await cleanupLivestream();
+    await peerConnection?.close();
+    peerConnection = null;
+
+    try {
+      await localVideo.dispose();
+    } catch (_) {}
+
+    channel?.sink.close();
+    channel = null;
+
+    connectToServer();
+    setState(() {
+      _showCamera = false;
+      _isRecordingRunning = false;
+      if (currentNavigationPage.isLivestream) {
+        localVideo.initialize();
+        initialization();
+      }
+    });
+  }
+
   @override
   void initState() {
     connectToServer();
@@ -242,195 +292,297 @@ class _MyHomePageState extends State<MyHomePage> {
     super.dispose();
   }
 
-  /* Future<int> getCurrentNavigationIndex() async {
-    await Future.delayed(Duration(seconds: 2));
-    setState(() {
-      currentNavigationIndex = 0;
-    });
-    return currentNavigationIndex;
-  } */
+  Widget myDropDownButtonFormField(double widthFactor, double paddingFactor) {
+    return Container(
+      width: MySize(context).w * widthFactor,
+      padding: EdgeInsets.symmetric(horizontal: MySize(context).h * paddingFactor),
+      decoration: BoxDecoration(color: darkAccent),
+      child: DropdownButtonFormField<String>(
+        initialValue: currentNavigationPage.name,
+        icon: const Icon(Icons.expand_more),
+        decoration: const InputDecoration(
+          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent)),
+        ),
+        onChanged: (String? newValue) async {
+          NavigationPage newPage = pages.firstWhere((page) => page.name == newValue);
+
+          debugPrint("send event pageIndex with index ${newPage.index}");
+          channel?.sink.add(jsonEncode({"event": "pageIndex", "index": newPage.index}));
+
+          setState(() {
+            if (indexFrozen || newPage.isLivestream) {
+              channel?.sink.add(jsonEncode({"event": "freeze", "freeze": true}));
+              indexFrozen = true;
+            }
+            if (currentNavigationPage.isLivestream && newPage.isLivestream == false) {
+              channel?.sink.add(jsonEncode({"event": "freeze", "freeze": false}));
+              indexFrozen = false;
+            }
+            currentNavigationPage = newPage;
+            _isRecordingRunning = false;
+
+            if (newPage.isLivestream) {
+              localVideo.initialize();
+              initialization();
+            } else {
+              _showCamera = false;
+            }
+          });
+        },
+        items: pages.map((NavigationPage page) {
+          return DropdownMenuItem<String>(value: page.name, child: Text(page.name));
+        }).toList(),
+      ),
+    );
+  }
+
+  Widget reloadAppButton() {
+    return ElevatedButton(onPressed: reloadApp, child: const Text("Neu verbinden"));
+  }
+
+  Widget freezeSwitch() {
+    return Row(
+      children: [
+        Text("Page freeze: "),
+        Switch(
+          value: indexFrozen,
+          activeThumbColor: Colors.green,
+
+          onChanged: (bool newFrozenValue) {
+            setState(() {
+              indexFrozen = newFrozenValue;
+              debugPrint("freeze page: $newFrozenValue");
+              channel?.sink.add(jsonEncode({"event": "freeze", "freeze": newFrozenValue}));
+            });
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget reloadDataButton() {
+    return currentNavigationPage.isLivestream
+        ? ElevatedButton(
+            onPressed: () async {
+              channel?.sink.add(
+                jsonEncode({"event": "pageIndex", "index": currentNavigationPage.index, "reset": true}),
+              );
+              await pauseCamera();
+              localVideo.initialize();
+              initialization();
+
+              setState(() {
+                _isRecordingRunning = false;
+              });
+            },
+            child: const Text("Kamera neu starten"),
+          )
+        : ElevatedButton(
+            onPressed: () {
+              debugPrint("send event reset");
+              channel?.sink.add(
+                jsonEncode({"event": "pageIndex", "index": currentNavigationPage.index, "reset": true}),
+              );
+            },
+            child: const Text("Seiten-Daten neu laden"),
+          );
+  }
+
+  Widget cameraWidget({
+    required double controlBarHeight,
+    required double height,
+    required double width,
+    Widget exCamLimiter = const SizedBox(),
+    required double roseWreathWidthFactor,
+    required double roseWreathTopPositionFactor,
+    Widget kissCamLimiter = const SizedBox(),
+  }) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                SizedBox(width: width, height: height, child: RTCVideoView(localVideo, mirror: false)),
+                currentNavigationPage.index != 7 ? exCamLimiter : kissCamLimiter,
+              ],
+            ),
+            Container(
+              width: width,
+              height: controlBarHeight,
+              color: Colors.black,
+              child: IconButton(
+                onPressed: () async {
+                  if (_isRecordingRunning) {
+                    await pauseCamera();
+                  } else {
+                    await resumeCamera();
+                    makeCall();
+                  }
+
+                  setState(() {
+                    _isRecordingRunning = !_isRecordingRunning;
+                  });
+                },
+                icon: Icon(
+                  _isRecordingRunning ? Icons.stop_circle : Icons.play_circle,
+                  color: _isRecordingRunning ? Colors.red : Colors.white,
+                ),
+                iconSize: controlBarHeight * 0.7,
+              ),
+            ),
+          ],
+        ),
+        if (currentNavigationPage.index == 7)
+          Positioned(
+            top: height * roseWreathTopPositionFactor,
+            child: Image.asset(
+              'assets/rose_wreath.png',
+              width: width * roseWreathWidthFactor,
+              height: width * roseWreathWidthFactor * 0.8,
+              fit: BoxFit.fill,
+            ),
+          ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final List<bool> selected = [false, false];
-    selected[selectedIndex] = true;
-
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.only(top: 50),
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-
+      body: MediaQuery.of(context).orientation == Orientation.portrait
+          ? Padding(
+              padding: EdgeInsets.symmetric(vertical: MySize(context).h * 0.06, horizontal: MySize(context).w * 0.03),
               child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Column(
                     children: [
-                      const Text("Seite:", style: TextStyle(fontSize: 20)),
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.6,
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        decoration: BoxDecoration(color: darkAccent),
-                        child: DropdownButtonFormField<String>(
-                          value: pages[currentNavigationIndex],
-                          icon: const Icon(Icons.expand_more),
-                          decoration: const InputDecoration(
-                            enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent)),
-                          ),
-                          onChanged: (String? newValue) async {
-                            final newIndex = pages.indexOf(newValue!);
-                            setState(() {
-                              currentNavigationIndex = newIndex;
-                              debugPrint("send event pageIndex with index $newIndex");
-                              channel?.sink.add(jsonEncode({"event": "pageIndex", "index": newIndex}));
-                            });
-
-                            if (newValue == "Livestream") {
-                              localVideo.initialize();
-                              initialization();
-                            } else {
-                              //await cleanupLivestream();
-                              setState(() {
-                                _showCamera = false;
-                                _isRecordingRunning = false;
-                              });
-                            }
-                          },
-                          items: pages.map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(value: value, child: Text(value));
-                          }).toList(),
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [reloadAppButton(), myDropDownButtonFormField(0.6, 0.02)],
+                      ),
+                      SizedBox(height: MySize(context).h * 0.02),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [freezeSwitch(), reloadDataButton()],
                       ),
                     ],
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  SizedBox(height: MySize(context).h * 0.02),
+                  Expanded(
+                    child: _showCamera
+                        ? LayoutBuilder(
+                            builder: (context, constraints) {
+                              var controlBarHeight = constraints.maxHeight * 0.13;
+                              var height = constraints.maxHeight - controlBarHeight;
+                              var width = height * 9 / 16;
+                              return cameraWidget(
+                                controlBarHeight: controlBarHeight,
+                                height: height,
+                                width: width,
+                                exCamLimiter: SizedBox(
+                                  height: height,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(width: width, height: height * 0.2, color: Colors.black),
+                                      Container(width: width, height: height * 0.16, color: Colors.black),
+                                    ],
+                                  ),
+                                ),
+                                roseWreathWidthFactor: 1.3,
+                                roseWreathTopPositionFactor: 0.22,
+                                kissCamLimiter: SizedBox(
+                                  height: height,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(width: width, height: height * 0.25, color: Colors.black),
+                                      Container(width: width, height: height * 0.22, color: Colors.black),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          )
+                        : Center(
+                            child: Text(
+                              "Kamera wird aktiviert wenn Livestream ausgewählt ist",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                  ),
+                  SizedBox(height: MySize(context).h * 0.02),
+                ],
+              ),
+            )
+          : Padding(
+              padding: EdgeInsets.symmetric(vertical: MySize(context).h * 0.06, horizontal: MySize(context).w * 0.05),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: _showCamera
+                        ? LayoutBuilder(
+                            builder: (context, constraints) {
+                              var controlBarHeight = constraints.maxHeight * 0.2;
+                              var height = (constraints.maxWidth * 9 / 16) - controlBarHeight;
+                              var width = height * 16 / 9;
+                              return cameraWidget(
+                                controlBarHeight: controlBarHeight,
+                                height: height,
+                                width: width,
+                                exCamLimiter: SizedBox(
+                                  width: width,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(width: width * 0.30, height: height, color: Colors.black),
+                                      Container(width: width * 0.30, height: height, color: Colors.black),
+                                    ],
+                                  ),
+                                ),
+                                roseWreathWidthFactor: 0.75,
+                                roseWreathTopPositionFactor: 0.01,
+                                kissCamLimiter: SizedBox(
+                                  width: width,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(width: width * 0.14, height: height, color: Colors.black),
+                                      Container(width: width * 0.14, height: height, color: Colors.black),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          )
+                        : Center(
+                            child: Text(
+                              "Kamera wird aktiviert wenn Livestream ausgewählt ist",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                  ),
+                  SizedBox(height: MySize(context).w * 0.02),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Text("Angezeigte Seite einfrieren"),
-                      Switch(
-                        value: indexFrozen,
-                        activeColor: Colors.red,
-
-                        onChanged: (bool newFrozenValue) {
-                          setState(() {
-                            indexFrozen = newFrozenValue;
-                            debugPrint("freeze page: $newFrozenValue");
-                            channel?.sink.add(jsonEncode({"event": "freeze", "freeze": newFrozenValue}));
-                          });
-                        },
-                      ),
+                      reloadAppButton(),
+                      myDropDownButtonFormField(0.23, 0.03),
+                      freezeSwitch(),
+                      reloadDataButton(),
                     ],
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 10),
-            if (_showCamera)
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  const double borderWidth = 1.0;
-                  double totalInternalBorders = borderWidth * 3;
-                  double buttonWidth = (constraints.maxWidth - totalInternalBorders) / 2;
-
-                  return ToggleButtons(
-                    isSelected: selected,
-                    onPressed: (int index) {
-                      setState(() {
-                        for (int i = 0; i < selected.length; i++) {
-                          selected[i] = i == index;
-                        }
-                        selectedIndex = index;
-                      });
-                      channel?.sink.add(jsonEncode({"selectedCam": index}));
-                    },
-                    borderWidth: borderWidth,
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.white,
-                    selectedColor: Colors.white,
-                    fillColor: darkAccent,
-                    splashColor: transparentWhite,
-                    highlightColor: transparentWhite,
-                    borderColor: transparentWhite,
-                    selectedBorderColor: transparentWhite,
-                    disabledColor: Colors.grey.shade600,
-                    disabledBorderColor: Colors.grey.shade800,
-                    children: [
-                      SizedBox(
-                        width: buttonWidth,
-                        child: Center(
-                          child: Text(
-                            "Ex-Cam",
-                            style: TextStyle(
-                              fontSize: selected.first ? 20 : 16,
-                              fontWeight: selected.first ? FontWeight.bold : FontWeight.normal,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: buttonWidth,
-                        child: Center(
-                          child: Text(
-                            "Kiss-Cam",
-                            style: TextStyle(
-                              fontSize: selected.last ? 20 : 16,
-                              fontWeight: selected.last ? FontWeight.bold : FontWeight.normal,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            SizedBox(height: 10),
-            Expanded(
-              child: _showCamera
-                  ? LayoutBuilder(
-                      builder: (context, constraints) {
-                        var controlBarHeight = constraints.maxHeight * 0.13;
-                        var height = constraints.maxHeight - controlBarHeight;
-                        var width = (constraints.maxHeight - controlBarHeight) * 9 / 16;
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(width: width, height: height, child: RTCVideoView(localVideo, mirror: false)),
-                            Container(
-                              width: width,
-                              height: controlBarHeight,
-                              color: Colors.black,
-                              child: IconButton(
-                                onPressed: () async {
-                                  if (_isRecordingRunning) {
-                                    await pauseCamera();
-                                  } else {
-                                    await resumeCamera();
-                                    makeCall();
-                                  }
-
-                                  setState(() {
-                                    _isRecordingRunning = !_isRecordingRunning;
-                                  });
-                                },
-                                icon: Icon(
-                                  _isRecordingRunning ? Icons.stop_circle : Icons.play_circle,
-                                  color: _isRecordingRunning ? Colors.red : Colors.white,
-                                ),
-                                iconSize: controlBarHeight * 0.7,
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    )
-                  : Center(child: Text("Kamera wird aktiviert wenn Livestream ausgewählt ist")),
-            ),
-            SizedBox(height: 10),
-          ],
-        ),
-      ),
     );
   }
 }

@@ -1,72 +1,42 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:shotcounter_zieefaegge/backend_mockdata.dart';
-import 'package:shotcounter_zieefaegge/colors.dart';
+import 'package:shotcounter_zieefaegge/theme.dart';
 import 'package:shotcounter_zieefaegge/globals.dart';
+import 'package:shotcounter_zieefaegge/backend_connection.dart';
 
-class PageQuote extends StatefulWidget {
+class PageQuote extends StatelessWidget {
   const PageQuote({super.key});
 
-  @override
-  State<PageQuote> createState() => _PageQuoteState();
-}
-
-class _PageQuoteState extends State<PageQuote> {
-  bool dataLoaded = false;
-
-  late Timer _dataReloadTimer;
-
-  String username = "";
-  String quote = "";
-  String imageUrl = "";
-
-  @override
-  void initState() {
-    super.initState();
-
-    _loadImage();
-    _startAutoReloadImage();
-  }
-
-  void _startAutoReloadImage() {
-    _dataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations().reloadDataQuote), (_) {
-      _loadImage();
-    });
-  }
-
-  Future<void> _loadImage() async {
+  Future<Map> _fetchQuoteData() async {
     try {
-      Map data = await MockDataPage4().getData();
-
-      if (mounted) {
-        setState(() {
-          username = data["name"];
-          quote = data["quote"];
-          imageUrl = data["image"];
-          dataLoaded = true;
-        });
-      }
+      return await SalesforceService().getPageQuote();
     } catch (e) {
-      debugPrint('Error fetching page 3 schedule image: $e');
+      debugPrint('Error fetching page 4 quote: $e');
+      return {};
     }
-  }
-
-  @override
-  void dispose() {
-    _dataReloadTimer.cancel();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsetsGeometry.all(MySize(context).h * 0.08),
-      child: !dataLoaded
-          ? Center(
+      child: FutureBuilder<Map>(
+        future: _fetchQuoteData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting ||
+              snapshot.hasError ||
+              !snapshot.hasData ||
+              snapshot.data!.isEmpty) {
+            return Center(
               child: CircularProgressIndicator(color: defaultOnPrimary),
-            )
-          : AspectRatio(
+            );
+          } else {
+            SalesforceService().setPageQuoteQueryUsed(snapshot.data!["recordId"], DateTime.now());
+            final username = snapshot.data!["name"] ?? "";
+            final handle = snapshot.data!["handle"] ?? "";
+            final quotes = snapshot.data!["quotes"] ?? [] as List<String>;
+            final imageUrl = snapshot.data!["image"] ?? "";
+            return AspectRatio(
               aspectRatio: 16 / 9,
               child: Card(
                 color: Color(0xFFF8F9FF),
@@ -82,26 +52,35 @@ class _PageQuoteState extends State<PageQuote> {
                           child: Image.network(
                             imageUrl,
                             fit: BoxFit.cover,
-                            errorBuilder: (context, _, __) => Container(
-                              color: Colors.grey[300],
-                              child: Icon(Icons.person, size: MySize(context).h * 0.4),
+                            errorBuilder: (context, _, __) => Image.asset(
+                              'assets/placeholder_single.png',
+                              fit: BoxFit.cover,
                             ),
                           ),
                         ),
                       ),
-                      SizedBox(width: MySize(context).w * 0.1),
+                      SizedBox(width: MySize(context).w * 0.05),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(height: MySize(context).h * 0.1),
                             Text(
-                              "@$username",
+                              username,
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 50,
+                                fontSize: 60,
+                                color: Colors.black87,
+                                height: 1,
+                              ),
+                              maxLines: 2,
+                            ),
+                            Text(
+                              "@$handle",
+                              style: const TextStyle(
+                                fontSize: 30,
                                 color: Colors.black87,
                               ),
+                              maxLines: 1,
                             ),
                             SizedBox(height: MySize(context).h * 0.1),
 
@@ -149,12 +128,7 @@ class _PageQuoteState extends State<PageQuote> {
 
                             // Fade Transition:
                             FadingQuoteCarousel(
-                              quotes: [
-                                "The best way to predict the future is to invent it.",
-                                "Flutter lets you build beautiful apps fast.",
-                                "Don’t watch the clock; do what it does — keep going.",
-                                "Creativity is intelligence having fun.",
-                              ],
+                              quotes: quotes,
                             ),
                           ],
                         ),
@@ -163,7 +137,10 @@ class _PageQuoteState extends State<PageQuote> {
                   ),
                 ),
               ),
-            ),
+            );
+          }
+        },
+      ),
     );
   }
 }
@@ -252,7 +229,7 @@ class _FadingQuoteCarouselState extends State<FadingQuoteCarousel> {
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(Duration(seconds: CustomDurations().switchQuote), (_) {
+    _timer = Timer.periodic(Duration(seconds: CustomDurations.switchQuote), (_) {
       setState(() {
         _currentIndex = (_currentIndex + 1) % widget.quotes.length;
       });
@@ -268,7 +245,7 @@ class _FadingQuoteCarouselState extends State<FadingQuoteCarousel> {
   @override
   Widget build(BuildContext context) {
     return AnimatedSwitcher(
-      duration: Duration(milliseconds: CustomDurations().fadeTransistion),
+      duration: Duration(milliseconds: CustomDurations.fadeTransistion),
       transitionBuilder: (Widget child, Animation<double> animation) {
         return FadeTransition(opacity: animation, child: child);
       },
@@ -280,6 +257,7 @@ class _FadingQuoteCarouselState extends State<FadingQuoteCarousel> {
           fontSize: 35,
           color: Colors.black87,
         ),
+        maxLines: 5,
       ),
     );
   }

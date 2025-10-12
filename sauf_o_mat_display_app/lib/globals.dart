@@ -51,6 +51,8 @@ class CustomDurations {
   // ##### salesforce ######################
 
   static const int catchUpValidUntil = 60; //how long is a catchUp eligible for visualisation
+  static const int diagramStatusAufgestiegenAbgestiegen =
+      20; //seconds a group is marked as "aufgestiegen" or "abgestiegen"
 }
 
 class GlobalSettings {
@@ -71,4 +73,7 @@ class GlobalSettings {
   ];
 
   static const newspaperTitle = "The Guggeball Times"; //"Zieefägge Allgemeine"
+
+  // ##### salesforce ######################
+  static const int catchUpShownAtPointsDelta = 10; //minimum points difference to show a catchUp
 }

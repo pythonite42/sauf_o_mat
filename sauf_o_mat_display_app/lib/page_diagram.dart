@@ -373,14 +373,14 @@ class _PageDiagramState extends State<PageDiagram> {
                                             padding: EdgeInsets.only(right: 20),
                                             child: Row(
                                               children: [
-                                                data?.status == "aufgestiegen"
+                                                data?.status == "Aufgestiegen"
                                                     ? SvgPicture.asset(
                                                         'assets/arrow_up.svg',
                                                         width: fontSizeLegend,
                                                         height: fontSizeLegend,
                                                         colorFilter: ColorFilter.mode(greenAccent, BlendMode.srcIn),
                                                       )
-                                                    : data?.status == "abgestiegen"
+                                                    : data?.status == "Abgestiegen"
                                                         ? Transform.rotate(
                                                             angle: pi,
                                                             child: SvgPicture.asset(

@@ -144,9 +144,10 @@ class _PageLivestreamState extends State<PageLivestream> {
                           scale: 1.2,
                           child: ClipPath(
                             clipper: HeartClipper(),
-                            child: SizedBox(
+                            child: Container(
                               width: size,
                               height: size,
+                              color: Colors.black,
                               child: videoIsRunning
                                   ? RTCVideoView(
                                       remoteVideo,

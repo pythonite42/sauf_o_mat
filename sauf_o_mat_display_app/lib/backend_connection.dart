@@ -146,16 +146,16 @@ class SalesforceService {
     if (isTestVersion) return TestBackendData().getPageDiagram();
     try {
       final data = await getRequest(
-          'SELECT Anzahl_Bargetr_nke__c , Anzahl_Bier_Wein_Schorle__c , Anzahl_Kaffee_Lutz__c , AnzahlShots__c , NAME, StatusDisplay__c FROM Team__c');
+          'SELECT Punktzahl_Bargetr_nke__c , Punktzahl_Bier_Wein_Schorle__c , Punktzahl_Kaffee_Lutz__c , Punktzahl_Shots__c , NAME, StatusDisplay__c FROM Team__c');
       var records = data["records"];
       List<Map> returnData = [];
       for (var record in records) {
         returnData.add({
           "group": record["Name"],
-          "longdrink": (record["Anzahl_Bargetr_nke__c"]).toInt(),
-          "beer": (record["Anzahl_Bier_Wein_Schorle__c"]).toInt(),
-          "shot": (record["AnzahlShots__c"]).toInt(),
-          "lutz": (record["Anzahl_Kaffee_Lutz__c"]).toInt(),
+          "longdrink": (record["Punktzahl_Bargetr_nke__c"]).toInt(),
+          "beer": (record["Punktzahl_Bier_Wein_Schorle__c"]).toInt(),
+          "shot": (record["Punktzahl_Shots__c"]).toInt(),
+          "lutz": (record["Punktzahl_Kaffee_Lutz__c"]).toInt(),
           "status": record["StatusDisplay__c"],
         });
       }

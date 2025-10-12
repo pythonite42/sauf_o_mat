@@ -429,10 +429,9 @@ class _PageDiagramState extends State<PageDiagram> {
                                                 final beer = (data?.beer ?? 0).toDouble();
                                                 final shot = (data?.shot ?? 0).toDouble();
                                                 final lutz = (data?.lutz ?? 0).toDouble();
-                                                final maximumValue = (maxValue ?? 0) + emptyCountRightOfFirst;
 
                                                 // Avoid division by zero
-                                                if (maximumValue == 0) return const SizedBox();
+                                                if (chartMaxValue == 0) return const SizedBox();
 
                                                 return Padding(
                                                     padding: EdgeInsetsGeometry.symmetric(
@@ -443,22 +442,22 @@ class _PageDiagramState extends State<PageDiagram> {
                                                           children: [
                                                             Container(
                                                               height: double.infinity,
-                                                              width: totalWidth * longdrink / maximumValue,
+                                                              width: totalWidth * longdrink / chartMaxValue,
                                                               color: sunsetRed,
                                                             ),
                                                             Container(
                                                               height: double.infinity,
-                                                              width: totalWidth * beer / maximumValue,
+                                                              width: totalWidth * beer / chartMaxValue,
                                                               color: westernGold,
                                                             ),
                                                             Container(
                                                               height: double.infinity,
-                                                              width: totalWidth * shot / maximumValue,
+                                                              width: totalWidth * shot / chartMaxValue,
                                                               color: cactusGreen,
                                                             ),
                                                             Container(
                                                               height: double.infinity,
-                                                              width: totalWidth * lutz / maximumValue,
+                                                              width: totalWidth * lutz / chartMaxValue,
                                                               color: lightRusticBrown,
                                                             ),
                                                           ],

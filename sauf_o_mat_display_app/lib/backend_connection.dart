@@ -279,6 +279,7 @@ class SalesforceService {
 
       var record = data["records"][0];
       List<String> quotes = [record["Comment1__c"] ?? "", record["Comment2__c"] ?? "", record["Comment3__c"] ?? ""];
+      quotes.removeWhere((quote) => quote.trim().isEmpty);
       return {
         "recordId": record["Id"],
         "name": record["Commentator__c"] ?? "",

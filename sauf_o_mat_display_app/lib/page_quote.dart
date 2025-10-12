@@ -112,24 +112,16 @@ class PageQuote extends StatelessWidget {
                               ),
                             ), */
 
-                            /* 
                             // Carousel Transition:
 
                             Expanded(
-                              child: QuoteCarousel(
-                                quotes: [
-                                  "Flutter makes building apps delightful.",
-                                  "Write once, run anywhere.",
-                                  "Smooth animations make great UX.",
-                                  "Build beautiful UIs, fast.",
-                                ],
-                              ),
-                            ), */
+                              child: QuoteCarousel(quotes: quotes),
+                            ),
 
-                            // Fade Transition:
+                            /* // Fade Transition:
                             FadingQuoteCarousel(
                               quotes: quotes,
-                            ),
+                            ), */
                           ],
                         ),
                       ),
@@ -145,7 +137,6 @@ class PageQuote extends StatelessWidget {
   }
 }
 
-/*
 class QuoteCarousel extends StatefulWidget {
   final List<String> quotes;
 
@@ -199,12 +190,12 @@ class _QuoteCarouselState extends State<QuoteCarousel> {
             fontSize: 35,
             color: Colors.black87,
           ),
+          maxLines: 4,
         );
       },
     );
   }
 }
-*/
 
 class FadingQuoteCarousel extends StatefulWidget {
   final List<String> quotes;
@@ -253,7 +244,7 @@ class _FadingQuoteCarouselState extends State<FadingQuoteCarousel> {
           fontSize: 35,
           color: Colors.black87,
         ),
-        maxLines: 5,
+        maxLines: 4,
       ),
     );
   }

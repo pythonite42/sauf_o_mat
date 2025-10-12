@@ -11,48 +11,80 @@ class MySize {
   }
 }
 
-class CustomDurations {
+late final dynamic customDurations;
+
+class CustomDurationsProduction {
   // ##### frontend ######################
 
   //general
-  static const int indexNavigationChange = 10;
-  static const int checkIfNavigationIndexChanged =
-      1; //this is an internal duration and should not be changed. It does not affect the backend or my server communication
-  static const int navigationTransition = 800;
-  static const int changeToPrizePageBeforePrizeTime =
-      5 * 60; //seconds before prize time the display changes to prize page
-  static const int stayOnPrizePageAfterPrizeTime =
-      60; //seconds after prize time the display changes back to normal navigation
+  final int indexNavigationChange = 60;
+  final int navigationTransition = 1200;
+  final int changeToPrizePageBeforePrizeTime = 5 * 60; //seconds before prize time the display changes to prize page
+  final int stayOnPrizePageAfterPrizeTime = 60; //seconds after prize time the display changes back to normal navigation
 
   //page diagram
-  static const int reloadDataDiagram = 7;
-  static const int chartAutoScroll = 8; //every x seconds the chart scrolls one bar down
-  static const int speedChartScroll = 500;
-  static const int showPopup = 10;
-  static const int popUpCooldown = 20; //after a popup was shown, wait x seconds until another popup can be shown
-  static const int popUpMillisecondsBetweenShotsMinimum = 200;
-  static const int popUpMillisecondsBetweenShotsMaximum =
-      400; //real maximum is minimum + maximum (e.g. 200 + 400 = 600)
-  static const int popUpShotAnimation = 100;
+  final int reloadDataDiagram = 7;
+  final int chartAutoScroll = 8; //every x seconds the chart scrolls one bar down
+  final int speedChartScroll = 500;
+  final int showPopup = 10;
+  final int popUpCooldown = 20; //after a popup was shown, wait x seconds until another popup can be shown
+  final int popUpMillisecondsBetweenShotsMinimum = 200;
+  final int popUpMillisecondsBetweenShotsMaximum = 800; //real maximum is minimum + maximum (e.g. 200 + 800 = 1000)
+  final int popUpShotAnimation = 100;
 
   //page top3
-  static const int reloadDataTop3 = 7;
+  final int reloadDataTop3 = 7;
 
   //page prize
-  static const int flashSpeed = 400;
-  static const int reloadDataPrize = 10;
-  static const int reloadDataPrizeUnder20sec = 1;
+  final int flashSpeed = 400;
+  final int reloadDataPrize = 10;
+  final int reloadDataPrizeUnder20sec = 1;
 
   //page quote
-  static const int reloadDataQuote = 10;
-  static const int switchQuote = 4;
-  static const int fadeTransistion = 800;
+  final int switchQuote = 6;
+  final int carouselTransistion = 800;
 
   // ##### salesforce ######################
 
-  static const int catchUpValidUntil = 60; //how long is a catchUp eligible for visualisation
-  static const int diagramStatusAufgestiegenAbgestiegen =
-      20; //seconds a group is marked as "aufgestiegen" or "abgestiegen"
+  final int catchUpValidUntil = 60; //how long is a catchUp eligible for visualisation
+  final int diagramStatusAufgestiegenAbgestiegen = 20; //seconds a group is marked as "aufgestiegen" or "abgestiegen"
+}
+
+class CustomDurationsTest {
+  // ##### frontend ######################
+
+  //general
+  final int indexNavigationChange = 10;
+  final int navigationTransition = 800;
+  final int changeToPrizePageBeforePrizeTime = 5 * 60; //seconds before prize time the display changes to prize page
+  final int stayOnPrizePageAfterPrizeTime = 60; //seconds after prize time the display changes back to normal navigation
+
+  //page diagram
+  final int reloadDataDiagram = 7;
+  final int chartAutoScroll = 8; //every x seconds the chart scrolls one bar down
+  final int speedChartScroll = 500;
+  final int showPopup = 10;
+  final int popUpCooldown = 20; //after a popup was shown, wait x seconds until another popup can be shown
+  final int popUpMillisecondsBetweenShotsMinimum = 200;
+  final int popUpMillisecondsBetweenShotsMaximum = 400; //real maximum is minimum + maximum (e.g. 200 + 400 = 600)
+  final int popUpShotAnimation = 100;
+
+  //page top3
+  final int reloadDataTop3 = 7;
+
+  //page prize
+  final int flashSpeed = 400;
+  final int reloadDataPrize = 10;
+  final int reloadDataPrizeUnder20sec = 1;
+
+  //page quote
+  final int switchQuote = 4;
+  final int carouselTransistion = 800;
+
+  // ##### salesforce ######################
+
+  final int catchUpValidUntil = 60; //how long is a catchUp eligible for visualisation
+  final int diagramStatusAufgestiegenAbgestiegen = 20; //seconds a group is marked as "aufgestiegen" or "abgestiegen"
 }
 
 class GlobalSettings {
@@ -67,9 +99,9 @@ class GlobalSettings {
   static const int flashThreshold = 60;
   static const int redThreshold = 300;
   static List<DateTime> prizeTimes = [
-    DateTime(2025, 09, 03, 10, 52),
-    DateTime(2025, 09, 03, 10, 53),
-    DateTime(2025, 09, 03, 11, 01),
+    DateTime(2025, 10, 12, 16, 25),
+    DateTime(2025, 10, 12, 17, 00),
+    DateTime(2025, 10, 12, 19, 00),
   ];
 
   static const newspaperTitle = "The Guggeball Times"; //"Zieefägge Allgemeine"

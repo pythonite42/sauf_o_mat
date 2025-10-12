@@ -48,7 +48,7 @@ class _PageTop3State extends State<PageTop3> {
   }
 
   void _startAutoReloadData() {
-    _dataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations.reloadDataTop3), (_) {
+    _dataReloadTimer = Timer.periodic(Duration(seconds: customDurations.reloadDataTop3), (_) {
       _loadData();
     });
   }

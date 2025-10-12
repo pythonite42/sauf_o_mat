@@ -29,6 +29,13 @@ void main() async {
   });
   await dotenv.load(fileName: ".env");
 
+  final bool isTestVersion = dotenv.env['IS_TEST_VERSION'] == 'true';
+  if (isTestVersion) {
+    customDurations = CustomDurationsTest();
+  } else {
+    customDurations = CustomDurationsProduction();
+  }
+
   // Connect to WebSocket before running app
   await ServerManager().connect("ws://192.168.2.49:8080");
 
@@ -114,7 +121,7 @@ class _MyScaffoldState extends State<MyScaffold> {
 
   void _startPageIndexTimer() {
     _pageIndexReloadTimer?.cancel();
-    _pageIndexReloadTimer = Timer.periodic(Duration(seconds: CustomDurations.indexNavigationChange), (_) {
+    _pageIndexReloadTimer = Timer.periodic(Duration(seconds: customDurations.indexNavigationChange), (_) {
       if (!overridePageIndex) {
         int nextIndex = (pageIndex + 1) % 6;
         if (nextIndex == 2 && DateTime.now().isAfter(GlobalSettings.prizeTimes.last)) {
@@ -137,8 +144,8 @@ class _MyScaffoldState extends State<MyScaffold> {
     }
 
     final prizeTime = GlobalSettings.prizeTimes[_nextPrizeIndex];
-    final preStart = prizeTime.subtract(Duration(seconds: CustomDurations.changeToPrizePageBeforePrizeTime));
-    final preEnd = prizeTime.add(Duration(seconds: CustomDurations.stayOnPrizePageAfterPrizeTime));
+    final preStart = prizeTime.subtract(Duration(seconds: customDurations.changeToPrizePageBeforePrizeTime));
+    final preEnd = prizeTime.add(Duration(seconds: customDurations.stayOnPrizePageAfterPrizeTime));
     final now = DateTime.now();
 
     if (now.isBefore(preStart)) {
@@ -162,7 +169,7 @@ class _MyScaffoldState extends State<MyScaffold> {
     _unfreezeTimer?.cancel();
     _unfreezeTimer = Timer(
         Duration(
-            seconds: CustomDurations.changeToPrizePageBeforePrizeTime + CustomDurations.stayOnPrizePageAfterPrizeTime),
+            seconds: customDurations.changeToPrizePageBeforePrizeTime + customDurations.stayOnPrizePageAfterPrizeTime),
         _exitPrizeFreeze);
   }
 
@@ -256,7 +263,7 @@ class _MyScaffoldState extends State<MyScaffold> {
   Route _createRoute(Widget page) {
     if (animateNavigation) {
       return PageRouteBuilder(
-        transitionDuration: Duration(milliseconds: CustomDurations.navigationTransition),
+        transitionDuration: Duration(milliseconds: customDurations.navigationTransition),
         pageBuilder: (_, animation, secondaryAnimation) => backgroundContainer(child: page),
         transitionsBuilder: (_, animation, secondaryAnimation, child) {
           const curve = Curves.ease;

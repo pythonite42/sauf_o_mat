@@ -54,7 +54,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
 
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: CustomDurations.flashSpeed),
+      duration: Duration(milliseconds: customDurations.flashSpeed),
     )..repeat(reverse: true);
 
     _fadeAnimation = CurvedAnimation(parent: _animationController, curve: Curves.easeInOut);
@@ -62,7 +62,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
 
   void _startAutoReloadData() {
     _dataReloadTimerIsFast = false;
-    _dataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations.reloadDataPrize), (_) {
+    _dataReloadTimer = Timer.periodic(Duration(seconds: customDurations.reloadDataPrize), (_) {
       _loadData();
     });
   }
@@ -96,7 +96,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
           _remainingTime = nextPrize?.difference(DateTime.now()) ?? Duration();
           if (_remainingTime!.inSeconds < 20 && !_dataReloadTimerIsFast) {
             _dataReloadTimer.cancel();
-            _dataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations.reloadDataPrizeUnder20sec), (_) {
+            _dataReloadTimer = Timer.periodic(Duration(seconds: customDurations.reloadDataPrizeUnder20sec), (_) {
               _loadData();
             });
             _dataReloadTimerIsFast = true;

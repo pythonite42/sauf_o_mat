@@ -68,7 +68,7 @@ class _PageDiagramState extends State<PageDiagram> {
   }
 
   void _startAutoReloadChartData() {
-    _chartDataReloadTimer = Timer.periodic(Duration(seconds: CustomDurations.reloadDataDiagram), (_) {
+    _chartDataReloadTimer = Timer.periodic(Duration(seconds: customDurations.reloadDataDiagram), (_) {
       _loadChartData();
     });
   }
@@ -129,7 +129,7 @@ class _PageDiagramState extends State<PageDiagram> {
   }
 
   void _startAutoScroll() {
-    var duration = Duration(seconds: CustomDurations.chartAutoScroll);
+    var duration = Duration(seconds: customDurations.chartAutoScroll);
 
     _scrollTimer = Timer.periodic(duration, (timer) {
       if (!_scrollController.hasClients) return;
@@ -140,7 +140,7 @@ class _PageDiagramState extends State<PageDiagram> {
 
       _scrollController.animateTo(
         next >= (maxScroll + barHeight / 2) ? 0 : next,
-        duration: Duration(milliseconds: CustomDurations.speedChartScroll),
+        duration: Duration(milliseconds: customDurations.speedChartScroll),
         curve: Curves.easeInOut,
       );
     });
@@ -169,7 +169,7 @@ class _PageDiagramState extends State<PageDiagram> {
     );
     SalesforceService().setPageDiagramVisualizedAt(popupDataId, DateTime.now());
 
-    Future.delayed(Duration(seconds: CustomDurations.showPopup), () {
+    Future.delayed(Duration(seconds: customDurations.showPopup), () {
       try {
         Navigator.of(_popupContext!).pop();
       } catch (_) {}
@@ -182,7 +182,7 @@ class _PageDiagramState extends State<PageDiagram> {
         });
       }
 
-      Future.delayed(Duration(seconds: CustomDurations.popUpCooldown), () {
+      Future.delayed(Duration(seconds: customDurations.popUpCooldown), () {
         _popupCooldown = false;
       });
     });
@@ -549,8 +549,9 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
     int count = _random.nextInt(GlobalSettings.popUpMaxShotCounts - 1) + 1; // up to 7 shots
     for (int i = 0; i < count; i++) {
       await Future.delayed(Duration(
-          milliseconds: _random.nextInt(CustomDurations.popUpMillisecondsBetweenShotsMaximum) +
-              CustomDurations.popUpMillisecondsBetweenShotsMinimum)); // delay between shots
+          milliseconds: (_random.nextInt(customDurations.popUpMillisecondsBetweenShotsMaximum) +
+                  customDurations.popUpMillisecondsBetweenShotsMinimum)
+              .toInt())); // delay between shots
       try {
         setState(() {
           _bulletHoles.add(
@@ -701,7 +702,7 @@ class _RacePopupWidgetState extends State<RacePopupWidget> {
                   top: hole.position.dy,
                   child: TweenAnimationBuilder<double>(
                     tween: Tween(begin: 0.0, end: 1.0),
-                    duration: Duration(milliseconds: CustomDurations.popUpShotAnimation),
+                    duration: Duration(milliseconds: customDurations.popUpShotAnimation),
                     curve: Curves.linear,
                     builder: (context, scale, child) {
                       return Transform.scale(

@@ -207,13 +207,13 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            "How to play",
+                            "Spielregeln",
                             maxLines: 1,
                             style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 50)),
                           ),
                           SizedBox(height: MySize(context).h * 0.03),
                           Text(
-                            "subline sublinesublinesubline subline subline subline subline subline  sublinesublinesubline subline v sublinsublinesubline subline  sublinesubline subline",
+                            "Nenne bei der Getränkebestellung deinen Gruppennamen um Punkte zu sammeln. Die Gruppe mit den meisten Punkten gewinnt.",
                             style: TextStyle(fontSize: 25),
                             maxLines: 4,
                             textAlign: TextAlign.left,

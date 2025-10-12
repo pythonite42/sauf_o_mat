@@ -27,6 +27,7 @@ TODOs Prio 1
 (d) - page_prize.dart: popUp mit Gewinnerbild und Glückwunsch
 (d) - page_quote.dart: patch wenn Person schon gezeigt wurde
 (d) - page_quote.dart: automatischen reload entfernen
+    - page_prize.dart: WinnerPopupWidget prize parameter
 
 
 (d) - max Zeichenanzahl integrieren 

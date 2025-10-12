@@ -7,9 +7,15 @@ class PageSchedule extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsetsGeometry.all(MySize(context).h * 0.08),
-      child: Image.asset(
-        "assets/placeholder_timetable.png",
+      padding: EdgeInsets.all(MySize(context).h * 0.08),
+      child: Align(
+        alignment: Alignment.center,
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.black, width: 8),
+          ),
+          child: Image.asset("assets/placeholder_timetable.png"),
+        ),
       ),
     );
   }

@@ -296,13 +296,33 @@ class _MyHomePageState extends State<MyHomePage> {
     return Container(
       width: MySize(context).w * widthFactor,
       padding: EdgeInsets.symmetric(horizontal: MySize(context).h * paddingFactor),
-      decoration: BoxDecoration(color: darkAccent),
+      decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary, borderRadius: BorderRadius.circular(8)),
       child: DropdownButtonFormField<String>(
         initialValue: currentNavigationPage.name,
-        icon: const Icon(Icons.expand_more),
+        icon: Icon(Icons.expand_more, color: Theme.of(context).colorScheme.onPrimary),
+        dropdownColor: Theme.of(context).colorScheme.surface,
         decoration: const InputDecoration(
           enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent)),
+          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent)),
         ),
+        style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+        selectedItemBuilder: (BuildContext context) {
+          return pages.map((page) {
+            return Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                page.name,
+                style: TextStyle(color: Theme.of(context).colorScheme.onPrimary, fontWeight: FontWeight.bold),
+              ),
+            );
+          }).toList();
+        },
+        items: pages.map((NavigationPage page) {
+          return DropdownMenuItem<String>(
+            value: page.name,
+            child: Text(page.name, style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
+          );
+        }).toList(),
         onChanged: (String? newValue) async {
           NavigationPage newPage = pages.firstWhere((page) => page.name == newValue);
 
@@ -329,9 +349,6 @@ class _MyHomePageState extends State<MyHomePage> {
             }
           });
         },
-        items: pages.map((NavigationPage page) {
-          return DropdownMenuItem<String>(value: page.name, child: Text(page.name));
-        }).toList(),
       ),
     );
   }
@@ -462,7 +479,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [reloadAppButton(), myDropDownButtonFormField(0.6, 0.02)],
+                        children: [reloadAppButton(), myDropDownButtonFormField(0.5, 0.02)],
                       ),
                       SizedBox(height: MySize(context).h * 0.02),
                       Row(
@@ -511,9 +528,12 @@ class _MyHomePageState extends State<MyHomePage> {
                             },
                           )
                         : Center(
-                            child: Text(
-                              "Kamera wird aktiviert wenn Livestream ausgewählt ist",
-                              style: TextStyle(color: Colors.white),
+                            child: Padding(
+                              padding: EdgeInsets.all(MySize(context).h * 0.02),
+                              child: Text(
+                                "Kamera wird aktiviert wenn Livestream ausgewählt ist",
+                                textAlign: TextAlign.center,
+                              ),
                             ),
                           ),
                   ),
@@ -564,9 +584,12 @@ class _MyHomePageState extends State<MyHomePage> {
                             },
                           )
                         : Center(
-                            child: Text(
-                              "Kamera wird aktiviert wenn Livestream ausgewählt ist",
-                              style: TextStyle(color: Colors.white),
+                            child: Padding(
+                              padding: EdgeInsets.all(MySize(context).h * 0.02),
+                              child: Text(
+                                "Kamera wird aktiviert wenn Livestream ausgewählt ist",
+                                textAlign: TextAlign.center,
+                              ),
                             ),
                           ),
                   ),

@@ -21,7 +21,7 @@ class SalesforceService {
   final String? username = dotenv.env['SF_USERNAME'];
   final String? loginUrl = dotenv.env['SF_LOGIN_URL'];
   final String privateKeyPath = 'assets/server.key';
-  final bool isTestVersion = dotenv.env['IS_TEST_VERSION'] == 'true';
+  final bool isTestVersion = dotenv.env['MODE'] == 'testing';
 
   /// Returns a valid access token, caching it until it expires
   Future<String> getAccessToken() async {

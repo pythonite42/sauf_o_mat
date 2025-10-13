@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sauf_o_mat_display_app/backend_connection.dart';
 import 'package:sauf_o_mat_display_app/theme.dart';
@@ -156,7 +157,8 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
   Widget build(BuildContext context) {
     final padding = MySize(context).h * 0.08;
 
-    return Padding(
+    return Stack(children: [
+      Padding(
       padding: EdgeInsetsGeometry.all(padding),
       child: !dataLoaded
           ? Center(
@@ -171,20 +173,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
                     child: Image.asset(imagePrize, fit: BoxFit.cover),
                   ),
                 ),
-                /*
-                // TODO helper button zum stylen des PopUps, darf nicht in Production!!
-                ElevatedButton(
-                  onPressed: () {
-                    _showPrizePopup();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                    padding: EdgeInsets.zero,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
-                  ),
-                  child: Text("showPopUp"),
-                ), */
+
                 SizedBox(width: MySize(context).w * 0.05), // spacing between image and content
 
                 Expanded(
@@ -258,7 +247,14 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
                 ),
               ],
             ),
-    );
+      ),
+      if (dotenv.env['MODE'] != "production")
+        IconButton(
+            onPressed: _showPrizePopup,
+            icon: Icon(Icons.open_in_new),
+            color: Theme.of(context).colorScheme.secondary,
+            iconSize: MySize(context).h * 0.05)
+    ]);
   }
 
   Widget _buildTimerBox(Color color, double fontsize) {

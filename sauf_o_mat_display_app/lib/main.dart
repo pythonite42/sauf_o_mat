@@ -29,8 +29,7 @@ void main() async {
   });
   await dotenv.load(fileName: ".env");
 
-  final bool isTestVersion = dotenv.env['IS_TEST_VERSION'] == 'true';
-  if (isTestVersion) {
+  if (dotenv.env['MODE'] == "testing") {
     customDurations = CustomDurationsTest();
   } else {
     customDurations = CustomDurationsProduction();

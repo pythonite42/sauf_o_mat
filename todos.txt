@@ -81,3 +81,8 @@ TODOs am Ende
     - backend_connection.dart: line 167: anpassung SOQL page_diagram pop up: IsLessThanOneMinute__c = true noch mit einbauen
     - alle imageUrls checken ob die Bilder gut aussehen
     - Code für TODOs checken
+
+
+
+Fragen
+    - page_prize.dart: logo oval oder rund? (Beispiel Push It Logo)

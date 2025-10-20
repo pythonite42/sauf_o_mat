@@ -159,94 +159,94 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
 
     return Stack(children: [
       Padding(
-      padding: EdgeInsetsGeometry.all(padding),
-      child: !dataLoaded
-          ? Center(
-              child: CircularProgressIndicator(color: defaultOnPrimary),
-            )
-          : Row(
-              children: [
-                Expanded(
-                  flex: 5,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Image.asset(imagePrize, fit: BoxFit.cover),
-                  ),
-                ),
-
-                SizedBox(width: MySize(context).w * 0.05), // spacing between image and content
-
-                Expanded(
-                  flex: 4,
-                  child: Container(
-                    height: MySize(context).h * 0.83,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage('assets/parchment.png'),
-                        fit: BoxFit.cover,
-                      ),
+        padding: EdgeInsetsGeometry.all(padding),
+        child: !dataLoaded
+            ? Center(
+                child: CircularProgressIndicator(color: defaultOnPrimary),
+              )
+            : Row(
+                children: [
+                  Expanded(
+                    flex: 5,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image.asset(imagePrize, fit: BoxFit.cover),
                     ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: MySize(context).w * 0.05,
-                        vertical: MySize(context).h * 0.05,
+                  ),
+
+                  SizedBox(width: MySize(context).w * 0.05), // spacing between image and content
+
+                  Expanded(
+                    flex: 4,
+                    child: Container(
+                      height: MySize(context).h * 0.83,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage('assets/parchment.png'),
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Spielregeln",
-                            maxLines: 1,
-                            style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 50)),
-                          ),
-                          SizedBox(height: MySize(context).h * 0.03),
-                          Text(
-                            "Nenne bei der Getränkebestellung deinen Gruppennamen um Punkte zu sammeln. Die Gruppe mit den meisten Punkten gewinnt.",
-                            style: TextStyle(fontSize: 25),
-                            maxLines: 4,
-                            textAlign: TextAlign.left,
-                          ),
-                          SizedBox(height: MySize(context).h * 0.03),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Aktuell\nführend',
-                                textAlign: TextAlign.end,
-                                style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
-                              ),
-                              SizedBox(width: MySize(context).w * 0.02),
-                              CircleAvatar(
-                                backgroundColor: Colors.transparent,
-                                radius: MySize(context).h * 0.1,
-                                child: ClipOval(
-                                  child: Image.network(
-                                    groupLogo,
-                                    errorBuilder: (context, _, __) => Image.asset("assets/placeholder_group.png"),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: MySize(context).w * 0.05,
+                          vertical: MySize(context).h * 0.05,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Spielregeln",
+                              maxLines: 1,
+                              style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 50)),
+                            ),
+                            SizedBox(height: MySize(context).h * 0.02),
+                            Text(
+                              "Nenne bei der Getränkebestellung deinen Gruppennamen um Punkte zu sammeln. Die Gruppe mit den meisten Punkten gewinnt.",
+                              style: TextStyle(fontSize: 25),
+                              maxLines: 5,
+                              textAlign: TextAlign.left,
+                            ),
+                            SizedBox(height: MySize(context).h * 0.02),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Aktuell\nführend',
+                                  textAlign: TextAlign.end,
+                                  style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 30)),
+                                ),
+                                SizedBox(width: MySize(context).w * 0.02),
+                                CircleAvatar(
+                                  backgroundColor: Colors.transparent,
+                                  radius: MySize(context).h * 0.1,
+                                  child: ClipOval(
+                                    child: Image.network(
+                                      groupLogo,
+                                      errorBuilder: (context, _, __) => Image.asset("assets/placeholder_group.png"),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: MySize(context).h * 0.05),
-                          if (_remainingTime != null)
-                            (_remainingTime!.inSeconds > GlobalSettings.redThreshold)
-                                ? _buildTimerBox(greenAccent, 25)
-                                : (_remainingTime!.inSeconds > GlobalSettings.flashThreshold ||
-                                        _remainingTime!.inSeconds == 0)
-                                    ? _buildTimerBox(redAccent, 25)
-                                    : FadeTransition(
-                                        opacity: _fadeAnimation,
-                                        child: _buildTimerBox(redAccent, 25),
-                                      ),
-                        ],
+                              ],
+                            ),
+                            SizedBox(height: MySize(context).h * 0.03),
+                            if (_remainingTime != null)
+                              (_remainingTime!.inSeconds > GlobalSettings.redThreshold)
+                                  ? _buildTimerBox(greenAccent, 25)
+                                  : (_remainingTime!.inSeconds > GlobalSettings.flashThreshold ||
+                                          _remainingTime!.inSeconds == 0)
+                                      ? _buildTimerBox(redAccent, 25)
+                                      : FadeTransition(
+                                          opacity: _fadeAnimation,
+                                          child: _buildTimerBox(redAccent, 25),
+                                        ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
       ),
       if (dotenv.env['MODE'] != "production")
         IconButton(
@@ -371,9 +371,15 @@ class _WinnerPopupWidgetState extends State<WinnerPopupWidget> with SingleTicker
                 child: Column(mainAxisSize: MainAxisSize.min, children: [
                   Text(
                     GlobalSettings.newspaperTitle,
-                    style: NewspaperTextTheme.title.copyWith(fontSize: 70),
+                    style: NewspaperTextTheme.title.copyWith(fontSize: 65),
                   ),
-                  SizedBox(height: MySize(context).h * 0.05),
+                  Container(
+                    padding: EdgeInsets.only(bottom: MySize(context).h * 0.03, top: MySize(context).h * 0.01),
+                    width: MySize(context).w * 0.4,
+                    child: Divider(
+                      thickness: 4,
+                    ),
+                  ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

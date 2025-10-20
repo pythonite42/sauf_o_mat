@@ -209,7 +209,7 @@ class SalesforceService {
     if (isTestVersion) return TestBackendData().getPageTop3();
     try {
       final data = await getRequest(
-          'SELECT Anzahl_Bargetr_nke__c , Anzahl_Bier_Wein_Schorle__c , Anzahl_Kaffee_Lutz__c , AnzahlShots__c , Punktzahl__c, Logo__c FROM Team__c WHERE Rang__c < 4');
+          'SELECT Anzahl_Bargetr_nke__c , Anzahl_Bier_Wein_Schorle__c , Anzahl_Kaffee_Lutz__c , AnzahlShots__c , Punktzahl__c, Logo__c, NAME FROM Team__c WHERE Rang__c < 4');
       var records = data["records"];
       List<Map> returnData = [];
       for (var record in records) {
@@ -220,6 +220,7 @@ class SalesforceService {
           "lutz": (record["Anzahl_Kaffee_Lutz__c"]).toInt(),
           "punktzahl": (record["Punktzahl__c"]).toInt(),
           "groupLogo": record["Logo__c"] ?? "",
+          "name": record["Name"] ?? "",
         });
       }
       return returnData;

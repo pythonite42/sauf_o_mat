@@ -7,6 +7,7 @@ import 'package:sauf_o_mat_display_app/globals.dart';
 
 class GroupData {
   String logoUrl;
+  String name;
   int longdrink;
   int beer;
   int shot;
@@ -15,6 +16,7 @@ class GroupData {
 
   GroupData({
     required this.logoUrl,
+    required this.name,
     required this.longdrink,
     required this.beer,
     required this.shot,
@@ -64,6 +66,7 @@ class _PageTop3State extends State<PageTop3> {
           for (var element in newDataMapList) {
             _groupData.add(GroupData(
               logoUrl: element["groupLogo"],
+              name: element["name"],
               longdrink: element["longdrink"],
               beer: element["beer"],
               shot: element["shot"],
@@ -267,6 +270,10 @@ class WantedPoster extends StatelessWidget {
                 'Staatsfeind Nr. $place',
                 style: GoogleFonts.rye(textStyle: TextStyle(fontSize: size * 0.05)),
               ),
+              Text(
+                data.name,
+                style: GoogleFonts.rye(textStyle: TextStyle(fontSize: size * 0.04)),
+              ),
               Divider(thickness: 2),
               SizedBox(height: size * 0.02),
               Image.network(
@@ -277,7 +284,7 @@ class WantedPoster extends StatelessWidget {
                   height: size * 0.3,
                 ),
               ),
-              SizedBox(height: size * 0.05),
+              SizedBox(height: size * 0.02),
               SizedBox(
                 height: size * 0.25,
                 child: Row(

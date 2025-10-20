@@ -39,6 +39,7 @@ class CustomDurationsProduction {
   final int flashSpeed = 400;
   final int reloadDataPrize = 10;
   final int reloadDataPrizeUnder20sec = 1;
+  final int delayPrizePopUp = 2;
 
   //page quote
   final int switchQuote = 6;
@@ -76,6 +77,7 @@ class CustomDurationsTest {
   final int flashSpeed = 400;
   final int reloadDataPrize = 10;
   final int reloadDataPrizeUnder20sec = 1;
+  final int delayPrizePopUp = 2;
 
   //page quote
   final int switchQuote = 4;

@@ -115,7 +115,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
   }
 
   void _showPrizePopup() async {
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: customDurations.delayPrizePopUp));
     WidgetsBinding.instance.addPostFrameCallback((_) {
       debugPrint("show prize popup: ${DateTime.now()}");
       showDialog(

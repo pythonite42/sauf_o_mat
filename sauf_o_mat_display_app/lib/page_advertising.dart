@@ -50,7 +50,7 @@ class PageAdvertising extends StatelessWidget {
               ),
               Positioned(
                 left: MySize(context).w * 0.18,
-                top: MySize(context).h * 0.1,
+                top: MySize(context).h * 0.08,
                 child: Tilt(
                   disable: true,
                   lightConfig: const LightConfig(disable: true),
@@ -62,7 +62,13 @@ class PageAdvertising extends StatelessWidget {
                         GlobalSettings.newspaperTitle,
                         style: NewspaperTextTheme.title,
                       ),
-                      SizedBox(height: MySize(context).h * 0.03),
+                      Container(
+                        padding: EdgeInsets.only(bottom: MySize(context).h * 0.02),
+                        width: MySize(context).w * 0.55,
+                        child: Divider(
+                          thickness: 4,
+                        ),
+                      ),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -87,7 +93,7 @@ class PageAdvertising extends StatelessWidget {
                             ),
                           ),
 
-                          SizedBox(width: MySize(context).w * 0.03), // spacing between image and content
+                          SizedBox(width: MySize(context).w * 0.02), // spacing between image and content
                           SizedBox(
                             width: MySize(context).w * 0.27,
                             child: Column(
@@ -95,14 +101,14 @@ class PageAdvertising extends StatelessWidget {
                                 Text(
                                   headline,
                                   textAlign: TextAlign.center,
-                                  style: NewspaperTextTheme.headline.copyWith(height: 1),
+                                  style: NewspaperTextTheme.headline.copyWith(height: 1, fontSize: 45),
                                   maxLines: 2,
                                 ),
                                 SizedBox(height: MySize(context).h * 0.03),
                                 Text(
                                   text,
-                                  textAlign: TextAlign.justify,
-                                  style: NewspaperTextTheme.body.copyWith(height: 1),
+                                  textAlign: TextAlign.left,
+                                  style: NewspaperTextTheme.body.copyWith(height: 1, fontSize: 32),
                                   maxLines: 9,
                                 ),
                               ],

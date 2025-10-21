@@ -4,9 +4,12 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
+
   runApp(const MyApp());
 }
 
@@ -70,7 +73,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void connectToServer() {
     try {
-      channel = WebSocketChannel.connect(Uri.parse("ws://192.168.2.49:8080"));
+      final String? ipAddress = dotenv.env['SERVER_IP'];
+      final String? port = dotenv.env['SERVER_PORT'];
+
+      channel = WebSocketChannel.connect(Uri.parse("ws://$ipAddress:$port"));
 
       // Listening to the socket event as a stream
       channel?.stream.listen((message) async {

@@ -36,7 +36,10 @@ void main() async {
   }
 
   // Connect to WebSocket before running app
-  await ServerManager().connect("ws://192.168.2.49:8080");
+  final String? ipAddress = dotenv.env['SERVER_IP'];
+  final String? port = dotenv.env['SERVER_PORT'];
+
+  await ServerManager().connect("ws://$ipAddress:$port");
 
   runApp(const MyApp());
 }

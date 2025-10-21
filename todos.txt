@@ -28,11 +28,16 @@ TODOs Prio 1
 (d) - page_quote.dart: patch wenn Person schon gezeigt wurde
 (d) - page_quote.dart: automatischen reload entfernen
     - page_prize.dart: WinnerPopupWidget prize parameter
+    - main.dart: IP adresse
+    - controls/main.dart: IP adresse
+    - page_schedule.dart: timetable aus navigation rausnehmen nachdem letzte gespielt haben 
+    - page_layout: ex cam layout korrigieren
 
 
 (d) - max Zeichenanzahl integrieren 
     - Prize Bilder generieren: Infos ins Bild: uhrzeit vom Gewinn, was es zu gewinnen gibt
     - Prize Text und überschrift erstellen: der Text sind die Regeln (wie viele Punkte pro Getränk, wie kauf ich für meine Gruppe)
+    - Ringlicht besorgen
 (d) - Platzhalter erstellen: Einzelperson(SocialMedia Comment), Gruppe
 (d) - Hintergrundbild neu erstellen: rechts muss so aufhören wie links anfängt
 (d) - Image required: 

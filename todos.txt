@@ -28,8 +28,8 @@ TODOs Prio 1
 (d) - page_quote.dart: patch wenn Person schon gezeigt wurde
 (d) - page_quote.dart: automatischen reload entfernen
     - page_prize.dart: WinnerPopupWidget prize parameter
-    - main.dart: IP adresse
-    - controls/main.dart: IP adresse
+(d) - main.dart: IP adresse
+(d) - controls/main.dart: IP adresse
     - page_schedule.dart: timetable aus navigation rausnehmen nachdem letzte gespielt haben 
     - page_layout: ex cam layout korrigieren
 

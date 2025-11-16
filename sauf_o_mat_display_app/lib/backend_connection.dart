@@ -22,6 +22,7 @@ class SalesforceService {
   final String? loginUrl = dotenv.env['SF_LOGIN_URL'];
   final String privateKeyPath = 'assets/server.key';
   final bool isTestVersion = dotenv.env['MODE'] == 'testing';
+  final bool isProdVersion = dotenv.env['MODE'] == 'production';
 
   /// Returns a valid access token, caching it until it expires
   Future<String> getAccessToken() async {
@@ -169,9 +170,10 @@ class SalesforceService {
   Future<Map> getPageDiagramPopUp() async {
     if (isTestVersion) return TestBackendData().getPageDiagramPopUp();
     try {
-      final data = await getRequest(
-          //'SELECT Id, VisualizedAt__c, ChasingTeam__r.Name, WantedTeam__r.Name, WantedTeam__r.Logo__c, WantedTeam__r.Punktzahl__c FROM CatchUp__c WHERE VisualizedAt__c = null AND RankDeltaIsOne__c = true AND IsLessThan1Minute__c = true ORDER BY LastModifiedDate DESC LIMIT 1');
-          'SELECT Id, VisualizedAt__c, ChasingTeam__r.Name, WantedTeam__r.Name, WantedTeam__r.Logo__c, WantedTeam__r.Punktzahl__c FROM CatchUp__c WHERE VisualizedAt__c = null AND RankDeltaIsOne__c = true ORDER BY LastModifiedDate DESC LIMIT 1');
+      String query = isProdVersion
+          ? 'SELECT Id, VisualizedAt__c, ChasingTeam__r.Name, WantedTeam__r.Name, WantedTeam__r.Logo__c, WantedTeam__r.Punktzahl__c FROM CatchUp__c WHERE VisualizedAt__c = null AND RankDeltaIsOne__c = true AND IsLessThan1Minute__c = true ORDER BY LastModifiedDate DESC LIMIT 1'
+          : 'SELECT Id, VisualizedAt__c, ChasingTeam__r.Name, WantedTeam__r.Name, WantedTeam__r.Logo__c, WantedTeam__r.Punktzahl__c FROM CatchUp__c WHERE VisualizedAt__c = null AND RankDeltaIsOne__c = true ORDER BY LastModifiedDate DESC LIMIT 1';
+      final data = await getRequest(query);
       var record = data["records"][0];
       return {
         "showPopup": true,

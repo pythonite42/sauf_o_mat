@@ -91,6 +91,7 @@ class CustomDurationsTest {
 
 class GlobalSettings {
   static const double fullscreenIconSize = 20;
+  static DateTime lastPerformance = DateTime(2025, 11, 16, 20, 10);
 
   // page diagram
   static const int totalBarsVisible = 5;
@@ -101,9 +102,9 @@ class GlobalSettings {
   static const int flashThreshold = 60;
   static const int redThreshold = 300;
   static List<DateTime> prizeTimes = [
-    DateTime(2025, 10, 12, 16, 25),
-    DateTime(2025, 10, 12, 17, 00),
-    DateTime(2025, 10, 12, 19, 00),
+    DateTime(2025, 11, 16, 16, 25),
+    DateTime(2025, 11, 16, 17, 00),
+    DateTime(2025, 11, 16, 21, 00),
   ];
 
   static const newspaperTitle = "The Guggeball Times"; //"Zieefägge Allgemeine"

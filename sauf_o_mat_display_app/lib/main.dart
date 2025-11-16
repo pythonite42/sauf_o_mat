@@ -112,6 +112,8 @@ class _MyScaffoldState extends State<MyScaffold> {
 
   void _navigateToPage(int index) {
     if (index == 2 && DateTime.now().isAfter(GlobalSettings.prizeTimes.last)) return;
+    if (index == 3 && DateTime.now().isAfter(GlobalSettings.lastPerformance)) return;
+
     setState(() {
       pageIndex = index;
     });
@@ -127,6 +129,9 @@ class _MyScaffoldState extends State<MyScaffold> {
       if (!overridePageIndex) {
         int nextIndex = (pageIndex + 1) % 6;
         if (nextIndex == 2 && DateTime.now().isAfter(GlobalSettings.prizeTimes.last)) {
+          nextIndex++;
+        }
+        if (nextIndex == 3 && DateTime.now().isAfter(GlobalSettings.lastPerformance)) {
           nextIndex++;
         }
         animateNavigation = true;

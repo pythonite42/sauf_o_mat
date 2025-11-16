@@ -27,11 +27,9 @@ TODOs Prio 1
 (d) - page_prize.dart: popUp mit Gewinnerbild und Glückwunsch
 (d) - page_quote.dart: patch wenn Person schon gezeigt wurde
 (d) - page_quote.dart: automatischen reload entfernen
-    - page_prize.dart: WinnerPopupWidget prize parameter
-    - globals.dart: correct Prize times
 (d) - main.dart: IP adresse
 (d) - controls/main.dart: IP adresse
-    - page_schedule.dart: timetable aus navigation rausnehmen nachdem letzte gespielt haben 
+(d) - page_schedule.dart: timetable aus navigation rausnehmen nachdem letzte gespielt haben 
     - page_layout: ex cam layout korrigieren
 
 
@@ -86,7 +84,10 @@ TODOs am Ende
     - backend durations checken: CatchUp__c.isLessThanOneMinute__c 
 (d) - backend_connection.dart: line 167: anpassung SOQL page_diagram pop up: IsLessThanOneMinute__c = true noch mit einbauen
     - alle imageUrls checken ob die Bilder gut aussehen
-    - Code für TODOs checken
+    - Code für TODOs checken    
+    - page_prize.dart: WinnerPopupWidget prize parameter
+    - globals.dart: correct Prize times
+    - globals.dart: correct last Performance time
 
 
 

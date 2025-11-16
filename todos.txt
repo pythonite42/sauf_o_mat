@@ -80,7 +80,7 @@ TODOs Prio 3
 
 TODOs am Ende
 
-    - alle durations checken
+(d) - alle durations checken
     - backend durations checken: CatchUp__c.isLessThanOneMinute__c 
 (d) - backend_connection.dart: line 167: anpassung SOQL page_diagram pop up: IsLessThanOneMinute__c = true noch mit einbauen
     - alle imageUrls checken ob die Bilder gut aussehen

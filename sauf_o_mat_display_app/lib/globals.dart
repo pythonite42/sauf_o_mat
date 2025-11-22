@@ -91,7 +91,7 @@ class CustomDurationsTest {
 
 class GlobalSettings {
   static const double fullscreenIconSize = 20;
-  static DateTime lastPerformance = DateTime(2025, 11, 16, 20, 10);
+  static DateTime lastPerformance = DateTime(2025, 11, 22, 23, 45);
 
   // page diagram
   static const int totalBarsVisible = 5;

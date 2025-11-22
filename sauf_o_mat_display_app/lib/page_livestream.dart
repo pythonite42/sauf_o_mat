@@ -229,11 +229,11 @@ class _PageLivestreamState extends State<PageLivestream> {
                           children: [
                             Text(
                               "Howdy Cowboy!",
-                              style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 60)),
+                              style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 55)),
                             ),
                             Text(
                               "Du wurdest zum Abschuss freigegeben",
-                              style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 60)),
+                              style: GoogleFonts.rye(textStyle: TextStyle(fontSize: 55)),
                             ),
                           ],
                         )),

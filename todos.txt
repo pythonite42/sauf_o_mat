@@ -30,7 +30,7 @@ TODOs Prio 1
 (d) - main.dart: IP adresse
 (d) - controls/main.dart: IP adresse
 (d) - page_schedule.dart: timetable aus navigation rausnehmen nachdem letzte gespielt haben 
-    - page_layout: ex cam layout korrigieren
+(d) - page_layout: ex cam layout korrigieren
 
 
 (d) - max Zeichenanzahl integrieren 

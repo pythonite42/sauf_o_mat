@@ -85,10 +85,11 @@ TODOs am Ende
 (d) - backend_connection.dart: line 167: anpassung SOQL page_diagram pop up: IsLessThanOneMinute__c = true noch mit einbauen
     - alle imageUrls checken ob die Bilder gut aussehen
     - Code für TODOs checken    
-    - page_prize.dart: WinnerPopupWidget prize parameter
+    - page_prize.dart: WinnerPopupWidget prize parameter abklären
     - globals.dart: correct Prize times
     - globals.dart: correct last Performance time
     - prize_page.dart: layout without overflow for all three prizes
+    - page_schedule.dart: layout checken
 
 
 

@@ -22,7 +22,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
 
   bool dataLoaded = false;
   bool _dataReloadTimerIsFast = false;
-  DateTime? nextPrize;
+  DateTime? nextPrizeDateTime;
 
   String groupLogo = "";
   String groupName = "";
@@ -41,7 +41,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
       var prizeTime = GlobalSettings.prizeTimes[i];
       if (prizeTime.isAfter(DateTime.now())) {
         setState(() {
-          nextPrize = prizeTime;
+          nextPrizeDateTime = prizeTime;
           imagePrize = "assets/prize_$i.png";
         });
         break;
@@ -88,13 +88,13 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
   void _startCountdown() {
     if (_remainingTime == null) {
       setState(() {
-        _remainingTime = nextPrize?.difference(DateTime.now()) ?? Duration();
+        _remainingTime = nextPrizeDateTime?.difference(DateTime.now()) ?? Duration();
       });
     }
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       setState(() {
         if (_remainingTime!.inSeconds > 0) {
-          _remainingTime = nextPrize?.difference(DateTime.now()) ?? Duration();
+          _remainingTime = nextPrizeDateTime?.difference(DateTime.now()) ?? Duration();
           if (_remainingTime!.inSeconds < 20 && !_dataReloadTimerIsFast) {
             _dataReloadTimer.cancel();
             _dataReloadTimer = Timer.periodic(Duration(seconds: customDurations.reloadDataPrizeUnder20sec), (_) {

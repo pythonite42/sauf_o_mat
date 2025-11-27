@@ -88,6 +88,7 @@ TODOs am Ende
     - page_prize.dart: WinnerPopupWidget prize parameter
     - globals.dart: correct Prize times
     - globals.dart: correct last Performance time
+    - prize_page.dart: layout without overflow for all three prizes
 
 
 

@@ -102,9 +102,9 @@ class GlobalSettings {
   static const int flashThreshold = 60;
   static const int redThreshold = 300;
   static List<DateTime> prizeTimes = [
-    DateTime(2025, 11, 16, 16, 25),
-    DateTime(2025, 11, 16, 17, 00),
-    DateTime(2025, 11, 16, 21, 00),
+    DateTime(2025, 11, 29, 22, 45),
+    DateTime(2025, 11, 29, 23, 30),
+    DateTime(2025, 11, 30, 00, 45),
   ];
 
   static const newspaperTitle = "The Guggeball Times"; //"Zieefägge Allgemeine"

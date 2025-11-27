@@ -101,6 +101,11 @@ class GlobalSettings {
   // page prize
   static const int flashThreshold = 60;
   static const int redThreshold = 300;
+  static List<String> prizeNames = [
+    "Cowboyhut und 0,0003 Meilen Shots",
+    "Cowboyhut und 39 Zoll Shots",
+    "Cowboyhut und eine Säule",
+  ];
   static List<DateTime> prizeTimes = [
     DateTime(2025, 11, 29, 22, 45),
     DateTime(2025, 11, 29, 23, 30),

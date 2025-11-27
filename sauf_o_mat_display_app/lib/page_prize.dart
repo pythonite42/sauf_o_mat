@@ -23,6 +23,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
   bool dataLoaded = false;
   bool _dataReloadTimerIsFast = false;
   DateTime? nextPrizeDateTime;
+  String? nextPrize;
 
   String groupLogo = "";
   String groupName = "";
@@ -42,6 +43,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
       if (prizeTime.isAfter(DateTime.now())) {
         setState(() {
           nextPrizeDateTime = prizeTime;
+          nextPrize = GlobalSettings.prizeNames[i];
           imagePrize = "assets/prize_$i.png";
         });
         break;
@@ -126,7 +128,7 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
           return WinnerPopupWidget(
             imageUrl: groupLogo,
             name: groupName,
-            prize: "2 Säulen Bier",
+            prize: nextPrize ?? "",
             points: groupPoints,
           );
         },
@@ -430,7 +432,9 @@ class _WinnerPopupWidgetState extends State<WinnerPopupWidget> with SingleTicker
                             ),
                             Text(
                               widget.prize,
+                              textAlign: TextAlign.center,
                               style: TextStyle(fontSize: textSize, fontWeight: FontWeight.bold),
+                              maxLines: 2,
                             )
                           ],
                         ),

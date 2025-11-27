@@ -14,7 +14,7 @@ class PageSchedule extends StatelessWidget {
           decoration: BoxDecoration(
             border: Border.all(color: Colors.black, width: 8),
           ),
-          child: Image.asset("assets/placeholder_timetable.png"),
+          child: Image.asset("assets/timetable.jpeg"),
         ),
       ),
     );

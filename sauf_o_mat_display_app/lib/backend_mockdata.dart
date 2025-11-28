@@ -39,7 +39,7 @@ class MockDataPage0 {
       var longdrink = Random().nextInt(30) * 2;
       var beer = Random().nextInt(80);
       var shot = Random().nextInt(60);
-      var lutz = Random().nextInt(60);
+      var luz = Random().nextInt(60);
       var statusInt = Random().nextInt(3);
       var status = "gleichgeblieben";
       if (statusInt == 1) {
@@ -53,7 +53,7 @@ class MockDataPage0 {
         "longdrink": longdrink,
         "beer": beer,
         "shot": shot,
-        "lutz": lutz,
+        "luz": luz,
         "status": status,
       });
     }
@@ -62,12 +62,12 @@ class MockDataPage0 {
       "longdrink": 25 * 2,
       "beer": 56,
       "shot": 22,
-      "lutz": 37,
+      "luz": 37,
       "status": "gleichgeblieben"
     });
-    /*  result.add({"group": "Gruppe 1", "longdrink": 3 * 2, "beer": 8, "shot": 4, "lutz": 1});
-    result.add({"group": "Gruppe 2", "longdrink": 3 * 2, "beer": 6, "shot": 4, "lutz": 1});
-    result.add({"group": "Gruppe 3", "longdrink": 3 * 2, "beer": 2, "shot": 4, "lutz": 1}); */
+    /*  result.add({"group": "Gruppe 1", "longdrink": 3 * 2, "beer": 8, "shot": 4, "luz": 1});
+    result.add({"group": "Gruppe 2", "longdrink": 3 * 2, "beer": 6, "shot": 4, "luz": 1});
+    result.add({"group": "Gruppe 3", "longdrink": 3 * 2, "beer": 2, "shot": 4, "luz": 1}); */
     return result;
   }
 
@@ -90,27 +90,27 @@ class ChartData {
     this.longdrink,
     this.beer,
     this.shot,
-    this.lutz,
+    this.luz,
   });
 
   final String? group;
   final int? longdrink;
   final int? beer;
   final int? shot;
-  final int? lutz;
+  final int? luz;
 
-  int get total => (longdrink ?? 0) + (shot ?? 0) + (beer ?? 0) + (lutz ?? 0);
+  int get total => (longdrink ?? 0) + (shot ?? 0) + (beer ?? 0) + (luz ?? 0);
 } 
 
 List<ChartData> chartData = [
-  ChartData(group: 'Gruppe1', longdrink: 30 * 2, beer: 18, shot: 6, lutz: 12),
-  ChartData(group: 'Gruppe2', longdrink: 8 * 2, beer: 19, shot: 8, lutz: 15),
-  ChartData(group: 'Gruppe3', longdrink: 10 * 2, beer: 22, shot: 11, lutz: 20),
-  ChartData(group: 'Gruppe4', longdrink: 15 * 2, beer: 25, shot: 16, lutz: 40),
-  ChartData(group: 'Gruppe5', longdrink: 2 * 2, beer: 30, shot: 21, lutz: 13),
-  ChartData(group: 'Gruppe6', longdrink: 18 * 2, beer: 35, shot: 25, lutz: 11),
-  ChartData(group: 'Gruppe7', longdrink: 5 * 2, beer: 35, shot: 25, lutz: 11),
-  ChartData(group: 'Gruppe8', longdrink: 12 * 2, beer: 25, shot: 15, lutz: 16),
+  ChartData(group: 'Gruppe1', longdrink: 30 * 2, beer: 18, shot: 6, luz: 12),
+  ChartData(group: 'Gruppe2', longdrink: 8 * 2, beer: 19, shot: 8, luz: 15),
+  ChartData(group: 'Gruppe3', longdrink: 10 * 2, beer: 22, shot: 11, luz: 20),
+  ChartData(group: 'Gruppe4', longdrink: 15 * 2, beer: 25, shot: 16, luz: 40),
+  ChartData(group: 'Gruppe5', longdrink: 2 * 2, beer: 30, shot: 21, luz: 13),
+  ChartData(group: 'Gruppe6', longdrink: 18 * 2, beer: 35, shot: 25, luz: 11),
+  ChartData(group: 'Gruppe7', longdrink: 5 * 2, beer: 35, shot: 25, luz: 11),
+  ChartData(group: 'Gruppe8', longdrink: 12 * 2, beer: 25, shot: 15, luz: 16),
 ];
 */
 
@@ -132,14 +132,14 @@ class MockDataPage1 {
       var longdrink = Random().nextInt(30) * 2;
       var beer = Random().nextInt(80);
       var shot = Random().nextInt(60);
-      var lutz = Random().nextInt(60);
+      var luz = Random().nextInt(60);
       result.add({
         "groupName": "Gruppe ${i + 1}",
         "groupLogo": "", //"https://randomuser.me/api/portraits/men/1.jpg",
         "longdrink": longdrink,
         "beer": beer,
         "shot": shot,
-        "lutz": lutz,
+        "luz": luz,
       });
     }
     return result;

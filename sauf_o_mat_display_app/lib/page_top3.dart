@@ -11,7 +11,7 @@ class GroupData {
   int longdrink;
   int beer;
   int shot;
-  int lutz;
+  int luz;
   int points;
 
   GroupData({
@@ -20,7 +20,7 @@ class GroupData {
     required this.longdrink,
     required this.beer,
     required this.shot,
-    required this.lutz,
+    required this.luz,
     required this.points,
   });
 }
@@ -70,7 +70,7 @@ class _PageTop3State extends State<PageTop3> {
               longdrink: element["longdrink"],
               beer: element["beer"],
               shot: element["shot"],
-              lutz: element["lutz"],
+              luz: element["luz"],
               points: element["punktzahl"],
             ));
           }
@@ -339,7 +339,7 @@ class WantedPoster extends StatelessWidget {
                                 style: GoogleFonts.rye(textStyle: TextStyle(fontSize: size * 0.04)),
                               ),
                               Text(
-                                "${data.lutz}",
+                                "${data.luz}",
                                 style: GoogleFonts.rye(textStyle: TextStyle(fontSize: size * 0.04)),
                               )
                             ],
@@ -361,7 +361,7 @@ class WantedPoster extends StatelessWidget {
                                 style: GoogleFonts.rye(textStyle: TextStyle(fontSize: size * 0.04)),
                               ),
                               Text(
-                                "Lutz",
+                                "Luz",
                                 style: GoogleFonts.rye(textStyle: TextStyle(fontSize: size * 0.04)),
                               )
                             ],

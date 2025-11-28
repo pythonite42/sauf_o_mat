@@ -52,8 +52,8 @@ class _PageTop3State extends State<PageTop3> {
     try {
       List<Map> newDataMapList = await SalesforceService().getPageTop3();
       newDataMapList.sort((a, b) {
-        final aSum = (a["longdrink"] ?? 0) + (a["beer"] ?? 0) + (a["shot"] ?? 0) + (a["lutz"] ?? 0);
-        final bSum = (b["longdrink"] ?? 0) + (b["beer"] ?? 0) + (b["shot"] ?? 0) + (b["lutz"] ?? 0);
+        final aSum = (a["longdrink"] ?? 0) + (a["beer"] ?? 0) + (a["shot"] ?? 0) + (a["luz"] ?? 0);
+        final bSum = (b["longdrink"] ?? 0) + (b["beer"] ?? 0) + (b["shot"] ?? 0) + (b["luz"] ?? 0);
         return bSum.compareTo(aSum);
       });
 
@@ -65,7 +65,7 @@ class _PageTop3State extends State<PageTop3> {
             PieChartData(value: newDataMapList[0]["longdrink"], color: sunsetRed, showAmountInsteadOfPoints: true),
             PieChartData(value: newDataMapList[0]["beer"], color: westernGold),
             PieChartData(value: newDataMapList[0]["shot"], color: cactusGreen),
-            PieChartData(value: newDataMapList[0]["lutz"], color: lightRusticBrown),
+            PieChartData(value: newDataMapList[0]["luz"], color: lightRusticBrown),
           ];
 
           groupName2 = newDataMapList[1]["groupName"];
@@ -75,7 +75,7 @@ class _PageTop3State extends State<PageTop3> {
             PieChartData(value: newDataMapList[1]["longdrink"], color: sunsetRed, showAmountInsteadOfPoints: true),
             PieChartData(value: newDataMapList[1]["beer"], color: westernGold),
             PieChartData(value: newDataMapList[1]["shot"], color: cactusGreen),
-            PieChartData(value: newDataMapList[1]["lutz"], color: lightRusticBrown),
+            PieChartData(value: newDataMapList[1]["luz"], color: lightRusticBrown),
           ];
 
           groupName3 = newDataMapList[2]["groupName"];
@@ -85,7 +85,7 @@ class _PageTop3State extends State<PageTop3> {
             PieChartData(value: newDataMapList[2]["longdrink"], color: sunsetRed, showAmountInsteadOfPoints: true),
             PieChartData(value: newDataMapList[2]["beer"], color: westernGold),
             PieChartData(value: newDataMapList[2]["shot"], color: cactusGreen),
-            PieChartData(value: newDataMapList[2]["lutz"], color: lightRusticBrown),
+            PieChartData(value: newDataMapList[2]["luz"], color: lightRusticBrown),
           ];
         });
       }
@@ -150,7 +150,7 @@ class _PageTop3State extends State<PageTop3> {
                 children: [
                   Container(height: legendBoxSize, width: legendBoxSize, color: lightRusticBrown),
                   SizedBox(width: 15),
-                  Text("Lutz", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold))
+                  Text("Luz", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold))
                 ],
               ),
             ],

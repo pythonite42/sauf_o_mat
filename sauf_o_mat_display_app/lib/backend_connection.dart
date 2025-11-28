@@ -156,7 +156,7 @@ class SalesforceService {
           "longdrink": (record["Punktzahl_Bargetr_nke__c"]).toInt(),
           "beer": (record["Punktzahl_Bier_Wein_Schorle__c"]).toInt(),
           "shot": (record["Punktzahl_Shots__c"]).toInt(),
-          "lutz": (record["Punktzahl_Kaffee_Lutz__c"]).toInt(),
+          "luz": (record["Punktzahl_Kaffee_Lutz__c"]).toInt(),
           "status": record["StatusDisplay__c"],
         });
       }
@@ -219,7 +219,7 @@ class SalesforceService {
           "longdrink": (record["Anzahl_Bargetr_nke__c"]).toInt(),
           "beer": (record["Anzahl_Bier_Wein_Schorle__c"]).toInt(),
           "shot": (record["AnzahlShots__c"]).toInt(),
-          "lutz": (record["Anzahl_Kaffee_Lutz__c"]).toInt(),
+          "luz": (record["Anzahl_Kaffee_Lutz__c"]).toInt(),
           "punktzahl": (record["Punktzahl__c"]).toInt(),
           "groupLogo": record["Logo__c"] ?? "",
           "name": record["Name"] ?? "",

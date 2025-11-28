@@ -13,7 +13,7 @@ class ChartData {
     this.longdrink,
     this.beer,
     this.shot,
-    this.lutz,
+    this.luz,
     this.status,
   });
 
@@ -21,10 +21,10 @@ class ChartData {
   final int? longdrink;
   final int? beer;
   final int? shot;
-  final int? lutz;
+  final int? luz;
   final String? status;
 
-  int get total => (longdrink ?? 0) + (beer ?? 0) + (shot ?? 0) + (lutz ?? 0);
+  int get total => (longdrink ?? 0) + (beer ?? 0) + (shot ?? 0) + (luz ?? 0);
 }
 
 class PageDiagram extends StatefulWidget {
@@ -87,7 +87,7 @@ class _PageDiagramState extends State<PageDiagram> {
             longdrink: newDataMap["longdrink"],
             beer: newDataMap["beer"],
             shot: newDataMap["shot"],
-            lutz: newDataMap["lutz"],
+            luz: newDataMap["luz"],
             status: newDataMap["status"],
           ),
         );
@@ -116,7 +116,7 @@ class _PageDiagramState extends State<PageDiagram> {
                 longdrink: _chartData![i].longdrink,
                 beer: _chartData![i].beer,
                 shot: _chartData![i].shot,
-                lutz: _chartData![i].lutz,
+                luz: _chartData![i].luz,
               );
             }
           } */
@@ -268,7 +268,7 @@ class _PageDiagramState extends State<PageDiagram> {
                   children: [
                     Container(height: legendBoxSize, width: legendBoxSize, color: lightRusticBrown),
                     SizedBox(width: MySize(context).w * 0.01),
-                    Text("Lutz", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
+                    Text("Luz", style: TextStyle(fontSize: fontSizeLegend, fontWeight: FontWeight.bold))
                   ],
                 ),
               ],
@@ -428,7 +428,7 @@ class _PageDiagramState extends State<PageDiagram> {
                                                 final longdrink = (data?.longdrink ?? 0).toDouble();
                                                 final beer = (data?.beer ?? 0).toDouble();
                                                 final shot = (data?.shot ?? 0).toDouble();
-                                                final lutz = (data?.lutz ?? 0).toDouble();
+                                                final luz = (data?.luz ?? 0).toDouble();
 
                                                 // Avoid division by zero
                                                 if (chartMaxValue == 0) return const SizedBox();
@@ -457,7 +457,7 @@ class _PageDiagramState extends State<PageDiagram> {
                                                             ),
                                                             Container(
                                                               height: double.infinity,
-                                                              width: totalWidth * lutz / chartMaxValue,
+                                                              width: totalWidth * luz / chartMaxValue,
                                                               color: lightRusticBrown,
                                                             ),
                                                           ],
@@ -466,7 +466,7 @@ class _PageDiagramState extends State<PageDiagram> {
                                                                 Container(
                                                                   height: double.infinity,
                                                                   width: totalWidth *
-                                                                      (longdrink + beer + shot + lutz) /
+                                                                      (longdrink + beer + shot + luz) /
                                                                       maximumValue,
                                                                   color: Colors.grey,
                                                                 )

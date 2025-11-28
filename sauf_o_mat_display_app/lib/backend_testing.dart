@@ -28,7 +28,7 @@ class TestBackendData {
       "longdrink": 99999,
       "beer": 99999,
       "shot": 99999,
-      "lutz": 99999,
+      "luz": 99999,
       "status": "aufgestiegen",
     });
   }
@@ -49,7 +49,7 @@ class TestBackendData {
       "longdrink": 9999,
       "beer": 9999,
       "shot": 9999,
-      "lutz": 9999,
+      "luz": 9999,
       "punktzahl": 9999 * 4,
       "groupLogo": "https://ucarecdn.com/d56cc060-e516-46ed-b4e6-c743621e14a4/",
     });

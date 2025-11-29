@@ -34,9 +34,9 @@ TODOs Prio 1
 
 
 (d) - max Zeichenanzahl integrieren 
-    - Prize Bilder generieren: Infos ins Bild: uhrzeit vom Gewinn, was es zu gewinnen gibt
-    - Prize Text und überschrift erstellen: der Text sind die Regeln (wie viele Punkte pro Getränk, wie kauf ich für meine Gruppe)
-    - Ringlicht besorgen
+(d) - Prize Bilder generieren: Infos ins Bild: uhrzeit vom Gewinn, was es zu gewinnen gibt
+(d) - Prize Text und überschrift erstellen: der Text sind die Regeln (wie viele Punkte pro Getränk, wie kauf ich für meine Gruppe)
+(d) - Ringlicht besorgen
 (d) - Platzhalter erstellen: Einzelperson(SocialMedia Comment), Gruppe
 (d) - Hintergrundbild neu erstellen: rechts muss so aufhören wie links anfängt
 (d) - Image required: 
@@ -85,11 +85,11 @@ TODOs am Ende
 (d) - backend_connection.dart: line 167: anpassung SOQL page_diagram pop up: IsLessThanOneMinute__c = true noch mit einbauen
     - alle imageUrls checken ob die Bilder gut aussehen
     - Code für TODOs checken    
-    - page_prize.dart: WinnerPopupWidget prize parameter abklären
-    - globals.dart: correct Prize times
-    - globals.dart: correct last Performance time
+(d) - page_prize.dart: WinnerPopupWidget prize parameter abklären
+(d) - globals.dart: correct Prize times
+(d) - globals.dart: correct last Performance time
     - prize_page.dart: layout without overflow for all three prizes
-    - page_schedule.dart: layout checken
+(d) - page_schedule.dart: layout checken
 
 
 

@@ -64,7 +64,7 @@ class PageQuote extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(height: MySize(context).h * 0.14),
+                            SizedBox(height: MySize(context).h * 0.1),
                             Text(
                               username,
                               style: const TextStyle(
@@ -83,7 +83,7 @@ class PageQuote extends StatelessWidget {
                               ),
                               maxLines: 1,
                             ),
-                            SizedBox(height: MySize(context).h * 0.1),
+                            SizedBox(height: MySize(context).h * 0.07),
 
                             /*
                             // Slide Transition: 

@@ -81,16 +81,16 @@ TODOs Prio 3
 TODOs am Ende
 
 (d) - alle durations checken
-    - backend durations checken: CatchUp__c.isLessThanOneMinute__c 
+(d) - backend durations checken: CatchUp__c.isLessThanOneMinute__c 
 (d) - backend_connection.dart: line 167: anpassung SOQL page_diagram pop up: IsLessThanOneMinute__c = true noch mit einbauen
 (d) - alle imageUrls checken ob die Bilder gut aussehen
 (d) - Code für TODOs checken    
 (d) - page_prize.dart: WinnerPopupWidget prize parameter abklären
 (d) - globals.dart: correct Prize times
 (d) - globals.dart: correct last Performance time
-    - prize_page.dart: layout without overflow for all three prizes
+(d) - prize_page.dart: layout without overflow for all three prizes
 (d) - page_schedule.dart: layout checken
-    - page_advertising.dart: Alle Werbungen durchgehen 
+(d) - page_advertising.dart: Alle Werbungen durchgehen 
 
 
 

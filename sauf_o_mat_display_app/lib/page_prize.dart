@@ -170,8 +170,10 @@ class _PagePrizeState extends State<PagePrize> with SingleTickerProviderStateMix
                 children: [
                   Expanded(
                     flex: 5,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black, width: 8),
+                      ),
                       child: Image.asset(imagePrize, fit: BoxFit.cover),
                     ),
                   ),

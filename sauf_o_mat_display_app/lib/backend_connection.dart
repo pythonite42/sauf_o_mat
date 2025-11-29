@@ -225,6 +225,19 @@ class SalesforceService {
           "name": record["Name"] ?? "",
         });
       }
+      if (returnData.length < 3) {
+        while (returnData.length < 3) {
+          returnData.add({
+            "longdrink": 0,
+            "beer": 0,
+            "shot": 0,
+            "luz": 0,
+            "punktzahl": 0,
+            "groupLogo": "",
+            "name": "",
+          });
+        }
+      }
       return returnData;
     } catch (e) {
       debugPrint('Error: $e');

@@ -96,23 +96,45 @@ class PageAdvertising extends StatelessWidget {
                           SizedBox(width: MySize(context).w * 0.02), // spacing between image and content
                           SizedBox(
                             width: MySize(context).w * 0.27,
-                            child: Column(
+                            child: Builder(builder: (context) {
+                              final TextStyle headlineStyle =
+                                  NewspaperTextTheme.headline.copyWith(height: 1, fontSize: 45);
+                              int headlineLines = 1;
+                              try {
+                                final tp = TextPainter(
+                                  text: TextSpan(text: headline, style: headlineStyle),
+                                  textDirection: TextDirection.ltr,
+                                  maxLines: 2,
+                                );
+                                tp.layout(maxWidth: MySize(context).w * 0.27);
+                                headlineLines = tp.computeLineMetrics().length;
+                              } catch (e) {
+                                headlineLines = 2;
+                              }
+
+                              final int bodyMaxLines = (headlineLines <= 1) ? 11 : 10;
+
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   headline,
                                   textAlign: TextAlign.center,
-                                  style: NewspaperTextTheme.headline.copyWith(height: 1, fontSize: 45),
+                                    style: headlineStyle,
                                   maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
                                 ),
                                 SizedBox(height: MySize(context).h * 0.02),
                                 Text(
                                   text,
                                   textAlign: TextAlign.left,
                                   style: NewspaperTextTheme.body.copyWith(height: 1, fontSize: 32),
-                                  maxLines: 10,
+                                    maxLines: bodyMaxLines,
+                                    overflow: TextOverflow.ellipsis,
                                 ),
                               ],
-                            ),
+                              );
+                            }),
                           ),
                         ],
                       ),

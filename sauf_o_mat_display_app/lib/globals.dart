@@ -17,7 +17,7 @@ class CustomDurationsProduction {
   // ##### frontend ######################
 
   //general
-  final int indexNavigationChange = 60;
+  final int indexNavigationChange = 120;
   final int navigationTransition = 1200;
   final int changeToPrizePageBeforePrizeTime = 5 * 60; //seconds before prize time the display changes to prize page
   final int stayOnPrizePageAfterPrizeTime = 60; //seconds after prize time the display changes back to normal navigation
